@@ -1,0 +1,12 @@
+{
+	"manifest_version": 3,
+	"name": "Chrome extension",
+	"version": "1.0.0",
+	"action": { "default_popup": "index.html" },
+	"icons": {
+		"16": "icon_logo_16px.png",
+		"32": "icon_logo_32px.png",
+		"48": "icon_logo_48px.png",
+		"128": "icon_logo_128px.png"
+	}
+}
