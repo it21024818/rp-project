@@ -1,0 +1,1 @@
+# Lighthouse - A Multifaceted Ensemble Model For Fake News Detection
