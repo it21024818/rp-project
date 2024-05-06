@@ -5,7 +5,7 @@ import LandingPage from "./pages/landingPage/LandingPage";
 import * as React from "react";
 import { PaletteMode } from "@mui/material";
 import getLPTheme from "./themes/theme";
-import AppAppBar from "./components/Header/AppAppBar";
+import AppAppBar from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 
 function App() {
