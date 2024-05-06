@@ -28,3 +28,38 @@ export default {
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+
+### Folder Structure
+```
+└── src/
+    ├── components/ -> All non-page components
+    │   └── Reviews/
+    │        ├── Reviews.tsx -> Main file
+    │        └── Reviews.styles.ts -> File for containing files
+    ├── constants/ -> All constant files
+    │   └── authConstants.ts
+    ├── assets/ -> All static assets
+    │   └── images/    
+    │       ├── iconCheck.png
+    │       └── iconBox.svg
+    ├── store/ -> For redux configurations
+    │   ├── slices/
+    │   │   └── authSlice.ts
+    │   ├── api/
+    │   │   └── authApilice.ts
+    │   └── store.ts
+    ├── navigation/ -> Route configurations
+    ├── pages/ -> Divided made on a module basis
+    │   ├── auth/    
+    │   │   └── loginPage/
+    │   │       ├── loginPage.tsx
+    │   │       └── loginPage.styles.ts
+    │   └── users/    
+    ├── utils/ -> For grouped function files
+    │   └── dateTimeutils.ts
+    └── hooks/
+        ├── usePayment.ts
+        ├── useUpdateEmployee.ts
+        ├── useEmployees.ts
+        └── useAuth.tsx
+```
