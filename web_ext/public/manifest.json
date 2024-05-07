@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "The Lighthouse",
+  "version": "1.0.0",
+  "action": { "default_popup": "index.html" },
+  "permissions": [],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "icons": {
+    "16": "lighthouse.png",
+    "32": "lighthouse.png",
+    "48": "lighthouse.png",
+    "128": "lighthouse.png"
+  }
+}
