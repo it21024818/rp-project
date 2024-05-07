@@ -31,22 +31,6 @@ import { JwtTokenService } from './auth/jwt-token.service';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // FileModule.forRootAsync({
-    //   isGlobal: true,
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     authDomain: configService.get(ConfigKey.FIREBASE_AUTH_DOMAIN),
-    //     storageBucket: configService.get(ConfigKey.FIREBASE_BUCKET_NAME),
-    //     projectId: configService.get(ConfigKey.FIREBASE_PROJECT_ID),
-    //     appId: configService.get(ConfigKey.FIREBASE_APP_ID),
-    //     apiKey: configService.get(ConfigKey.FIREBASE_API_KEY),
-    //     measurementId: configService.get(ConfigKey.FIREBASE_MEASUREMENT_ID),
-    //     messagingSenderId: configService.get(
-    //       ConfigKey.FIREBASE_MESSAGING_SENDER_ID,
-    //     ),
-    //   }),
-    // }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

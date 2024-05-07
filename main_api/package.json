@@ -1,22 +1,22 @@
 {
   "name": "main-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Main API for the RP-24-22 project",
+  "author": "RP-24-22",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start:dev": "bun --watch ./src/main.ts",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "bun ./src/main.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:debug": "TODO: Fix this",
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
@@ -93,5 +93,8 @@
   },
   "engines": {
     "node": ">=20.10.0"
-  }
+  },
+  "trustedDependencies": [
+    "@nestjs/core"
+  ]
 }
