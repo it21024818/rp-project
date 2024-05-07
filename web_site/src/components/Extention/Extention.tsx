@@ -65,7 +65,7 @@ export default function Hero() {
           >
             Explore our cutting-edge fake news detection web extention,
             Unveiling Truth in a Sea of Information: Your Guide to Fake News
-            Detection.
+            Detection in real life.
           </Typography>
           <Stack
             direction={{ xs: "column", sm: "row" }}
