@@ -190,7 +190,12 @@ export default function Footer() {
         >
           <IconButton
             color="inherit"
-            href="https://github.com/mui"
+            onClick={() =>
+              window.open(
+                "https://github.com/IT21058578/rp-project",
+                "_blank"
+              )
+            }
             aria-label="GitHub"
             sx={{ alignSelf: "center" }}
           >
@@ -198,7 +203,7 @@ export default function Footer() {
           </IconButton>
           <IconButton
             color="inherit"
-            href="https://twitter.com/MaterialUI"
+            href="/"
             aria-label="X"
             sx={{ alignSelf: "center" }}
           >
@@ -206,7 +211,7 @@ export default function Footer() {
           </IconButton>
           <IconButton
             color="inherit"
-            href="https://www.linkedin.com/company/mui/"
+            href="/"
             aria-label="LinkedIn"
             sx={{ alignSelf: "center" }}
           >

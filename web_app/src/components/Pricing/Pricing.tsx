@@ -181,7 +181,7 @@ export default function Pricing() {
                   fullWidth
                   variant={tier.buttonVariant as "outlined" | "contained"}
                   component="a"
-                  href="/material-ui/getting-started/templates/checkout/"
+                  href="/"
                   target="_blank"
                 >
                   {tier.buttonText}
