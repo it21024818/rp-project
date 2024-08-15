@@ -3,6 +3,7 @@ import torch.nn as nn
 import pandas as pd
 import json
 from transformers import BertTokenizer, BertModel
+# import requests
 
 # Define the BERT model with task-specific heads
 class MisinformationModel(nn.Module):
@@ -21,9 +22,18 @@ class MisinformationModel(nn.Module):
 # Load the bias model
 def load_bias_model():
     model_path = 'models/bias_model.pth'
+    # model_path = '/content/drive/MyDrive/Models/misinformation_model_bert.pth'
+    # model_path = 'https://drive.google.com/file/d/1CSGT78jiq3XxiXSHHOVGjm2cSpckn4rC/view?usp=sharing'
     model = MisinformationModel(num_classes_bias=3, num_classes_fake_news=6)
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     return model
+# def load_bias_model():
+#     model_url = 'https://drive.google.com/uc?id=1CSGT78jiq3XxiXSHHOVGjm2cSpckn4rC'
+#     response = requests.get(model_url)
+#     model_bytes = response.content
+#     model = MisinformationModel(num_classes_bias=3, num_classes_fake_news=6)
+#     model.load_state_dict(torch.load(model_bytes, map_location=torch.device('cpu')))
+#     return model
 
 # Function to preprocess and tokenize the input text
 def preprocess_text(text):

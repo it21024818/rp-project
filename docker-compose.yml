@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  ml-api:
+    build: ./ml_api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    depends_on:
+      - backend
+
+  backend:
+    build: ./main_api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - ml-api
+
+  frontend:
+    build: ./web_app
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
