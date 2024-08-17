@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/IT21058578/rp-project.git'
+                git branch: 'main', url: 'https://github.com/IT21058578/rp-project.git'
             }
         }
         

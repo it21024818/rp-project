@@ -2,7 +2,7 @@ version: '3'
 
 services:
   ml-api:
-    # image: your-registry-url/your-image-name:tag
+    image: https://hub.docker.com/r/dinuka07/rp-project/ml-api-image:latest
     build: ./ml_api
     ports:
       - "5000:5000"
@@ -13,6 +13,7 @@ services:
       - backend
 
   backend:
+    image: https://hub.docker.com/r/dinuka07/rp-project/main-api-image:latest
     build: ./main_api
     ports:
       - "3000:3000"
@@ -22,6 +23,7 @@ services:
       - ml-api
 
   frontend:
+    image: https://hub.docker.com/r/dinuka07/rp-project/web-app-image:latest
     build: ./web_app
     ports:
       - "3001:3001"
