@@ -9,8 +9,8 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
-    depends_on:
-      - backend
+    # depends_on:
+    #   - backend
 
   backend:
     image: dinuka07/rp-project/main-api-image:latest
