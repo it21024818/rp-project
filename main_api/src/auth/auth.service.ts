@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { hash, compare } from 'bcrypt';
+import { hash, compare } from 'bcryptjs';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { LoginDto } from 'src/common/dtos/login.dto';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';

@@ -12,7 +12,7 @@ import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { UserRole } from 'src/common/enums/user-roles.enum';
-import { hashSync } from 'bcrypt';
+import { hashSync } from 'bcryptjs';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
 
 @Injectable()
