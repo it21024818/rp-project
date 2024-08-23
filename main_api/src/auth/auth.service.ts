@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger, Inject, ForbiddenException,  } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { hash, compare } from 'bcryptjs';
 import ErrorMessage from 'src/common/enums/error-message.enum';
@@ -12,9 +12,13 @@ import { TokenService } from 'src/token/token.service';
 import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
 import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { EmailService } from 'src/email/email.service';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { TokenFamily } from 'src/common/schema/tokenFamily.schema';
+import { isUndefined } from 'lodash';
 
 @Injectable()
 export class AuthService {
+ 
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
@@ -22,8 +26,46 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
     private readonly jwtTokenService: JwtTokenService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
+
+  async refreshTokens(oldRefreshToken: string): Promise<Omit<LoginDto, 'user'>> {
+    try {
+      const id = await this.jwtTokenService.verifyRefreshToken(oldRefreshToken);
+
+      // Get token family
+      const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
+      if (isUndefined(tokenFamily)) {
+        throw new ForbiddenException("Invalid refresh token");
+      }
+
+      // Check whether its the latest token
+      if (tokenFamily.activeRefreshToken !== oldRefreshToken) {
+        await this.cacheManager.del(id);
+        throw new ForbiddenException("Old refresh token used");
+      }
+
+      // Generate new tokens
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwtTokenService.getAccessToken(id),
+        this.jwtTokenService.getRefreshToken(id),
+      ]);
+     
+      // Update token family
+      tokenFamily.oldAccessTokens = [tokenFamily.activeAccessToken]
+      tokenFamily.oldRefreshTokens = [tokenFamily.activeRefreshToken]
+      tokenFamily.activeAccessToken = accessToken
+      tokenFamily.activeRefreshToken = refreshToken
+      await this.cacheManager.set(id, tokenFamily)
+
+      // Send back new updated token set
+      return { tokens: { accessToken, refreshToken }};
+    } catch (error) {
+      console.log(error);
+      throw new ForbiddenException(ErrorMessage.INVALID_TOKEN);
+    }
+  }
 
   async loginUser(email: string, password: string): Promise<LoginDto> {
     try {
@@ -44,6 +86,16 @@ export class AuthService {
         this.jwtTokenService.getAccessToken(existingUser.id),
         this.jwtTokenService.getRefreshToken(existingUser.id),
       ]);
+
+      const tokenFamily: TokenFamily = {
+        userId: existingUser.id,
+        activeAccessToken: accessToken,
+        activeRefreshToken: refreshToken,
+        oldAccessTokens: [],
+        oldRefreshTokens: [],
+      }
+      await this.cacheManager.set(existingUser.id, tokenFamily);
+
 
       const { password: userPassword, ...sanitizedUser } =
         existingUser.toJSON();
@@ -123,6 +175,7 @@ export class AuthService {
       this.logger.warn(`Could not find user with email '${email}'`);
       return;
     }
+    await this.cacheManager.del(existingUser.id);
 
     existingUser.password = await hash(password, 10);
     const savedUser = await existingUser.save();
@@ -150,6 +203,7 @@ export class AuthService {
       }
 
       existingUser.password = await hash(password, 10);
+      await this.cacheManager.del(existingUser.id);
 
       await existingUser.save();
     } catch (error) {

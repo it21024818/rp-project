@@ -38,6 +38,9 @@ $ curl -fsSL https://bun.sh/install | bash
 
 # If using oh-my-zsh. Make sure bun is included in the ~/.zshrc
 $ source ~/.zshrc 
+
+# Make sure to setup local redis
+$ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 #### For Windows
@@ -50,6 +53,9 @@ $ powershell -c "irm bun.sh/install.ps1|iex"
 
 ```bash
 $ bun install
+
+# Make sure to setup local redis
+$ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 ## Running the app

@@ -16,6 +16,7 @@ import { ChangePasswordRequestDto } from 'src/common/dtos/change-password-reques
 import { User } from 'src/common/decorators/user.decorator';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from 'src/common/enums/user-roles.enum';
+import { RefreshTokenDto } from 'src/common/dtos/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +27,13 @@ export class AuthController {
     @Body() { email, password }: LoginRequestDto,
   ): Promise<LoginDto> {
     return await this.authService.loginUser(email, password);
+  }
+
+  @Post('refresh')
+  async refreshTokens(
+    @Body() { refreshToken }: RefreshTokenDto,
+  ) {
+    return await this.authService.refreshTokens(refreshToken)
   }
 
   @Post('register')

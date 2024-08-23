@@ -6,6 +6,7 @@ import { TokenModule } from 'src/token/token.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from 'src/email/email.module';
 import { JwtTokenService } from './jwt-token.service';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   controllers: [AuthController],

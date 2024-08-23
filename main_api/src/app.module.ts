@@ -20,6 +20,9 @@ import { ConfigKey } from './common/enums/config-key.enum';
 import { HttpModule } from '@nestjs/axios';
 import { LogGuard } from './common/guards/log.guard';
 import { JwtTokenService } from './auth/jwt-token.service';
+import { CacheModule } from '@nestjs/cache-manager';
+import { RedisClientOptions } from 'redis';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
@@ -37,6 +40,20 @@ import { JwtTokenService } from './auth/jwt-token.service';
       useFactory: async (configService: ConfigService) => ({
         uri: process.env.MONGO_URI || configService.get(ConfigKey.MONGO_URI),
       }),
+    }),
+    CacheModule.registerAsync<RedisClientOptions>({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        store: await redisStore({
+          ttl: parseInt(configService.get(ConfigKey.CACHE_TTL)!),
+          socket: {
+            host: configService.get(ConfigKey.REDIS_HOST)!,
+            port: parseInt(configService.get(ConfigKey.REDIS_PORT)!),
+          },
+        }),
+      }),
+      isGlobal: true,
     }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
