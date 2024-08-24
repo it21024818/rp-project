@@ -97,49 +97,4 @@ export class UsersService {
   async getUserPage(pageRequest: PageRequest) {
     return await MongooseUtil.getDocumentPage(this.userModel, pageRequest);
   }
-
-  async assignToRoom(userId: string, roomId: string) {
-    const existingUser = await this.getUser(userId);
-    if (existingUser.roomIds.includes(roomId)) {
-      this.logger.warn(
-        `User with id ${userId} has already been added to room with id ${roomId}`,
-      );
-      throw new ConflictException(
-        ErrorMessage.USER_ALREADY_IN_ROOM,
-        `User with id ${userId} has already been added to room with id ${roomId}`,
-      );
-    }
-
-    existingUser.roomIds.push(roomId);
-    await existingUser.save();
-  }
-
-  async unassignFromRoom(userId: string, roomId: string) {
-    const existingUser = await this.getUser(userId);
-    if (!existingUser.roomIds.includes(roomId)) {
-      this.logger.warn(
-        `User with id ${userId} is not assigned to room with id ${roomId}`,
-      );
-      throw new ConflictException(
-        ErrorMessage.USER_NOT_IN_ROOM,
-        `User with id ${userId} is not assigned to room with id ${roomId}`,
-      );
-    }
-
-    existingUser.roomIds =
-      existingUser?.roomIds?.filter((id) => id !== roomId) ?? [];
-    await existingUser.save();
-  }
-
-  async unassignAllFromRoom(roomId: string) {
-    const existingUsers = await this.userModel.find({
-      roomIds: { $in: [roomId] },
-    });
-    const updatedUsers = existingUsers.map((user) => {
-      user.roomIds = user.roomIds.filter((id) => id !== roomId);
-      return user;
-    });
-    const userPromises = updatedUsers.map(async (user) => user.save());
-    return await Promise.all(userPromises);
-  }
 }

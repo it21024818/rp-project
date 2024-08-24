@@ -1,0 +1,3 @@
+class CreatePredictionDto {
+  text: string
+}

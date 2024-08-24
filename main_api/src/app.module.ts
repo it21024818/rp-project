@@ -23,6 +23,7 @@ import { JwtTokenService } from './auth/jwt-token.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
+import { PredictionModule } from './prediction/prediction.module';
 
 @Module({
   imports: [
@@ -81,6 +82,7 @@ import { redisStore } from 'cache-manager-redis-yet';
         },
       }),
     }),
+    PredictionModule,
   ],
   providers: [
     AuthService,

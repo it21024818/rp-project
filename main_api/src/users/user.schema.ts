@@ -40,9 +40,6 @@ export class User extends Audit {
 
   @Prop({ isRequired: true })
   isAuthorized: boolean;
-
-  @Prop({ default: [] })
-  roomIds: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -34,21 +34,4 @@ export class UsersController {
   async deleteUser(@Param('id', ValidateObjectIdPipe) id: string) {
     await this.usersService.deleteUser(id);
   }
-
-  @Put('assign')
-  async inviteToRoom(
-    @Query('email', ValidateEmailPipe) email: string,
-    @Query('room-id', ValidateObjectIdPipe) roomId: string,
-  ) {
-    const user = await this.usersService.getUserByEmail(email);
-    await this.usersService.assignToRoom(user.id, roomId);
-  }
-
-  @Put('unassign')
-  async unassignFromRoom(
-    @Query('user-id', ValidateObjectIdPipe) userId: string,
-    @Query('room-id', ValidateObjectIdPipe) roomId: string,
-  ) {
-    await this.usersService.unassignFromRoom(userId, roomId);
-  }
 }
