@@ -1,6 +1,7 @@
 const ErrorMessage = {
   // Not Found
   USER_NOT_FOUND: 'User not found',
+  PREDICTION_NOT_FOUND: 'Prediction not found',
   TOKEN_NOT_FOUND: 'Token not found',
   FILE_NOT_FOUND: 'File not found',
   TASK_NOT_FOUND: 'Task not found',

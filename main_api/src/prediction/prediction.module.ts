@@ -5,9 +5,14 @@ import { HttpModule } from "@nestjs/axios";
 import { PredictionFeignClient } from "./prediction.feign";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConfigKey } from "src/common/enums/config-key.enum";
+import { MongooseModule } from "@nestjs/mongoose";
+import { Prediction, PredictionSchema } from "./prediction.schema";
 
 @Module({
   imports: [
+    MongooseModule.forFeature([
+      { name: Prediction.name, schema: PredictionSchema },
+    ]),
     HttpModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
