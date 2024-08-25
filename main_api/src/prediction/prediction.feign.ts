@@ -1,6 +1,5 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
-import { AxiosResponse } from "axios";
 import { firstValueFrom, Observable } from "rxjs";
 import { PredictionResponseDto } from "src/common/dtos/prediction-response.dto";
 
@@ -12,6 +11,16 @@ export class PredictionFeignClient {
     return (
       await firstValueFrom(
         this.httpService.post<PredictionResponseDto>("predict", { text })
+      )
+    ).data;
+  }
+
+  async extractKeywords(text: string) {
+    return (
+      await firstValueFrom(
+        this.httpService.post<string[]>("extract-keywords", {
+          text,
+        })
       )
     ).data;
   }

@@ -26,6 +26,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { PredictionModule } from './prediction/prediction.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { PaymentsModule } from './payments/payments.module';
+import { NewsSearchModule } from './news-search/news-search.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { PaymentsModule } from './payments/payments.module';
     PredictionModule,
     FeedbackModule,
     PaymentsModule,
+    NewsSearchModule,
   ],
   providers: [
     AuthService,

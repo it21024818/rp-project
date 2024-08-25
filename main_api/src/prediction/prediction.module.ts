@@ -8,9 +8,11 @@ import { ConfigKey } from "src/common/enums/config-key.enum";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Prediction, PredictionSchema } from "./prediction.schema";
 import { FeedbackModule } from "src/feedback/feedback.module";
+import { NewsSearchModule } from "src/news-search/news-search.module";
 
 @Module({
   imports: [
+    NewsSearchModule,
     forwardRef(() => FeedbackModule),
     MongooseModule.forFeature([
       { name: Prediction.name, schema: PredictionSchema },

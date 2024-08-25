@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { FlattenMaps, HydratedDocument, Model } from "mongoose";
 import { Audit } from "src/common/schema/audit.schema";
 import { PredictionResult } from "src/common/dtos/prediction-result.dto";
+import { SearchResult } from "src/news-search/search-result";
 
 export type PredictionDocument = HydratedDocument<Prediction>;
 export type PredictionModel = Model<Prediction>;
@@ -13,6 +14,10 @@ export class Prediction extends Audit {
   text: string;
   @Prop()
   result?: PredictionResult;
+  @Prop()
+  searchResults?: SearchResult[];
+  @Prop()
+  keywords?: string[];
 }
 
 export const PredictionSchema = SchemaFactory.createForClass(Prediction);

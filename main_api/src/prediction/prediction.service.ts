@@ -7,7 +7,6 @@ import {
 } from "@nestjs/common";
 import { PageRequest } from "src/common/dtos/page-request.dto";
 import { PredictionFeignClient } from "./prediction.feign";
-import { FlatUser } from "src/users/user.schema";
 import { MongooseUtil } from "src/common/util/mongoose.util";
 import { InjectModel } from "@nestjs/mongoose";
 import { Prediction, PredictionDocument } from "./prediction.schema";
@@ -16,6 +15,8 @@ import ErrorMessage from "src/common/enums/error-message.enum";
 import { PredictionUtil } from "./prediction.util";
 import { FeedbackService } from "src/feedback/feedback.service";
 import { PredictionResult } from "src/common/dtos/prediction-result.dto";
+import { NewsSearchService } from "src/news-search/news-search.service";
+import { SearchResult } from "src/news-search/search-result";
 
 @Injectable()
 export class PredictionService {
@@ -24,6 +25,7 @@ export class PredictionService {
   constructor(
     @Inject(forwardRef(() => FeedbackService))
     private feedbackService: FeedbackService,
+    private readonly newsSearchService: NewsSearchService,
     private readonly predictionFeignClient: PredictionFeignClient,
     @InjectModel(Prediction.name)
     private readonly predictionModel: Model<Prediction>
@@ -91,11 +93,15 @@ export class PredictionService {
       result: { $exists: true },
     });
     let transformedResult: PredictionResult | undefined;
+    let searchResults: SearchResult[] = [];
+    let keywords: string[] = [];
     if (existingPrediction) {
       this.logger.log(
         `Found exactly similar prediction ${existingPrediction.id} for prediction ${savedPrediction.id}`
       );
       transformedResult = existingPrediction.result!;
+      searchResults = existingPrediction.searchResults!;
+      keywords = existingPrediction.keywords!;
     } else {
       // Process Text
       this.logger.log(
@@ -106,11 +112,19 @@ export class PredictionService {
       this.logger.log(
         `Finished processing text for prediction ${savedPrediction.id}`
       );
-      const transformedResult =
+      transformedResult =
         PredictionUtil.buildPredictionResult(predictionResult);
+
+      // Get related web-pages
+      keywords = await this.predictionFeignClient.extractKeywords(text);
+      searchResults = await this.newsSearchService.performSearch(
+        keywords.join(" ")
+      );
     }
 
     // Update record
+    savedPrediction.keywords = keywords;
+    savedPrediction.searchResults = searchResults;
     savedPrediction.result = transformedResult;
     savedPrediction.updatedAt = new Date();
     savedPrediction.updatedBy = userId;
