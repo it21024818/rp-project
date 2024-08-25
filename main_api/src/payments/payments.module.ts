@@ -10,5 +10,6 @@ import { Plan, PlanSchema } from "./plan.schema";
   ],
   providers: [PaymentsService],
   controllers: [PaymentsController],
+  exports: [MongooseModule],
 })
 export class PaymentsModule {}

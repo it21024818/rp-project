@@ -27,6 +27,7 @@ import { PredictionModule } from './prediction/prediction.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { PaymentsModule } from './payments/payments.module';
 import { NewsSearchModule } from './news-search/news-search.module';
+import { MigrationsModule } from './migrations/migrations.module';
 
 @Module({
   imports: [
@@ -89,6 +90,7 @@ import { NewsSearchModule } from './news-search/news-search.module';
     FeedbackModule,
     PaymentsModule,
     NewsSearchModule,
+    MigrationsModule,
   ],
   providers: [
     AuthService,

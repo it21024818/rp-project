@@ -3,42 +3,25 @@ import {
   ConflictException,
   Injectable,
   Logger,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument, FlatUser } from './user.schema';
-import { Model } from 'mongoose';
-import { Page, PageUtil } from 'src/common/util/page.util';
-import { CreateUserDto } from 'src/common/dtos/create-user.dto';
-import ErrorMessage from 'src/common/enums/error-message.enum';
-import { PageRequest } from 'src/common/dtos/page-request.dto';
-import { UserRole } from 'src/common/enums/user-roles.enum';
-import { hashSync } from 'bcryptjs';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { User, UserDocument, FlatUser } from "./user.schema";
+import { Model } from "mongoose";
+import { Page, PageUtil } from "src/common/util/page.util";
+import { CreateUserDto } from "src/common/dtos/create-user.dto";
+import ErrorMessage from "src/common/enums/error-message.enum";
+import { PageRequest } from "src/common/dtos/page-request.dto";
+import { UserRole } from "src/common/enums/user-roles.enum";
+import { hashSync } from "bcryptjs";
+import { MongooseUtil } from "src/common/util/mongoose.util";
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {
-    const existingSystemAdmin = this.userModel.findOne({
-      roles: { $in: [UserRole.ADMIN] },
-    });
-    if (existingSystemAdmin === null) {
-      this.logger.log('System admin not found. Creating new system admin...');
-      this.createSystemAdmin();
-    }
-  }
-
-  async createSystemAdmin() {
-    const systemAdmin = new this.userModel();
-    systemAdmin.firstName = 'John';
-    systemAdmin.lastName = 'Doe';
-    systemAdmin.password = hashSync('password', 10);
-    systemAdmin.email = 'johndoe@gmail.com';
-    systemAdmin.isAuthorized = true;
-    await systemAdmin.save();
-    this.logger.log('New system admin created');
-  }
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>
+  ) {}
 
   async updateUser(id: string, userDto: CreateUserDto): Promise<UserDocument> {
     this.logger.log(`Attempting to find user with id '${id}'`);
