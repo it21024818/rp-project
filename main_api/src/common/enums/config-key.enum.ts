@@ -18,6 +18,7 @@ export const ConfigKey = {
   AI_SERVER_BASE_URL: "AI_SERVER_BASE_URL",
   STRIPE_PRIVATE_KEY: "STRIPE_PRIVATE_KEY",
   WEB_APP_BASE_URL: "WEB_APP_BASE_URL",
+  STRIPE_WEBHOOK_ENDPOINT_SECRET: "STRIPE_WEBHOOK_ENDPOINT_SECRET",
 } as const;
 
 export type ConfigKey = keyof typeof ConfigKey;
