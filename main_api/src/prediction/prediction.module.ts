@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { PredictionService } from "./prediction.service";
 import { PredictionController } from "./prediction.controller";
 import { HttpModule } from "@nestjs/axios";
@@ -7,9 +7,11 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ConfigKey } from "src/common/enums/config-key.enum";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Prediction, PredictionSchema } from "./prediction.schema";
+import { FeedbackModule } from "src/feedback/feedback.module";
 
 @Module({
   imports: [
+    forwardRef(() => FeedbackModule),
     MongooseModule.forFeature([
       { name: Prediction.name, schema: PredictionSchema },
     ]),
@@ -25,5 +27,6 @@ import { Prediction, PredictionSchema } from "./prediction.schema";
   ],
   providers: [PredictionService, PredictionFeignClient],
   controllers: [PredictionController],
+  exports: [PredictionService],
 })
 export class PredictionModule {}

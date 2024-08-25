@@ -1,3 +1,3 @@
-class CreatePredictionDto {
+export class CreatePredictionDto {
   text: string
 }

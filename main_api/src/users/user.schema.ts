@@ -1,7 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { FlattenMaps, HydratedDocument, Model } from 'mongoose';
-import { UserRole } from '../common/enums/user-roles.enum';
-import { Audit } from 'src/common/schema/audit.schema';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import mongoose, { FlattenMaps, HydratedDocument, Model } from "mongoose";
+import { UserRole } from "../common/enums/user-roles.enum";
+import { Audit } from "src/common/schema/audit.schema";
 
 export type UserDocument = HydratedDocument<User>;
 export type UsersModel = Model<User>;
@@ -11,7 +11,7 @@ const UserRoleSchema = new mongoose.Schema({
   value: { type: String, enum: Object.values(UserRole) },
 });
 
-@Schema({ collection: 'users' })
+@Schema({ collection: "users" })
 export class User extends Audit {
   @Prop({ isRequired: true })
   firstName: string;
@@ -31,7 +31,7 @@ export class User extends Audit {
       message: (arr: any) => `${arr} is not a valid UserRole enum array`,
       validator: (arr: string[]) => {
         return arr.every((val) =>
-          Object.values(UserRole).includes(val as UserRole),
+          Object.values(UserRole).includes(val as UserRole)
         );
       },
     },

@@ -24,6 +24,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
 import { PredictionModule } from './prediction/prediction.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { PredictionModule } from './prediction/prediction.module';
       }),
     }),
     PredictionModule,
+    FeedbackModule,
   ],
   providers: [
     AuthService,
