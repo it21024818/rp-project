@@ -15,6 +15,7 @@ import { Model } from "mongoose";
 import ErrorMessage from "src/common/enums/error-message.enum";
 import { PredictionUtil } from "./prediction.util";
 import { FeedbackService } from "src/feedback/feedback.service";
+import { PredictionResult } from "src/common/dtos/prediction-result.dto";
 
 @Injectable()
 export class PredictionService {
@@ -74,6 +75,7 @@ export class PredictionService {
       `Creating new prediction record from user ${userId} for text ${text}`
     );
     const newPrediction: Prediction = {
+      text,
       createdAt: new Date(),
       createdBy: userId,
     };
@@ -83,18 +85,30 @@ export class PredictionService {
       newPrediction
     ).save();
 
-    // Process Text
-    this.logger.log(
-      `Starting to process text for prediction ${savedPrediction.id}`
-    );
-    const predictionResult =
-      await this.predictionFeignClient.getPredictionForText(text);
-    this.logger.log(
-      `Finished processing text for prediction ${savedPrediction.id}`
-    );
-
-    const transformedResult =
-      PredictionUtil.buildPredictionResult(predictionResult);
+    // Check for existing record
+    const existingPrediction = await this.predictionModel.findOne({
+      text,
+      result: { $exists: true },
+    });
+    let transformedResult: PredictionResult | undefined;
+    if (existingPrediction) {
+      this.logger.log(
+        `Found exactly similar prediction ${existingPrediction.id} for prediction ${savedPrediction.id}`
+      );
+      transformedResult = existingPrediction.result!;
+    } else {
+      // Process Text
+      this.logger.log(
+        `Starting to process text for prediction ${savedPrediction.id}`
+      );
+      const predictionResult =
+        await this.predictionFeignClient.getPredictionForText(text);
+      this.logger.log(
+        `Finished processing text for prediction ${savedPrediction.id}`
+      );
+      const transformedResult =
+        PredictionUtil.buildPredictionResult(predictionResult);
+    }
 
     // Update record
     savedPrediction.result = transformedResult;

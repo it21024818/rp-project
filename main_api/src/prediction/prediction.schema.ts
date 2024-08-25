@@ -10,6 +10,8 @@ export type FlatPrediction = FlattenMaps<Prediction & { _id: string }>;
 @Schema({ collection: "predictions" })
 export class Prediction extends Audit {
   @Prop()
+  text: string;
+  @Prop()
   result?: PredictionResult;
 }
 
