@@ -25,6 +25,7 @@ import { RedisClientOptions } from 'redis';
 import { redisStore } from 'cache-manager-redis-yet';
 import { PredictionModule } from './prediction/prediction.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     }),
     PredictionModule,
     FeedbackModule,
+    PaymentsModule,
   ],
   providers: [
     AuthService,

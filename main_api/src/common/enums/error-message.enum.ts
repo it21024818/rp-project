@@ -9,6 +9,9 @@ const ErrorMessage = {
   SCHEDULE_NOT_FOUND: "Schedule not found",
   ROOM_NOT_FOUND: "Room not found",
 
+  // Payments
+  SESSION_URL_INVALID: "Session URL invalid",
+
   // Already exists
   USER_ALREADY_EXISTS: "User already exists",
   TASK_ALREADY_EXISTS: "Task already exists",
