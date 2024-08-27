@@ -82,6 +82,8 @@ export class UsersService {
       });
     }
     this.logger.log(`Deleted user with id '${id}'`);
+
+    // TODO: Handle predictions and feedback
   }
 
   async getUserPage(pageRequest: PageRequest) {

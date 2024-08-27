@@ -5,6 +5,8 @@ import { PredictionService } from "./prediction.service";
 import { FlatUser } from "src/users/user.schema";
 import { User } from "src/common/decorators/user.decorator";
 import { CreatePredictionDto } from "src/common/dtos/create-prediction-dto";
+import { Roles } from "src/common/decorators/roles.decorator";
+import { UserRole } from "src/common/enums/user-roles.enum";
 
 @Controller("predictions")
 export class PredictionController {
@@ -21,6 +23,7 @@ export class PredictionController {
   }
 
   @Delete(":id")
+  @Roles(UserRole.ADMIN)
   async deletePrediction(@Param("id", ValidateObjectIdPipe) id: string) {
     return await this.predictionService.deletePrediction(id);
   }
@@ -34,6 +37,7 @@ export class PredictionController {
   }
 
   @Get("search")
+  @Roles(...Object.values(UserRole))
   async getPredictionPage(@Body() pageRequest: PageRequest) {
     return await this.predictionService.getPredictionPage(pageRequest);
   }
