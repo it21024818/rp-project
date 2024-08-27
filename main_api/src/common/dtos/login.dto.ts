@@ -1,9 +1,9 @@
-import { UserDto } from "./user.dto";
+import { UserDto } from './user.dto';
 
 export class LoginDto {
-    user: UserDto;
-    tokens: {
-        accessToken: string;
-        refreshToken: string;
-    }
+  user: UserDto;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }

@@ -1,10 +1,10 @@
 import { Controller, InternalServerErrorException, Post, Query, Req, Res } from '@nestjs/common';
-import { PaymentsService } from './payments.service';
 import { Request, Response } from 'express';
-import ErrorMessage from 'src/common/enums/error-message.enum';
-import { UserRole } from 'src/common/enums/user-roles.enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
+import ErrorMessage from 'src/common/enums/error-message.enum';
+import { UserRole } from 'src/common/enums/user-roles.enum';
+import { PaymentsService } from './payments.service';
 
 @Controller('payments')
 export class PaymentsController {

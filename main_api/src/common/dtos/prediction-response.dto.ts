@@ -1,4 +1,4 @@
-import { ModelResult } from "./model-result.dto";
+import { ModelResult } from './model-result.dto';
 
 export class PredictionResponseDto {
   // Sarcasm detection results

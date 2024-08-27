@@ -1,24 +1,16 @@
-import {
-  CriteriaOperator,
-  CritieriaOperator,
-  PageRequest,
-} from '../dtos/page-request.dto';
 import { BadRequestException } from '@nestjs/common';
-import ErrorMessage from '../enums/error-message.enum';
 import { isArray, isString, isUndefined } from 'lodash';
 import { FilterQuery, SortOrder } from 'mongoose';
+import { CriteriaOperator, CritieriaOperator, PageRequest } from '../dtos/page-request.dto';
+import ErrorMessage from '../enums/error-message.enum';
 
 export class QueryUtil {
   static buildSort = (sort: PageRequest['sort']) => {
-    const sortArr: [string, SortOrder][] = Object.entries(sort ?? {}).map(
-      ([key, value]) => [key, value as SortOrder],
-    );
+    const sortArr: [string, SortOrder][] = Object.entries(sort ?? {}).map(([key, value]) => [key, value as SortOrder]);
     return sortArr;
   };
 
-  static buildQueryFromFilter = (
-    filter: PageRequest['filter'],
-  ): FilterQuery<any> => {
+  static buildQueryFromFilter = (filter: PageRequest['filter']): FilterQuery<any> => {
     return Object.entries(filter ?? {}).reduce((obj, [field, opVal]) => {
       if (!opVal?.operator || !opVal?.value)
         throw new BadRequestException(
@@ -31,11 +23,7 @@ export class QueryUtil {
     }, {});
   };
 
-  private static buildQuery = (
-    field: string,
-    operator: CritieriaOperator,
-    value: any,
-  ) => {
+  private static buildQuery = (field: string, operator: CritieriaOperator, value: any) => {
     switch (operator) {
       case 'EQUALS':
         return this.buildEqualsQuery(field, value);

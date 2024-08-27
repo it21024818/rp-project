@@ -1,3 +1,4 @@
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import {
   CanActivate,
   ExecutionContext,
@@ -8,11 +9,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtTokenService } from 'src/auth/jwt-token.service'
+import { isUndefined } from 'lodash';
+import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { UsersService } from 'src/users/users.service';
 import ErrorMessage from '../enums/error-message.enum';
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { isUndefined } from 'lodash';
 import { TokenFamily } from '../schema/tokenFamily.schema';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
     this.logger.debug('Attempting to authenticate user...');
     const request = context.switchToHttp().getRequest();
     const token = this.getToken(request);
-    
+
     if (!token) {
       this.logger.debug(`Could not authenticate user as they had no token`);
       return true;
@@ -42,13 +42,13 @@ export class AuthGuard implements CanActivate {
       // Get token family
       const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
       if (isUndefined(tokenFamily)) {
-        throw new ForbiddenException("Invalid access token");
+        throw new ForbiddenException('Invalid access token');
       }
 
       // Check whether token is latest
       if (tokenFamily.activeRefreshToken !== token) {
         await this.cacheManager.del(id);
-        throw new ForbiddenException("Old access token used");
+        throw new ForbiddenException('Old access token used');
       }
 
       // Attach user data to request context
@@ -58,7 +58,7 @@ export class AuthGuard implements CanActivate {
       request['user'] = userJson;
     } catch (error) {
       this.logger.warn(`Could not authenticate user as they had an invalid token`);
-      this.logger.error(error)
+      this.logger.error(error);
     }
     return true;
   }

@@ -1,8 +1,8 @@
-import { PoliticalLeaning } from "../enums/political-leaning.enum";
-import { Sarcasm } from "../enums/sarcasm.enum";
-import { Sentiment } from "../enums/sentiment.enum";
-import { Text } from "../enums/text.enum";
-import { ModelResult } from "./model-result.dto";
+import { PoliticalLeaning } from '../enums/political-leaning.enum';
+import { Sarcasm } from '../enums/sarcasm.enum';
+import { Sentiment } from '../enums/sentiment.enum';
+import { Text } from '../enums/text.enum';
+import { ModelResult } from './model-result.dto';
 
 export class PredictionResult {
   // Sarcasm detection results

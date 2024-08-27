@@ -1,9 +1,9 @@
-import { PredictionResponseDto } from "src/common/dtos/prediction-response.dto";
-import { PredictionResult } from "src/common/dtos/prediction-result.dto";
-import { PoliticalLeaning } from "src/common/enums/political-leaning.enum";
-import { Sarcasm } from "src/common/enums/sarcasm.enum";
-import { Sentiment } from "src/common/enums/sentiment.enum";
-import { Text } from "src/common/enums/text.enum";
+import { PredictionResponseDto } from 'src/common/dtos/prediction-response.dto';
+import { PredictionResult } from 'src/common/dtos/prediction-result.dto';
+import { PoliticalLeaning } from 'src/common/enums/political-leaning.enum';
+import { Sarcasm } from 'src/common/enums/sarcasm.enum';
+import { Sentiment } from 'src/common/enums/sentiment.enum';
+import { Text } from 'src/common/enums/text.enum';
 
 const SENTIMENT_BY_LABEL: Record<number, Sentiment> = {
   0: Sentiment.NEGATIVE,

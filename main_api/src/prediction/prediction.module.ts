@@ -1,22 +1,20 @@
-import { forwardRef, Module } from "@nestjs/common";
-import { PredictionService } from "./prediction.service";
-import { PredictionController } from "./prediction.controller";
-import { HttpModule } from "@nestjs/axios";
-import { PredictionFeignClient } from "./prediction.feign";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { ConfigKey } from "src/common/enums/config-key.enum";
-import { MongooseModule } from "@nestjs/mongoose";
-import { Prediction, PredictionSchema } from "./prediction.schema";
-import { FeedbackModule } from "src/feedback/feedback.module";
-import { NewsSearchModule } from "src/news-search/news-search.module";
+import { HttpModule } from '@nestjs/axios';
+import { Module, forwardRef } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigKey } from 'src/common/enums/config-key.enum';
+import { FeedbackModule } from 'src/feedback/feedback.module';
+import { NewsSearchModule } from 'src/news-search/news-search.module';
+import { PredictionController } from './prediction.controller';
+import { PredictionFeignClient } from './prediction.feign';
+import { Prediction, PredictionSchema } from './prediction.schema';
+import { PredictionService } from './prediction.service';
 
 @Module({
   imports: [
     NewsSearchModule,
     forwardRef(() => FeedbackModule),
-    MongooseModule.forFeature([
-      { name: Prediction.name, schema: PredictionSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Prediction.name, schema: PredictionSchema }]),
     HttpModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

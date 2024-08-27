@@ -20,14 +20,10 @@ export class EmailService {
         context: data,
       })
       .then(() => {
-        this.logger.log(
-          `Successfully sent '${purpose}' email to user with email ${to}`,
-        );
+        this.logger.log(`Successfully sent '${purpose}' email to user with email ${to}`);
       })
-      .catch((err) => {
-        this.logger.warn(
-          `Could not send '${purpose}' email to user with email '${to}'`,
-        );
+      .catch(err => {
+        this.logger.warn(`Could not send '${purpose}' email to user with email '${to}'`);
         console.log(err);
       });
   }

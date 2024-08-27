@@ -1,33 +1,32 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-
-import { UsersModule } from './users/users.module';
-import { AuthService } from './auth/auth.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersService } from './users/users.service';
-import { TokenService } from './token/token.service';
-import { TokenModule } from './token/token.module';
+import { HttpModule } from '@nestjs/axios';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config/dist';
 import { APP_GUARD } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
+import { redisStore } from 'cache-manager-redis-yet';
+import { RedisClientOptions } from 'redis';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { JwtTokenService } from './auth/jwt-token.service';
+import { ConfigKey } from './common/enums/config-key.enum';
 import { AuthGuard } from './common/guards/auth.guard';
+import { LogGuard } from './common/guards/log.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { EmailModule } from './email/email.module';
 import { EmailService } from './email/email.service';
-import { ConfigKey } from './common/enums/config-key.enum';
-import { HttpModule } from '@nestjs/axios';
-import { LogGuard } from './common/guards/log.guard';
-import { JwtTokenService } from './auth/jwt-token.service';
-import { CacheModule } from '@nestjs/cache-manager';
-import { RedisClientOptions } from 'redis';
-import { redisStore } from 'cache-manager-redis-yet';
-import { PredictionModule } from './prediction/prediction.module';
 import { FeedbackModule } from './feedback/feedback.module';
-import { PaymentsModule } from './payments/payments.module';
-import { NewsSearchModule } from './news-search/news-search.module';
 import { MigrationsModule } from './migrations/migrations.module';
+import { NewsSearchModule } from './news-search/news-search.module';
+import { PaymentsModule } from './payments/payments.module';
+import { PredictionModule } from './prediction/prediction.module';
+import { TokenModule } from './token/token.module';
+import { TokenService } from './token/token.service';
+import { UsersModule } from './users/users.module';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [

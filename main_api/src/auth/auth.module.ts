@@ -1,21 +1,16 @@
+import { MailerModule } from '@nestjs-modules/mailer';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
+import { EmailModule } from 'src/email/email.module';
+import { TokenModule } from 'src/token/token.module';
+import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
-import { TokenModule } from 'src/token/token.module';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { EmailModule } from 'src/email/email.module';
 import { JwtTokenService } from './jwt-token.service';
-import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   controllers: [AuthController],
   providers: [JwtTokenService, AuthService],
-  imports: [
-    UsersModule,
-    TokenModule,
-    MailerModule,
-    EmailModule,
-  ],
+  imports: [UsersModule, TokenModule, MailerModule, EmailModule],
 })
 export class AuthModule {}

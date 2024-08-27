@@ -1,16 +1,14 @@
-import { forwardRef, Module } from "@nestjs/common";
-import { FeedbackService } from "./feedback.service";
-import { FeedbackController } from "./feedback.controller";
-import { MongooseModule } from "@nestjs/mongoose";
-import { Feedback, FeedbackSchema } from "./feedback.schema";
-import { PredictionModule } from "src/prediction/prediction.module";
+import { Module, forwardRef } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PredictionModule } from 'src/prediction/prediction.module';
+import { FeedbackController } from './feedback.controller';
+import { Feedback, FeedbackSchema } from './feedback.schema';
+import { FeedbackService } from './feedback.service';
 
 @Module({
   imports: [
     forwardRef(() => PredictionModule),
-    MongooseModule.forFeature([
-      { name: Feedback.name, schema: FeedbackSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Feedback.name, schema: FeedbackSchema }]),
   ],
   providers: [FeedbackService],
   controllers: [FeedbackController],

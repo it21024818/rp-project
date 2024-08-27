@@ -1,17 +1,17 @@
-import { BadRequestException, forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
-import { PageRequest } from 'src/common/dtos/page-request.dto';
-import { PredictionFeignClient } from './prediction.feign';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Prediction, PredictionDocument } from './prediction.schema';
 import { Model } from 'mongoose';
-import ErrorMessage from 'src/common/enums/error-message.enum';
-import { PredictionUtil } from './prediction.util';
-import { FeedbackService } from 'src/feedback/feedback.service';
+import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { PredictionResult } from 'src/common/dtos/prediction-result.dto';
+import ErrorMessage from 'src/common/enums/error-message.enum';
+import { PredictionStatus } from 'src/common/enums/prediction-status.enum';
+import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { FeedbackService } from 'src/feedback/feedback.service';
 import { NewsSearchService } from 'src/news-search/news-search.service';
 import { SearchResult } from 'src/news-search/search-result';
-import { PredictionStatus } from 'src/common/enums/prediction-status.enum';
+import { PredictionFeignClient } from './prediction.feign';
+import { Prediction, PredictionDocument } from './prediction.schema';
+import { PredictionUtil } from './prediction.util';
 
 @Injectable()
 export class PredictionService {

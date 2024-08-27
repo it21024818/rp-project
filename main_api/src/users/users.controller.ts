@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Body, Post, Delete, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
-import { UsersService } from './users.service';
+import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ValidateEmailPipe } from 'src/common/pipes/validate-email.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
-import { UserRole } from 'src/common/enums/user-roles.enum';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {

@@ -1,19 +1,17 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Token, TokenDocument } from './token.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { v4 as uuid } from 'uuid';
+import ErrorMessage from 'src/common/enums/error-message.enum';
 import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
 import { TokenStatus } from 'src/common/enums/token-status.enum';
-import ErrorMessage from 'src/common/enums/error-message.enum';
+import { v4 as uuid } from 'uuid';
+import { Token, TokenDocument } from './token.schema';
 
 @Injectable()
 export class TokenService {
   private readonly logger = new Logger(TokenService.name);
 
-  constructor(
-    @InjectModel(Token.name) private readonly tokenModel: Model<Token>,
-  ) {}
+  constructor(@InjectModel(Token.name) private readonly tokenModel: Model<Token>) {}
 
   async createSignUpToken(email: string): Promise<TokenDocument> {
     return await this.createTokenOfPurpose(email, TokenPurpose.SIGN_UP);
@@ -32,9 +30,7 @@ export class TokenService {
   }
 
   async claimToken(code: string, tokenPurpose: TokenPurpose) {
-    this.logger.log(
-      `Attempting to claim '${tokenPurpose}' token with code '${code}'`,
-    );
+    this.logger.log(`Attempting to claim '${tokenPurpose}' token with code '${code}'`);
 
     const token = await this.tokenModel.findOne({
       code,
@@ -42,9 +38,7 @@ export class TokenService {
     });
 
     if (token === null) {
-      this.logger.warn(
-        `Could not find '${tokenPurpose}' token with code '${code}'`,
-      );
+      this.logger.warn(`Could not find '${tokenPurpose}' token with code '${code}'`);
       throw new BadRequestException(ErrorMessage.TOKEN_NOT_FOUND);
     }
 
@@ -53,27 +47,20 @@ export class TokenService {
     return savedToken.toJSON();
   }
 
-  private async revokeAllTokensOfPurpose(
-    email: string,
-    tokenPurpose: TokenPurpose,
-  ) {
-    this.logger.log(
-      `Revoking all ${tokenPurpose} tokens for user with email '${email}'`,
-    );
+  private async revokeAllTokensOfPurpose(email: string, tokenPurpose: TokenPurpose) {
+    this.logger.log(`Revoking all ${tokenPurpose} tokens for user with email '${email}'`);
     const revokedTokens = await this.tokenModel.find({
       email,
       tokenPurpose,
       tokenStatus: TokenStatus.ACTIVE,
     });
     await Promise.all(
-      revokedTokens.map(async (token) => {
+      revokedTokens.map(async token => {
         token.tokenStatus = TokenStatus.REVOKED;
         await token.save();
       }),
     );
-    this.logger.log(
-      `Succesfully revoked all ${tokenPurpose} tokens for user with email '${email}'`,
-    );
+    this.logger.log(`Succesfully revoked all ${tokenPurpose} tokens for user with email '${email}'`);
   }
 
   private async createTokenOfPurpose(email: string, purpose: TokenPurpose) {

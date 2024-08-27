@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { NewsSearchService } from './news-search.service';
 import { ConfigModule } from '@nestjs/config';
+import { NewsSearchService } from './news-search.service';
 
 @Module({
   providers: [NewsSearchService],

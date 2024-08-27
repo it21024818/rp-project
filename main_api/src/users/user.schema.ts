@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { FlattenMaps, HydratedDocument, Model } from 'mongoose';
-import { UserRole } from '../common/enums/user-roles.enum';
 import { Audit } from 'src/common/schema/audit.schema';
+import { UserRole } from '../common/enums/user-roles.enum';
 import { Subscription } from './subscription.class';
 
 export type UserDocument = HydratedDocument<User>;
@@ -27,7 +27,7 @@ export class User extends Audit {
     validate: {
       message: (arr: any) => `${arr} is not a valid UserRole enum array`,
       validator: (arr: string[]) => {
-        return arr.every((val) => Object.values(UserRole).includes(val as UserRole));
+        return arr.every(val => Object.values(UserRole).includes(val as UserRole));
       },
     },
   })
@@ -37,10 +37,10 @@ export class User extends Audit {
   isAuthorized: boolean;
 
   @Prop()
-  subscription: Subscription;
+  subscription?: Subscription;
 
   @Prop()
-  stripeCustomerId: string;
+  stripeCustomerId?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,20 +1,14 @@
-import {
-  BadRequestException,
-  forwardRef,
-  Inject,
-  Injectable,
-  Logger,
-} from "@nestjs/common";
-import { Feedback, FeedbackDocument } from "./feedback.schema";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import ErrorMessage from "src/common/enums/error-message.enum";
-import { MongooseUtil } from "src/common/util/mongoose.util";
-import { PageRequest } from "src/common/dtos/page-request.dto";
-import { FlatUser } from "src/users/user.schema";
-import { PredictionService } from "src/prediction/prediction.service";
-import { FeedbackDetails } from "src/common/dtos/feedback-details.dto";
-import { Reaction } from "src/common/enums/reaction.enum";
+import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { FeedbackDetails } from 'src/common/dtos/feedback-details.dto';
+import { PageRequest } from 'src/common/dtos/page-request.dto';
+import ErrorMessage from 'src/common/enums/error-message.enum';
+import { Reaction } from 'src/common/enums/reaction.enum';
+import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { PredictionService } from 'src/prediction/prediction.service';
+import { FlatUser } from 'src/users/user.schema';
+import { Feedback, FeedbackDocument } from './feedback.schema';
 
 @Injectable()
 export class FeedbackService {
@@ -24,7 +18,7 @@ export class FeedbackService {
     @Inject(forwardRef(() => PredictionService))
     private predictionService: PredictionService,
     @InjectModel(Feedback.name)
-    private readonly feedbackModel: Model<Feedback>
+    private readonly feedbackModel: Model<Feedback>,
   ) {}
 
   async getFeedback(id: string) {
@@ -65,11 +59,9 @@ export class FeedbackService {
     feedback: FeedbackDetails,
     reaction: Reaction,
     predictionId: string,
-    userId: string
+    userId: string,
   ): Promise<FeedbackDocument> {
-    this.logger.log(
-      `Creating new Feedback record from user ${userId} for prediction ${predictionId}`
-    );
+    this.logger.log(`Creating new Feedback record from user ${userId} for prediction ${predictionId}`);
 
     this.predictionService.getPrediction(predictionId);
     this.logger.log(`Validating prediction ${predictionId} exists`);
@@ -79,9 +71,7 @@ export class FeedbackService {
       createdBy: userId,
     });
     if (feedbackMatch) {
-      this.logger.warn(
-        `Feedback ${feedbackMatch.id} has already been left by user ${userId}`
-      );
+      this.logger.warn(`Feedback ${feedbackMatch.id} has already been left by user ${userId}`);
       throw new BadRequestException(ErrorMessage.FEEDBACK_ALREADY_EXISTS, {
         description: `Feedback ${feedbackMatch.id} has already been left by user ${userId}`,
       });
@@ -99,19 +89,12 @@ export class FeedbackService {
     return savedFeedback;
   }
 
-  async updateFeedback(
-    id: string,
-    reaction: Reaction,
-    feedback: FeedbackDetails,
-    userId: string
-  ) {
+  async updateFeedback(id: string, reaction: Reaction, feedback: FeedbackDetails, userId: string) {
     this.logger.log(`Updating feedback record ${id}`);
 
     const existingFeedback = await this.getFeedback(id);
     if (existingFeedback.createdBy != userId) {
-      this.logger.warn(
-        `Feedback ${existingFeedback.id} does not belong to user ${userId}`
-      );
+      this.logger.warn(`Feedback ${existingFeedback.id} does not belong to user ${userId}`);
       throw new BadRequestException(ErrorMessage.OWNERSHIP_NOT_VERIFIED, {
         description: `Feedback ${existingFeedback.id} does not belong to user ${userId}`,
       });
