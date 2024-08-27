@@ -7,7 +7,6 @@ import ErrorMessage from 'src/common/enums/error-message.enum';
 import { Reaction } from 'src/common/enums/reaction.enum';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
 import { PredictionService } from 'src/prediction/prediction.service';
-import { FlatUser } from 'src/users/user.schema';
 import { Feedback, FeedbackDocument } from './feedback.schema';
 
 @Injectable()

@@ -35,6 +35,7 @@ const ErrorMessage = {
   USER_ALREADY_ADMIN: 'User already admin',
   USER_NOT_ADMIN: 'User not admin',
   INVALID_OPERATOR_OR_VALUE_FOR_FIELD: 'Invalid operator or value for field',
+  CONFIG_ERROR: 'Config error',
 } as const;
 
 export default ErrorMessage;

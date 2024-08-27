@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { readFile } from 'fs/promises';
 import { KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
 import { join } from 'path';
 import { Audience } from 'src/common/enums/audience.enum';
+import ErrorMessage from 'src/common/enums/error-message.enum';
 
 @Injectable()
 export class JwtTokenService {
@@ -65,7 +66,12 @@ export class JwtTokenService {
       algorithms: [this.keyAlgorithm],
       audience: Object.values(Audience),
     });
-    return payload.sub!;
+    if (!payload.sub) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Access token does not contain a subject',
+      });
+    }
+    return payload.sub;
   }
 
   async verifyRefreshToken(token: string): Promise<string> {
@@ -76,7 +82,12 @@ export class JwtTokenService {
       algorithms: [this.keyAlgorithm],
       audience: Object.values(Audience),
     });
-    return payload.sub!;
+    if (!payload.sub) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Refresh token does not contain a subject',
+      });
+    }
+    return payload.sub;
   }
 
   private async loadKey(path: string, isPrivate?: boolean) {

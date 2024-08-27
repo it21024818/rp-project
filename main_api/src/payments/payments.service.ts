@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
@@ -21,7 +21,13 @@ export class PaymentsService {
     @InjectModel(Plan.name)
     private readonly planModel: Model<Plan>,
   ) {
-    this.stripe = new Stripe(configService.get(ConfigKey.STRIPE_PRIVATE_KEY)!, {
+    const stripeKey = configService.get(ConfigKey.STRIPE_PRIVATE_KEY);
+    if (!stripeKey) {
+      throw new InternalServerErrorException(ErrorMessage.CONFIG_ERROR, {
+        description: 'Stripe private key not found',
+      });
+    }
+    this.stripe = new Stripe(stripeKey, {
       apiVersion: '2024-06-20',
     });
   }

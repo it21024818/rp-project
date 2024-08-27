@@ -92,9 +92,9 @@ export class PredictionService {
           `Found exactly similar prediction ${existingPrediction.id} for prediction ${savedPrediction.id}`,
         );
         sourcePredictionId = existingPrediction.id;
-        transformedResult = existingPrediction.result!;
-        searchResults = existingPrediction.searchResults!;
-        keywords = existingPrediction.keywords!;
+        transformedResult = existingPrediction.result ?? ({} as PredictionResult);
+        searchResults = existingPrediction.searchResults ?? [];
+        keywords = existingPrediction.keywords ?? [];
       } else {
         this.logger.log(`No similar prediction found for prediction ${savedPrediction.id}. Starting prediction job`);
 

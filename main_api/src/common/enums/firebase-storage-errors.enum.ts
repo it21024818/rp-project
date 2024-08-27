@@ -4,3 +4,5 @@ const StorageError = {
   UNAUTHENTICATED: 'storage/unauthenticated',
   UNAUTHORIZED: 'storage/unauthorized',
 } as const;
+
+export type StorageError = keyof typeof StorageError;

@@ -90,7 +90,7 @@ export class AuthService {
       };
       await this.cacheManager.set(existingUser.id, tokenFamily);
 
-      const { password: userPassword, ...sanitizedUser } = existingUser.toJSON();
+      const { password: _userPassword, ...sanitizedUser } = existingUser.toJSON();
       return { tokens: { accessToken, refreshToken }, user: sanitizedUser };
     } catch (error) {
       this.logger.warn(`Failed to login user with email '${email}'`);

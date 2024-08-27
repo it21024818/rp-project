@@ -1,14 +1,11 @@
-import { BadRequestException, ConflictException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
-import { UserRole } from 'src/common/enums/user-roles.enum';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
-import { Page, PageUtil } from 'src/common/util/page.util';
-import { FlatUser, User, UserDocument } from './user.schema';
+import { User, UserDocument } from './user.schema';
 
 @Injectable()
 export class UsersService {

@@ -5,7 +5,6 @@ import { CreatePredictionDto } from 'src/common/dtos/create-prediction-dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
-import { FlatUser } from 'src/users/user.schema';
 import { PredictionService } from './prediction.service';
 
 @Controller('predictions')

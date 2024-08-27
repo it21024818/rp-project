@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { UserRole } from 'src/common/enums/user-roles.enum';
-import { ValidateEmailPipe } from 'src/common/pipes/validate-email.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { UsersService } from './users.service';
 
@@ -17,7 +16,7 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id', ValidateObjectIdPipe) id: string) {
-    const { password, ...user } = (await this.usersService.getUser(id)).toJSON();
+    const { password: _password, ...user } = (await this.usersService.getUser(id)).toJSON();
     return user;
   }
 

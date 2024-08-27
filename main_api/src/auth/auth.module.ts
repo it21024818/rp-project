@@ -1,5 +1,4 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { EmailModule } from 'src/email/email.module';
 import { TokenModule } from 'src/token/token.module';

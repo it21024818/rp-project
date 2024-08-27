@@ -50,10 +50,10 @@ import { UsersService } from './users/users.service';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         store: await redisStore({
-          ttl: parseInt(configService.get(ConfigKey.CACHE_TTL)!),
+          ttl: parseInt(configService.get(ConfigKey.CACHE_TTL) ?? 'invalid'),
           socket: {
-            host: configService.get(ConfigKey.REDIS_HOST)!,
-            port: parseInt(configService.get(ConfigKey.REDIS_PORT)!),
+            host: configService.get(ConfigKey.REDIS_HOST) ?? 'invalid',
+            port: parseInt(configService.get(ConfigKey.REDIS_PORT) ?? 'invalid'),
           },
         }),
       }),

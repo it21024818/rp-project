@@ -1,18 +1,9 @@
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Inject,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { isUndefined } from 'lodash';
 import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { UsersService } from 'src/users/users.service';
-import ErrorMessage from '../enums/error-message.enum';
 import { TokenFamily } from '../schema/tokenFamily.schema';
 
 @Injectable()

@@ -5,7 +5,6 @@ import { CreateFeedbackDto } from 'src/common/dtos/create-feedback-dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
-import { FlatUser } from 'src/users/user.schema';
 import { FeedbackService } from './feedback.service';
 
 @Controller('feedback')

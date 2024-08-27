@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { FlattenMaps, HydratedDocument, Model } from 'mongoose';
+import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
 import { Frequency } from 'src/common/enums/frequency.enum';
 import { Audit } from 'src/common/schema/audit.schema';
 
