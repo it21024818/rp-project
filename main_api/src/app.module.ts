@@ -27,6 +27,7 @@ import { TokenModule } from './token/token.module';
 import { TokenService } from './token/token.service';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
+import { OauthModule } from './oauth/oauth.module';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { UsersService } from './users/users.service';
     PaymentsModule,
     NewsSearchModule,
     MigrationsModule,
+    OauthModule,
   ],
   providers: [
     AuthService,

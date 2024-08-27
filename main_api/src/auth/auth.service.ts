@@ -99,6 +99,33 @@ export class AuthService {
     }
   }
 
+  async loginUserWithoutPassword(email: string): Promise<LoginDto> {
+    try {
+      const existingUser = await this.usersService.getUserByEmail(email);
+
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwtTokenService.getAccessToken(existingUser.id),
+        this.jwtTokenService.getRefreshToken(existingUser.id),
+      ]);
+
+      const tokenFamily: TokenFamily = {
+        userId: existingUser.id,
+        activeAccessToken: accessToken,
+        activeRefreshToken: refreshToken,
+        oldAccessTokens: [],
+        oldRefreshTokens: [],
+      };
+      await this.cacheManager.set(existingUser.id, tokenFamily);
+
+      const { password: _userPassword, ...sanitizedUser } = existingUser.toJSON();
+      return { tokens: { accessToken, refreshToken }, user: sanitizedUser };
+    } catch (error) {
+      this.logger.warn(`Failed to login user with email '${email}'`);
+      console.log(error);
+      throw new BadRequestException(ErrorMessage.INVALID_CREDENTIALS);
+    }
+  }
+
   async registerUser(userDto: CreateUserDto) {
     const existingUser = await this.userModel.findOne({ email: userDto.email });
     if (existingUser !== null) {
@@ -111,6 +138,19 @@ export class AuthService {
     createdUser.isAuthorized = false;
     const savedUser = await createdUser.save();
     this.sendRegistrationMail(userDto.email);
+    return savedUser;
+  }
+
+  async registerOAuthUser(userDto: Partial<CreateUserDto>) {
+    const existingUser = await this.userModel.findOne({ email: userDto.email });
+    if (existingUser !== null) {
+      this.logger.warn(`Attempted register but user with email '${userDto.email}' already exists`);
+      throw new BadRequestException(ErrorMessage.USER_ALREADY_EXISTS);
+    }
+    const createdUser = new this.userModel(userDto);
+    createdUser.roles = [UserRole.ADMIN];
+    createdUser.isAuthorized = true;
+    const savedUser = await createdUser.save();
     return savedUser;
   }
 

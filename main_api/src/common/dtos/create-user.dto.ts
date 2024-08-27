@@ -15,13 +15,5 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  region: string;
-
-  @IsString()
-  @IsNotEmpty()
-  country: string;
-
-  @IsString()
-  @IsNotEmpty()
   password: string;
 }
