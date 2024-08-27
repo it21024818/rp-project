@@ -1,16 +1,20 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { customsearch } from "@googleapis/customsearch";
 import { SearchResult } from "./search-result";
+import { ConfigService } from "@nestjs/config";
+import { ConfigKey } from "src/common/enums/config-key.enum";
 
 @Injectable()
 export class NewsSearchService {
   private readonly logger = new Logger(NewsSearchService.name);
 
+  constructor(private readonly configServce: ConfigService) {}
+
   async performSearch(search: string): Promise<SearchResult[]> {
     this.logger.log(`Performing search for query '${search}'`);
     const response = await customsearch({ version: "v1" }).cse.list({
-      auth: "",
-      cx: "",
+      auth: this.configServce.get(ConfigKey.GOOGLE_API_KEY),
+      cx: this.configServce.get(ConfigKey.GOOGLE_CUSTOM_SEARCH_ENGINE_ID),
       q: search,
       num: 5,
     });
