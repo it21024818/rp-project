@@ -12,6 +12,7 @@ import { PredictionResult } from 'src/common/dtos/prediction-result.dto';
 import { NewsSearchService } from 'src/news-search/news-search.service';
 import { SearchResult } from 'src/news-search/search-result';
 import { PredictionStatus } from 'src/common/enums/prediction-status.enum';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PredictionService {

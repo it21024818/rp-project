@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { InjectModel } from "@nestjs/mongoose";
-import { ConfigKey } from "src/common/enums/config-key.enum";
-import Stripe from "stripe";
-import { Plan } from "./plan.schema";
-import { Model } from "mongoose";
-import { Request } from "express";
-import { StripeEvent } from "src/common/enums/stripe-events.enum";
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/mongoose';
+import { ConfigKey } from 'src/common/enums/config-key.enum';
+import Stripe from 'stripe';
+import { Plan } from './plan.schema';
+import { Model } from 'mongoose';
+import { Request } from 'express';
+import { StripeEvent } from 'src/common/enums/stripe-events.enum';
+import { UsersService } from 'src/users/users.service';
+import ErrorMessage from 'src/common/enums/error-message.enum';
 
 @Injectable()
 export class PaymentsService {
@@ -14,40 +16,69 @@ export class PaymentsService {
   private readonly logger = new Logger(PaymentsService.name);
 
   constructor(
+    private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     @InjectModel(Plan.name)
-    private readonly planModel: Model<Plan>
+    private readonly planModel: Model<Plan>,
   ) {
     this.stripe = new Stripe(configService.get(ConfigKey.STRIPE_PRIVATE_KEY)!, {
-      apiVersion: "2024-06-20",
+      apiVersion: '2024-06-20',
     });
   }
 
-  async createCheckoutSession(planId: string) {
+  private async getCustomer(userId: string): Promise<Stripe.Customer> {
+    this.logger.log(`Fetching customer for user ${userId}...`);
+    const user = await this.usersService.getUser(userId);
+    let customer: Stripe.Customer;
+    if (user.stripeCustomerId) {
+      this.logger.log(
+        `Customer already exists for user ${userId}. Fetching customer details for id ${user.stripeCustomerId}...`,
+      );
+      const customerResponse = await this.stripe.customers.retrieve(user.stripeCustomerId);
+      if (customerResponse.deleted) {
+        throw new BadRequestException(ErrorMessage.CUSTOMER_DELETED, {
+          description: `Customer for user ${userId}  has been deleted`,
+        });
+      }
+      customer = customerResponse;
+    } else {
+      this.logger.warn(`Customer not found. Creating new customer for user ${userId}...`);
+      customer = await this.stripe.customers.create({
+        email: user.email,
+        name: `${user.firstName} ${user.lastName}`,
+        metadata: {
+          userId: userId,
+        },
+      });
+      user.stripeCustomerId = customer.id;
+      await user.save();
+    }
+    return customer;
+  }
+
+  async createCheckoutSession(planId: string, userId: string) {
     const plan = await this.planModel.findById(planId);
+    const customer = await this.getCustomer(userId);
     const session = await this.stripe.checkout.sessions.create({
-      billing_address_collection: "auto",
+      billing_address_collection: 'auto',
       line_items: [
         {
           price: plan?.stripeId,
           quantity: 1,
         },
       ],
-      mode: "subscription",
+      customer: customer.id,
+      mode: 'subscription',
       success_url: `${this.configService.get(
-        ConfigKey.WEB_APP_BASE_URL
+        ConfigKey.WEB_APP_BASE_URL,
       )}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${this.configService.get(
-        ConfigKey.WEB_APP_BASE_URL
-      )}?canceled=true`,
+      cancel_url: `${this.configService.get(ConfigKey.WEB_APP_BASE_URL)}?canceled=true`,
     });
     return session;
   }
 
   async createPortalSession(sessionId: string) {
-    const checkoutSession = await this.stripe.checkout.sessions.retrieve(
-      sessionId
-    );
+    const checkoutSession = await this.stripe.checkout.sessions.retrieve(sessionId);
     const portalSession = await this.stripe.billingPortal.sessions.create({
       customer: checkoutSession.customer as string,
       return_url: `${this.configService.get(ConfigKey.WEB_APP_BASE_URL)}`,
@@ -56,66 +87,43 @@ export class PaymentsService {
   }
 
   async handleStripeEvent(request: Request) {
-    const endpointSecret = this.configService.get(
-      ConfigKey.STRIPE_WEBHOOK_ENDPOINT_SECRET
-    );
+    const endpointSecret = this.configService.get(ConfigKey.STRIPE_WEBHOOK_ENDPOINT_SECRET);
     let event = request.body;
     if (endpointSecret) {
-      const signature = request.headers["stripe-signature"] as string;
+      const signature = request.headers['stripe-signature'] as string;
       try {
-        event = this.stripe.webhooks.constructEvent(
-          request.body,
-          signature,
-          endpointSecret
-        ) as Stripe.Event;
+        event = this.stripe.webhooks.constructEvent(request.body, signature, endpointSecret) as Stripe.Event;
       } catch (err) {
-        this.logger.warn(
-          `⚠️  Webhook signature verification failed. Received ${signature}`,
-          err.message
-        );
+        this.logger.warn(`⚠️  Webhook signature verification failed. Received ${signature}`, err.message);
         throw new BadRequestException();
       }
     }
 
+    this.logger.log(`Received stripe event ${event.type}`);
     switch (event.type) {
-      case StripeEvent.CUSTOMER_SUBSCRIPTION_TRIAL_WILL_END:
-        await this.handleCustomerSubscriptionWillEnd(event.data.object);
-        break;
       case StripeEvent.CUSTOMER_SUBSCRIPTION_DELETED:
-        await this.handleCustomerSubscriptionDeleted(event.data.object);
-        break;
       case StripeEvent.CUSTOMER_SUBSCRIPTION_CREATED:
-        await this.handleCustomerSubscriptionCreated(event.data.object);
-        break;
-      case StripeEvent.ENTITLEMENTS_ACTIVE_ENTITLEMENT_SUMMARY_UPDATED:
-        await this.handleEntitlementSummaryUpdated(event.data.object);
-        break;
       case StripeEvent.CUSTOMER_SUBSCRIPTION_UPDATE:
+      case StripeEvent.CUSTOMER_SUBSCRIPTION_PAUSED:
+      case StripeEvent.CUSTOMER_SUBSCRIPTION_RESUMED:
         await this.handleCustomerSubscriptionUpdated(event.data.object);
         break;
       default:
-        this.logger.warn(`Unhandled event type ${event.type}.`);
+        this.logger.warn(`Skipping unhandled stripe event type ${event.type}.`);
         break;
     }
   }
 
-  private async handleCustomerSubscriptionCreated(
-    subscription: Stripe.Subscription
-  ) {}
-
-  private async handleCustomerSubscriptionDeleted(
-    subscription: Stripe.Subscription
-  ) {}
-
-  private async handleEntitlementSummaryUpdated(
-    subscription: Stripe.Subscription
-  ) {}
-
-  private async handleCustomerSubscriptionWillEnd(
-    subscription: Stripe.Subscription
-  ) {}
-
-  private async handleCustomerSubscriptionUpdated(
-    subscription: Stripe.Subscription
-  ) {}
+  private async handleCustomerSubscriptionUpdated(subscription: Stripe.Subscription) {
+    const user = await this.usersService.getUserByStripeCustomerId(subscription.customer as string);
+    const planId = subscription.items.data[0].price.id as string;
+    user.subscription = {
+      id: subscription.id,
+      status: subscription.status,
+      planId: planId,
+      startedTs: new Date(subscription.current_period_start),
+      endingTs: new Date(subscription.current_period_end),
+    };
+    await user.save();
+  }
 }
