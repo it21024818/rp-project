@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { readFile } from 'fs/promises';
 import { KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
 import { join } from 'path';
+import { Audience } from 'src/common/enums/audience.enum';
 
 @Injectable()
 export class JwtTokenService {
@@ -19,12 +20,7 @@ export class JwtTokenService {
 
   private async setup() {
     this.logger.log('Setting up private and public keys...');
-    const [
-      accessPrivateKey,
-      accessPublicKey,
-      refreshPrivateKey,
-      refreshPublicKey,
-    ] = await Promise.all([
+    const [accessPrivateKey, accessPublicKey, refreshPrivateKey, refreshPublicKey] = await Promise.all([
       this.loadKey('./assets/certs/access-private-key.pem', true),
       this.loadKey('./assets/certs/access-public-key.pem'),
       this.loadKey('./assets/certs/refresh-private-key.pem', true),
@@ -43,6 +39,7 @@ export class JwtTokenService {
       .setIssuedAt()
       .setSubject(id)
       .setIssuer(this.issuer)
+      .setAudience(Object.values(Audience))
       .setExpirationTime('2h')
       .setProtectedHeader({ alg: this.keyAlgorithm })
       .sign(this.accessPrivateKey);
@@ -54,6 +51,7 @@ export class JwtTokenService {
       .setIssuedAt()
       .setSubject(id)
       .setIssuer(this.issuer)
+      .setAudience(Object.values(Audience))
       .setExpirationTime('7d')
       .setProtectedHeader({ alg: this.keyAlgorithm })
       .sign(this.refreshPrivateKey);
@@ -65,6 +63,7 @@ export class JwtTokenService {
       issuer: this.issuer,
       requiredClaims: ['sub'],
       algorithms: [this.keyAlgorithm],
+      audience: Object.values(Audience),
     });
     return payload.sub!;
   }
@@ -73,8 +72,9 @@ export class JwtTokenService {
     this.logger.log(`Verifying refresh token '${token}'...`);
     const { payload } = await jwtVerify(token, this.refreshPublicKey, {
       issuer: this.issuer,
-      requiredClaims: ['sub'],
+      requiredClaims: ['sub', 'aud'],
       algorithms: [this.keyAlgorithm],
+      audience: Object.values(Audience),
     });
     return payload.sub!;
   }
