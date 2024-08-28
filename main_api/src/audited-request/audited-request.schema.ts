@@ -3,7 +3,6 @@ import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
 import { Audit } from 'src/common/schema/audit.schema';
 
 export type AuditedRequestDocument = HydratedDocument<AuditedRequest>;
-export type AuditedRequestModel = Model<AuditedRequest>;
 export type FlatAuditedRequest = FlattenMaps<AuditedRequest & { _id: string }>;
 
 @Schema({ collection: 'audited-requests' })

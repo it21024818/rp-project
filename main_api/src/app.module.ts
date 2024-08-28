@@ -40,6 +40,7 @@ import { UsersService } from './users/users.service';
     TokenModule,
     EmailModule,
     HttpModule,
+    AuditedRequestModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -97,7 +98,6 @@ import { UsersService } from './users/users.service';
     MigrationsModule,
     OauthModule,
     NewsSourceModule,
-    AuditedRequestModule,
   ],
   providers: [
     AuthService,

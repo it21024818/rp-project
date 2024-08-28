@@ -1,9 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request, Response } from 'express';
+import { Model } from 'mongoose';
 import DeviceDetector from 'node-device-detector';
 import DeviceHelper from 'node-device-detector/helper';
-import { AuditedRequest, AuditedRequestModel } from './audited-request.schema';
+import { Prediction } from 'src/prediction/prediction.schema';
+import { AuditedRequest } from './audited-request.schema';
 
 @Injectable()
 export class AuditedRequestService {
@@ -17,7 +19,7 @@ export class AuditedRequestService {
     maxUserAgentSize: 500,
   });
 
-  // constructor(@InjectModel(AuditedRequest.name) private readonly auditedRequestModel: AuditedRequestModel) {}
+  constructor(@InjectModel(AuditedRequest.name) private auditedRequestModel: Model<AuditedRequest>) {}
 
   async createAuditedRequest(request: Request, response: Response) {
     const userAgent = request.headers['user-agent'];
@@ -29,11 +31,11 @@ export class AuditedRequestService {
 
     const detectionResult = this.detector.detect(userAgent);
     const deviceType = DeviceHelper.getDeviceType(detectionResult);
-    // return await new this.auditedRequestModel({
-    //   endpoint: request.baseUrl + request.path,
-    //   request,
-    //   response,
-    //   origin: `${host} ${deviceType}`,
-    // }).save();
+    return await new this.auditedRequestModel({
+      endpoint: request.baseUrl + request.path,
+      request,
+      response,
+      origin: `${host} ${deviceType}`,
+    }).save();
   }
 }
