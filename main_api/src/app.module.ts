@@ -5,10 +5,13 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config/dist';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { redisStore } from 'cache-manager-redis-yet';
 import { RedisClientOptions } from 'redis';
+import { AuditedRequestInterceptor } from './audited-request/audited-request.interceptor';
+import { AuditedRequestModule } from './audited-request/audited-request.module';
+import { AuditedRequestService } from './audited-request/audited-request.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { JwtTokenService } from './auth/jwt-token.service';
@@ -94,6 +97,7 @@ import { UsersService } from './users/users.service';
     MigrationsModule,
     OauthModule,
     NewsSourceModule,
+    AuditedRequestModule,
   ],
   providers: [
     AuthService,
@@ -101,6 +105,7 @@ import { UsersService } from './users/users.service';
     TokenService,
     EmailService,
     JwtTokenService,
+    AuditedRequestService,
     {
       provide: APP_GUARD,
       useClass: LogGuard,
@@ -112,6 +117,10 @@ import { UsersService } from './users/users.service';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditedRequestInterceptor,
     },
   ],
 })
