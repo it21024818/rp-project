@@ -1,6 +1,5 @@
-import { Controller, Get, Injectable, Logger, Post, Query, Res } from '@nestjs/common';
+import { Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { OAuth2Client } from 'google-auth-library';
 import { GoogleService } from './google.service';
 
 @Controller('/auth/oauth/google')

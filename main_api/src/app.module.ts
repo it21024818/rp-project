@@ -21,14 +21,14 @@ import { EmailService } from './email/email.service';
 import { FeedbackModule } from './feedback/feedback.module';
 import { MigrationsModule } from './migrations/migrations.module';
 import { NewsSearchModule } from './news-search/news-search.module';
+import { NewsSourceModule } from './news-source/news-source.module';
+import { OauthModule } from './oauth/oauth.module';
 import { PaymentsModule } from './payments/payments.module';
 import { PredictionModule } from './prediction/prediction.module';
 import { TokenModule } from './token/token.module';
 import { TokenService } from './token/token.service';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
-import { OauthModule } from './oauth/oauth.module';
-import { NewsSourceModule } from './news-source/news-source.module';
 
 @Module({
   imports: [

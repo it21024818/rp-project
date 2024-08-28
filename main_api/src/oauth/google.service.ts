@@ -78,6 +78,6 @@ export class GoogleService {
       existingUser = await this.authService.registerOAuthUser({ email, firstName, lastName });
     }
 
-    return await this.authService.loginUserWithoutPassword(email);
+    return await this.authService.loginUserWithoutPassword(existingUser.email);
   }
 }
