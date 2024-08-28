@@ -6,5 +6,6 @@ import { AuditedRequestService } from './audited-request.service';
 @Module({
   imports: [MongooseModule.forFeature([{ name: AuditedRequest.name, schema: AuditedRequestSchema }])],
   providers: [AuditedRequestService],
+  exports: [MongooseModule, AuditedRequestService], // If we dont export this the DI fails
 })
 export class AuditedRequestModule {}

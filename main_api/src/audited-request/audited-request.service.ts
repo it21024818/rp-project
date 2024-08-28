@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import { Model } from 'mongoose';
 import DeviceDetector from 'node-device-detector';
 import DeviceHelper from 'node-device-detector/helper';
-import { Prediction } from 'src/prediction/prediction.schema';
 import { AuditedRequest } from './audited-request.schema';
 
 @Injectable()
@@ -19,7 +18,7 @@ export class AuditedRequestService {
     maxUserAgentSize: 500,
   });
 
-  constructor(@InjectModel(AuditedRequest.name) private auditedRequestModel: Model<AuditedRequest>) {}
+  constructor(@InjectModel(AuditedRequest.name) private readonly auditedRequestModel: Model<AuditedRequest>) {}
 
   async createAuditedRequest(request: Request, response: Response) {
     const userAgent = request.headers['user-agent'];
