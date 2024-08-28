@@ -5,9 +5,7 @@ const ErrorMessage = {
   FEEDBACK_NOT_FOUND: 'Feedback not found',
   TOKEN_NOT_FOUND: 'Token not found',
   FILE_NOT_FOUND: 'File not found',
-  TASK_NOT_FOUND: 'Task not found',
-  SCHEDULE_NOT_FOUND: 'Schedule not found',
-  ROOM_NOT_FOUND: 'Room not found',
+  NEWS_SOURCE_NOT_FOUND: 'News source not found',
 
   // Payments
   SESSION_URL_INVALID: 'Session URL invalid',
@@ -15,10 +13,8 @@ const ErrorMessage = {
 
   // Already exists
   USER_ALREADY_EXISTS: 'User already exists',
-  TASK_ALREADY_EXISTS: 'Task already exists',
-  SCHEDULE_ALREADY_EXISTS: 'Schedule already exists',
-  ROOM_ALREADY_EXISTS: 'Room already exists',
   FEEDBACK_ALREADY_EXISTS: 'Feedback already exists',
+  NEWS_SOURCE_ALREADY_EXISTS: 'News source already exists',
 
   // Authoriztion
   OWNERSHIP_NOT_VERIFIED: 'Ownership not verified',

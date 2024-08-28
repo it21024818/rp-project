@@ -23,6 +23,8 @@ export class Prediction extends Audit {
   status?: PredictionStatus;
   @Prop()
   sourcePredictionId?: string;
+  @Prop()
+  newsSourceId?: string;
 }
 
 export const PredictionSchema = SchemaFactory.createForClass(Prediction);

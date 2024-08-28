@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigKey } from 'src/common/enums/config-key.enum';
 import { FeedbackModule } from 'src/feedback/feedback.module';
 import { NewsSearchModule } from 'src/news-search/news-search.module';
+import { NewsSearchService } from 'src/news-search/news-search.service';
 import { PredictionController } from './prediction.controller';
 import { PredictionFeignClient } from './prediction.feign';
 import { Prediction, PredictionSchema } from './prediction.schema';
@@ -13,6 +14,7 @@ import { PredictionService } from './prediction.service';
 @Module({
   imports: [
     NewsSearchModule,
+    NewsSearchService,
     forwardRef(() => FeedbackModule),
     MongooseModule.forFeature([{ name: Prediction.name, schema: PredictionSchema }]),
     HttpModule.registerAsync({

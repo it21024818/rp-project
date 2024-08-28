@@ -9,6 +9,7 @@ import { MongooseUtil } from 'src/common/util/mongoose.util';
 import { FeedbackService } from 'src/feedback/feedback.service';
 import { NewsSearchService } from 'src/news-search/news-search.service';
 import { SearchResult } from 'src/news-search/search-result';
+import { NewsSourceService } from 'src/news-source/news-source.service';
 import { PredictionFeignClient } from './prediction.feign';
 import { Prediction, PredictionDocument } from './prediction.schema';
 import { PredictionUtil } from './prediction.util';
@@ -21,6 +22,7 @@ export class PredictionService {
     @Inject(forwardRef(() => FeedbackService))
     private feedbackService: FeedbackService,
     private readonly newsSearchService: NewsSearchService,
+    private readonly newsSourceService: NewsSourceService,
     private readonly predictionFeignClient: PredictionFeignClient,
     @InjectModel(Prediction.name)
     private readonly predictionModel: Model<Prediction>,
@@ -62,13 +64,23 @@ export class PredictionService {
     this.logger.log(`Deleted prediction with id '${id}'`);
   }
 
-  async createPrediction(text: string, userId: string): Promise<PredictionDocument> {
+  async createPrediction(text: string, url: string, userId: string): Promise<PredictionDocument> {
     this.logger.log(`Creating new prediction record from user ${userId} for text ${text}`);
+
+    const domain = new URL(url).hostname;
+    let newsSource: Awaited<ReturnType<NewsSourceService['getNewsSource']>>;
+    try {
+      newsSource = await this.newsSourceService.getNewsSourceByIdentification(domain);
+    } catch (error) {
+      newsSource = await this.newsSourceService.createNewsSourceByDomain(domain, userId);
+    }
+
     const newPrediction: Prediction = {
       status: PredictionStatus.STARTED,
       text,
       createdAt: new Date(),
       createdBy: userId,
+      newsSourceId: newsSource.id,
     };
 
     // Save record

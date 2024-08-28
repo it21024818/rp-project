@@ -28,6 +28,7 @@ import { TokenService } from './token/token.service';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { OauthModule } from './oauth/oauth.module';
+import { NewsSourceModule } from './news-source/news-source.module';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { OauthModule } from './oauth/oauth.module';
     NewsSearchModule,
     MigrationsModule,
     OauthModule,
+    NewsSourceModule,
   ],
   providers: [
     AuthService,
