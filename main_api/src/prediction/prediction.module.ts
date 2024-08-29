@@ -15,7 +15,7 @@ import { PredictionService } from './prediction.service';
 @Module({
   imports: [
     NewsSearchModule,
-    NewsSourceModule,
+    forwardRef(() => NewsSourceModule),
     forwardRef(() => FeedbackModule),
     MongooseModule.forFeature([{ name: Prediction.name, schema: PredictionSchema }]),
     HttpModule.registerAsync({

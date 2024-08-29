@@ -31,7 +31,8 @@ export class PredictionService {
     @Inject(forwardRef(() => FeedbackService))
     private feedbackService: FeedbackService,
     private readonly newsSearchService: NewsSearchService,
-    private readonly newsSourceService: NewsSourceService,
+    @Inject(forwardRef(() => NewsSourceService))
+    private newsSourceService: NewsSourceService,
     private readonly predictionFeignClient: PredictionFeignClient,
     @InjectModel(Prediction.name)
     private readonly predictionModel: Model<Prediction>,
@@ -188,10 +189,11 @@ export class PredictionService {
     startDate: Date,
     endDate: Date,
     frequency: Frequency,
+    newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'positive' | 'negative' | 'fake' | 'notFake' | 'tweet' | 'news'>> {
     const fields = ['fake', 'notFake', 'positive', 'negative', 'tweet', 'news'] as const;
     let bins: TimeBasedAnalytics<(typeof fields)[number]>['bins'] = [];
-    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate } });
+    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate }, newsSourceId });
     let current = dayjs(startDate);
     const end = dayjs(endDate);
     const stop = 9999;
@@ -232,10 +234,11 @@ export class PredictionService {
     startDate: Date,
     endDate: Date,
     frequency: Frequency,
+    newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'center' | 'left' | 'right' | 'fake' | 'notFake'>> {
     const fields = ['fake', 'notFake', 'center', 'left', 'right'] as const;
     let bins: TimeBasedAnalytics<(typeof fields)[number]>['bins'] = [];
-    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate } });
+    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate }, newsSourceId });
     let current = dayjs(startDate);
     const end = dayjs(endDate);
     const stop = 9999;
@@ -272,10 +275,11 @@ export class PredictionService {
     startDate: Date,
     endDate: Date,
     frequency: Frequency,
+    newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'low' | 'high' | 'fake' | 'notFake'>> {
     const fields = ['fake', 'notFake', 'low', 'high'] as const;
     let bins: TimeBasedAnalytics<(typeof fields)[number]>['bins'] = [];
-    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate } });
+    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate }, newsSourceId });
     let current = dayjs(startDate);
     const end = dayjs(endDate);
     const stop = 9999;
@@ -305,10 +309,11 @@ export class PredictionService {
     startDate: Date,
     endDate: Date,
     frequency: Frequency,
+    newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'sarc' | 'notSarc' | 'gen' | 'hyperbole' | 'rhet' | 'fake' | 'notFake'>> {
     const fields = ['fake', 'notFake', 'sarc', 'notSarc', 'gen', 'hyperbole', 'rhet'] as const;
     let bins: TimeBasedAnalytics<(typeof fields)[number]>['bins'] = [];
-    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate } });
+    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate }, newsSourceId });
     let current = dayjs(startDate);
     const end = dayjs(endDate);
     const stop = 9999;
@@ -351,10 +356,11 @@ export class PredictionService {
     startDate: Date,
     endDate: Date,
     frequency: Frequency,
+    newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'fake' | 'notFake'>> {
     const fields = ['fake', 'notFake'] as const;
     let bins: TimeBasedAnalytics<(typeof fields)[number]>['bins'] = [];
-    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate } });
+    const items = await this.predictionModel.find({ createdAt: { $gte: startDate, $lt: endDate }, newsSourceId });
     let current = dayjs(startDate);
     const end = dayjs(endDate);
     const stop = 9999;
