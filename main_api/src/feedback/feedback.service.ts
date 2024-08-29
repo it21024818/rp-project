@@ -1,10 +1,15 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import dayjs from 'dayjs';
+import _ from 'lodash';
 import { Model } from 'mongoose';
 import { FeedbackDetails } from 'src/common/dtos/feedback-details.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
+import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
+import { Frequency, FrequencyUtil } from 'src/common/enums/frequency.enum';
 import { Reaction } from 'src/common/enums/reaction.enum';
+import { Audit } from 'src/common/schema/audit.schema';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { Feedback, FeedbackDocument } from './feedback.schema';
@@ -108,5 +113,46 @@ export class FeedbackService {
 
   async getFeedbackPage(pageRequest: PageRequest) {
     return await MongooseUtil.getDocumentPage(this.feedbackModel, pageRequest);
+  }
+
+  private getCountInRange<T extends Audit>(
+    items: T[],
+    start: dayjs.Dayjs,
+    end: dayjs.Dayjs,
+    filter: (item: T) => boolean | undefined,
+  ) {
+    return items
+      .filter(item => dayjs(item.createdAt).isBefore(end))
+      .filter(item => dayjs(item.createdAt).isAfter(start))
+      .filter(filter).length;
+  }
+
+  async getAnalytics(
+    startDate: Date,
+    endDate: Date,
+    frequency: Frequency,
+  ): Promise<TimeBasedAnalytics<'good' | 'bad'>> {
+    const fields = ['bad', 'good'] as const;
+    let bins: TimeBasedAnalytics<(typeof fields)[number]>['bins'] = [];
+    const items = await this.feedbackModel.find({ createdAt: { $gte: startDate, $lt: endDate } });
+    let current = dayjs(startDate);
+    const end = dayjs(endDate);
+    const stop = 9999;
+    while (current.isBefore(end) && bins.length < stop) {
+      const next = current.add(1, FrequencyUtil.getDayJsUnit(frequency));
+      const bad = this.getCountInRange(items, current, next, item => item.reaction == Reaction.BAD);
+      const good = this.getCountInRange(items, current, next, item => item.reaction == Reaction.GOOD);
+      bins = [...bins, { startDate: current.toDate(), endDate: next.toDate(), bad, good }];
+      current = next;
+    }
+
+    let sum: TimeBasedAnalytics<(typeof fields)[number]>['sum'] = {
+      total: 0,
+      bad: _.sum(bins.map(i => i.bad)),
+      good: _.sum(bins.map(i => i.good)),
+    };
+    sum.total = _.sum(Object.values(sum));
+
+    return { sum, bins };
   }
 }
