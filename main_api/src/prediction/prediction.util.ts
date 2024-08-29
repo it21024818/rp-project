@@ -54,8 +54,10 @@ export class PredictionUtil {
         confidence: response.sentimentTypeResult.confidence,
         prediction: TEXT_BY_LABEL[response.sentimentTextTypeResult.prediction],
       },
-      textQualityResult: response.textQualityResult,
-      grammarQualityResult: response.grammarQualityResult,
+      textQualityResult: {
+        confidence: response.textQualityResult.confidence,
+        prediction: !!response.textQualityResult.prediction,
+      },
       textFakeResult: {
         confidence: response.textFakeResult.confidence,
         prediction: !!response.textFakeResult.prediction,

@@ -11,10 +11,8 @@ export class AuditedRequest extends Audit {
   endpoint: string;
   @Prop()
   origin: string;
-  @Prop({ type: Object })
-  request: any;
-  @Prop({ type: Object })
-  response: any;
+  @Prop()
+  audience: string;
 }
 
 export const AuditedRequestSchema = SchemaFactory.createForClass(AuditedRequest);

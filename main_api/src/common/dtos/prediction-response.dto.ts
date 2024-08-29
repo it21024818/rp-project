@@ -12,7 +12,7 @@ export class PredictionResponseDto {
   sentimentTextTypeResult: ModelResult;
 
   // Text Quality results
-  textQualityResult: ModelResult;
+  textQualityResult: ModelResult<boolean>;
   grammarQualityResult: ModelResult;
   textFakeResult: ModelResult;
 

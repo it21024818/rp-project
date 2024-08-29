@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Post, Query } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { CreatePredictionDto } from 'src/common/dtos/create-prediction-dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
+import { Frequency } from 'src/common/enums/frequency.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
+import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { PredictionService } from './prediction.service';
 
@@ -36,5 +38,50 @@ export class PredictionController {
   @Roles(...Object.values(UserRole))
   async getPredictionPage(@Body() pageRequest: PageRequest) {
     return await this.predictionService.getPredictionPage(pageRequest);
+  }
+
+  @Get('analytics/final')
+  async getFinalAnalytics(
+    @Query('start-date', TransformDatePipe) startDate: Date,
+    @Query('end-date', TransformDatePipe) endDate: Date,
+    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
+  ) {
+    return await this.predictionService.getFinalAnalytics(startDate, endDate, frequency);
+  }
+
+  @Get('analytics/sarcasm')
+  async getSarcasmAnalytics(
+    @Query('start-date', TransformDatePipe) startDate: Date,
+    @Query('end-date', TransformDatePipe) endDate: Date,
+    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
+  ) {
+    return await this.predictionService.getSarcAnalytics(startDate, endDate, frequency);
+  }
+
+  @Get('analytics/sentiment')
+  async getSentimentAnalytics(
+    @Query('start-date', TransformDatePipe) startDate: Date,
+    @Query('end-date', TransformDatePipe) endDate: Date,
+    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
+  ) {
+    return await this.predictionService.getSentimentAnalytics(startDate, endDate, frequency);
+  }
+
+  @Get('analytics/text-quality')
+  async getTextQualityAnalytics(
+    @Query('start-date', TransformDatePipe) startDate: Date,
+    @Query('end-date', TransformDatePipe) endDate: Date,
+    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
+  ) {
+    return await this.predictionService.getTextAnalytics(startDate, endDate, frequency);
+  }
+
+  @Get('analytics/political-bias')
+  async getPoliticalBiasAnalytics(
+    @Query('start-date', TransformDatePipe) startDate: Date,
+    @Query('end-date', TransformDatePipe) endDate: Date,
+    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
+  ) {
+    return await this.predictionService.getBiasAnalytics(startDate, endDate, frequency);
   }
 }

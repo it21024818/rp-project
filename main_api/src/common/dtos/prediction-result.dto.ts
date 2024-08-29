@@ -16,8 +16,7 @@ export class PredictionResult {
   sentimentTextTypeResult: ModelResult<Text>;
 
   // Text Quality results
-  textQualityResult: ModelResult<number>;
-  grammarQualityResult: ModelResult<number>;
+  textQualityResult: ModelResult<boolean>;
   textFakeResult: ModelResult<boolean>;
 
   // Bias Results

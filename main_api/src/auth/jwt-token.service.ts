@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { readFile } from 'fs/promises';
-import { KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
+import { JWTPayload, KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
 import { join } from 'path';
 import { Audience } from 'src/common/enums/audience.enum';
 import ErrorMessage from 'src/common/enums/error-message.enum';
@@ -62,7 +62,7 @@ export class JwtTokenService {
     this.logger.log(`Verifying access token '${token}'...`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
-      requiredClaims: ['sub'],
+      requiredClaims: ['sub', 'aud'],
       algorithms: [this.keyAlgorithm],
       audience: Object.values(Audience),
     });
@@ -72,6 +72,22 @@ export class JwtTokenService {
       });
     }
     return payload.sub;
+  }
+
+  async getPayload(token: string): Promise<JWTPayload> {
+    this.logger.log(`Verifying access token '${token}'...`);
+    const { payload } = await jwtVerify(token, this.accessPublicKey, {
+      issuer: this.issuer,
+      requiredClaims: ['sub', 'aud'],
+      algorithms: [this.keyAlgorithm],
+      audience: Object.values(Audience),
+    });
+    if (!payload.sub) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Access token does not contain a subject',
+      });
+    }
+    return payload;
   }
 
   async verifyRefreshToken(token: string): Promise<string> {

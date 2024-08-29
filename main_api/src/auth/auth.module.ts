@@ -11,6 +11,6 @@ import { JwtTokenService } from './jwt-token.service';
   controllers: [AuthController],
   providers: [JwtTokenService, AuthService],
   imports: [UsersModule, TokenModule, MailerModule, EmailModule],
-  exports: [AuthService],
+  exports: [AuthService, JwtTokenService],
 })
 export class AuthModule {}
