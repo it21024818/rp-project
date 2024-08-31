@@ -3,8 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentsModule } from 'src/payments/payments.module';
 import { UsersModule } from 'src/users/users.module';
 import { Migration, MigrationSchema } from './migration.schema';
-import { PlanMigration } from './only-plan.migration';
-import { UserMigration } from './user.migration';
+import { UsersMockSeedMigration } from './mock-data/users-mock-seed.migration';
+import { PlanMigration } from './seed-data/only-plan.migration';
+import { UserMigration } from './seed-data/user.migration';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { UserMigration } from './user.migration';
     PaymentsModule,
     MongooseModule.forFeature([{ name: Migration.name, schema: MigrationSchema }]),
   ],
-  providers: [PlanMigration, UserMigration],
+  providers: [PlanMigration, UserMigration, UsersMockSeedMigration],
 })
 export class MigrationsModule {}
