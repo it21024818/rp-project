@@ -1,8 +1,10 @@
 import { TimeBin } from './time-bin.dto';
 
+type StringUnion<T extends string> = T extends any ? T : never;
+
 export class TimeBasedAnalytics<T extends string> {
   sum: {
     total: number;
-  } & Record<T, number>;
-  bins: (TimeBin & Record<T, number>)[];
+  } & { [k in T]: number };
+  bins: (TimeBin & { [k in T]: number })[];
 }
