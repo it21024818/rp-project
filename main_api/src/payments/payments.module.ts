@@ -4,10 +4,11 @@ import { UsersModule } from 'src/users/users.module';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import { Plan, PlanSchema } from './plan.schema';
+import { StripeStrategy } from './stripe.strategy';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Plan.name, schema: PlanSchema }]), UsersModule],
-  providers: [PaymentsService],
+  providers: [PaymentsService, StripeStrategy],
   controllers: [PaymentsController],
   exports: [MongooseModule],
 })

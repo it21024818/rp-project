@@ -27,6 +27,7 @@ import { NewsSearchModule } from './news-search/news-search.module';
 import { NewsSourceModule } from './news-source/news-source.module';
 import { OauthModule } from './oauth/oauth.module';
 import { PaymentsModule } from './payments/payments.module';
+import { StripeStrategy } from './payments/stripe.strategy';
 import { PredictionModule } from './prediction/prediction.module';
 import { TokenModule } from './token/token.module';
 import { TokenService } from './token/token.service';

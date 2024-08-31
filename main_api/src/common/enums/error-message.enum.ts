@@ -6,6 +6,7 @@ const ErrorMessage = {
   TOKEN_NOT_FOUND: 'Token not found',
   FILE_NOT_FOUND: 'File not found',
   NEWS_SOURCE_NOT_FOUND: 'News source not found',
+  PAYMENT_STRATEGY_NOT_FOUND: 'Payment strategy not found',
 
   // Payments
   SESSION_URL_INVALID: 'Session URL invalid',

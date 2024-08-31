@@ -88,3 +88,7 @@ $ bun run test:cov
 
 ECONNREFUSED ::1:6379
 Happens because Redis server is unreachable
+
+## References
+
+https://medium.com/@uttiyaghosh/strategy-pattern-in-spring-boot-0d6e025eef41
