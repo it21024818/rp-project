@@ -76,6 +76,13 @@ export class PredictionService {
   async createPrediction(text: string, url: string, userId: string): Promise<PredictionDocument> {
     this.logger.log(`Creating new prediction record from user ${userId} for text ${text}`);
 
+    const MIN_TEXT_LENGTH = 10;
+    if (text.split(' ').length < MIN_TEXT_LENGTH) {
+      throw new BadRequestException(ErrorMessage.PREDICTION_TEXT_TOO_SHORT, {
+        description: `Text '${text}' requiring fake news prediction is too short. It needs to be longer than ${MIN_TEXT_LENGTH} words long`,
+      });
+    }
+
     const domain = new URL(url).hostname;
     let newsSource: Awaited<ReturnType<NewsSourceService['getNewsSource']>>;
     try {
@@ -104,7 +111,7 @@ export class PredictionService {
       // Check for existing record. We do not need to re-predict in this case
       const existingPrediction = await this.predictionModel.findOne({
         text,
-        status: PredictionStatus.COMPLETED,
+        status: PredictionStatus.COMPLETED, // We should only get completed predictions. Not in-progress or failed
         result: { $exists: true },
       });
 
@@ -161,6 +168,7 @@ export class PredictionService {
     } catch (error) {
       this.logger.error(`Error occurred while creating prediction record for text ${text}`, error);
       savedPrediction.status = PredictionStatus.FAILED;
+      savedPrediction.error = error; // We should save this for debugging purposes
       savedPrediction.updatedAt = new Date();
       savedPrediction.updatedBy = userId;
       await savedPrediction.save();

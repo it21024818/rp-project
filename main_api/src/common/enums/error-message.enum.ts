@@ -33,6 +33,7 @@ const ErrorMessage = {
   USER_NOT_ADMIN: 'User not admin',
   INVALID_OPERATOR_OR_VALUE_FOR_FIELD: 'Invalid operator or value for field',
   CONFIG_ERROR: 'Config error',
+  PREDICTION_TEXT_TOO_SHORT: 'Prediction text too short',
 } as const;
 
 export default ErrorMessage;

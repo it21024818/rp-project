@@ -30,6 +30,6 @@ import { PredictionService } from './prediction.service';
   ],
   providers: [PredictionService, PredictionFeignClient],
   controllers: [PredictionController],
-  exports: [PredictionService],
+  exports: [PredictionService, MongooseModule],
 })
 export class PredictionModule {}
