@@ -7,18 +7,26 @@ from experts.bias_expert import load_bias_model, predict_bias_and_fake_news
 # from google.colab import drive
 # import gdown
 # from tensorflow.keras.models import load_model
+from keybert import KeyBERT
+# import numpy as np
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from collections import Counter
+nltk.download('punkt')
+nltk.download('stopwords')
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
-# Mount Google Drive
-# drive.mount('/content/drive')
+# Initialize the KeyBERT model
+# kw_model = KeyBERT()
 
 # Load all models
 # sarcasm_model = load_sarcasm_model()
 # quality_model = load_quality_model()
-bias_model = load_bias_model()
+# bias_model = load_bias_model()
 # sentiment_model = load_sentiment_model()
 
 # Function to calculate the weighted prediction
@@ -79,6 +87,43 @@ def predict():
     }
 
     return response
+
+@app.route('/extract-keywords', methods=['POST'])
+def extract_keywords():
+    data = request.get_json(force=True)
+    text = data.get('text', '')
+    
+    # Tokenize the text into individual words
+    words = word_tokenize(text)
+
+    # Remove stopwords (common words like "the", "and", etc.)
+    stop_words = set(stopwords.words('english'))
+    words = [word for word in words if word.lower() not in stop_words]
+
+    # Count the frequency of each word
+    freq_dist = Counter(words)
+
+    # Get the top 8 most frequent words
+    top_words = freq_dist.most_common(10)
+      
+    # Return the extracted keywords as a list of strings
+    return jsonify({'keywords': [word for word, freq in top_words]})
+
+# @app.route('/extract-keywords', methods=['POST'])
+# def extract_keywords():
+#     data = request.get_json(force=True)
+#     text = data.get('text', '')
+    
+#     try:
+#         import numpy as np
+#         # Extract keywords using KeyBERT
+#         keywords = kw_model.extract_keywords(text)
+        
+#         # Return the extracted keywords as a list of strings
+#         return jsonify({'keywords': [x for x, y in keywords]})
+#     except Exception as e:
+#         # Handle the exception here
+#         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
