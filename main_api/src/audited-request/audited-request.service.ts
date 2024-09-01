@@ -27,7 +27,7 @@ export class AuditedRequestService {
     @InjectModel(AuditedRequest.name) private readonly auditedRequestModel: Model<AuditedRequest>,
   ) {}
 
-  async createAuditedRequest(request: Request, response: Response) {
+  async createAuditedRequest(request: Request, _response: Response) {
     const userAgent = request.headers['user-agent'];
     const authorization = request.headers['authorization'];
     if (!userAgent) {

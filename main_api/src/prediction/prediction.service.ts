@@ -59,7 +59,7 @@ export class PredictionService {
     const [feedback, newsSource, sourcePrediction] = await Promise.all([
       this.feedbackService.getFeedbackByPredictionId(id),
       prediction.newsSourceId ? this.newsSourceService.getNewsSource(prediction.newsSourceId) : undefined,
-      prediction.sourcePredictionId ? this.getPrediction(prediction.sourcePredictionId!) : undefined,
+      prediction.sourcePredictionId ? this.getPrediction(prediction.sourcePredictionId) : undefined,
     ]);
     return [prediction, feedback, newsSource, sourcePrediction];
   }
