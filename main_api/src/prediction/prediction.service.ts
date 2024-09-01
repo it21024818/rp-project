@@ -14,9 +14,11 @@ import { Sentiment } from 'src/common/enums/sentiment.enum';
 import { Text } from 'src/common/enums/text.enum';
 import { AnalyticsUtils } from 'src/common/util/analytics.util';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { Feedback } from 'src/feedback/feedback.schema';
 import { FeedbackService } from 'src/feedback/feedback.service';
 import { NewsSearchService } from 'src/news-search/news-search.service';
 import { SearchResult } from 'src/news-search/search-result';
+import { NewsSource, NewsSourceDocument } from 'src/news-source/news-source.schema';
 import { NewsSourceService } from 'src/news-source/news-source.service';
 import { PredictionFeignClient } from './prediction.feign';
 import { Prediction, PredictionDocument } from './prediction.schema';
@@ -49,6 +51,18 @@ export class PredictionService {
     }
 
     return foundPrediction;
+  }
+
+  async getPredictionDetails(
+    id: string,
+  ): Promise<[Prediction, Feedback[], NewsSource | undefined, Prediction | undefined]> {
+    const prediction = await this.getPrediction(id);
+    const [feedback, newsSource, sourcePrediction] = await Promise.all([
+      this.feedbackService.getFeedbackByPredictionId(id),
+      prediction.newsSourceId ? this.newsSourceService.getNewsSource(prediction.newsSourceId) : undefined,
+      prediction.sourcePredictionId ? this.getPrediction(prediction.sourcePredictionId!) : undefined,
+    ]);
+    return [prediction, feedback, newsSource, sourcePrediction];
   }
 
   async getByCreatedBy(createdBy: string) {
@@ -91,7 +105,7 @@ export class PredictionService {
     }
 
     const domain = new URL(url).hostname;
-    let newsSource: Awaited<ReturnType<NewsSourceService['getNewsSource']>>;
+    let newsSource: NewsSourceDocument;
     try {
       newsSource = await this.newsSourceService.getNewsSourceByIdentification(domain);
     } catch (error) {
@@ -195,7 +209,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'positive' | 'negative' | 'fake' | 'notFake' | 'tweet' | 'news'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -220,7 +234,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'center' | 'left' | 'right' | 'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -244,7 +258,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'low' | 'high' | 'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -267,7 +281,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'sarc' | 'notSarc' | 'gen' | 'hyperbole' | 'rhet' | 'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -293,7 +307,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,

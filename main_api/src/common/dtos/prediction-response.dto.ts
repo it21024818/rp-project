@@ -2,23 +2,22 @@ import { ModelResult } from './model-result.dto';
 
 export class PredictionResponseDto {
   // Sarcasm detection results
-  sarcasmPresentResult: ModelResult;
-  sarcasmTypeResult: ModelResult;
-  sarcasmFakeResult: ModelResult;
+  sarcasmPresentResult: ModelResult<number>;
+  sarcasmTypeResult: ModelResult<number>;
+  sarcasmFakeResult: ModelResult<number>;
 
   // Sentiment analysis results
-  sentimentFakeResult: ModelResult;
-  sentimentTypeResult: ModelResult;
+  sentimentFakeResult: ModelResult<number>;
+  sentimentTypeResult: ModelResult<number>;
   sentimentTextTypeResult: ModelResult;
 
   // Text Quality results
-  textQualityResult: ModelResult<boolean>;
-  grammarQualityResult: ModelResult;
-  textFakeResult: ModelResult;
+  textQualityResult: ModelResult<number>;
+  textFakeResult: ModelResult<number>;
 
   // Bias Results
-  biasResult: ModelResult;
-  biasFakeResult: ModelResult;
+  biasResult: ModelResult<number>;
+  biasFakeResult: ModelResult<number>;
 
   // Final Result
   finalFakeResult: number;

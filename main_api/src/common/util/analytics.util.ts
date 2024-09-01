@@ -15,7 +15,7 @@ export class AnalyticsUtils {
     model: Model<V>;
     options: { startDate: Date; endDate: Date; frequency: Frequency };
     fields: Record<T, (item: V) => boolean | undefined>;
-    filters?: Record<string, string>;
+    filters?: Record<string, string | undefined>;
   }): Promise<TimeBasedAnalytics<T>> {
     let bins: TimeBasedAnalytics<string>['bins'] = [];
     const { startDate, endDate, frequency } = options;
