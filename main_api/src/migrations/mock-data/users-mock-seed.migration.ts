@@ -5,6 +5,7 @@ import { hash } from 'bcryptjs';
 import { Model } from 'mongoose';
 import { Migration } from 'src/common/decorators/migration.decorator';
 import { UserRole } from 'src/common/enums/user-roles.enum';
+import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 import { User } from 'src/users/user.schema';
 
 @Injectable()
