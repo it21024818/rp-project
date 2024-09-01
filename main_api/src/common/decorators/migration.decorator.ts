@@ -5,7 +5,7 @@ import { Migration as MigrationEntity } from 'src/migrations/migration.schema';
 
 const MIGRATION_MODEL_FIELD_NAME = 'migrationModel';
 
-export function Migration(key: string) {
+export function Migration(key: string, debug?: boolean) {
   const injectModel = InjectModel(Migration.name);
   return (target: any, _propertyKey: string, propertyDescriptor: PropertyDescriptor) => {
     injectModel(target, MIGRATION_MODEL_FIELD_NAME);
@@ -22,16 +22,19 @@ export function Migration(key: string) {
           logger.warn(`SKIPPED [${key}] in class [${target.constructor.name}]`);
         } else {
           // Run migration
+          logger.warn(`EXECUTING [${key}] in class [${target.constructor.name}]`);
           const result = await originalMethod.apply(this, args);
           logger.log(`EXECUTED [${key}] in class [${target.constructor.name}]`);
 
           // Save migration record
-          await new migrationModel({
-            createdAt: new Date(),
-            createdBy: 'MIGRATION',
-            className: target.constructor.name,
-            key: key,
-          }).save();
+          if (!debug) {
+            await new migrationModel({
+              createdAt: new Date(),
+              createdBy: 'MIGRATION',
+              className: target.constructor.name,
+              key: key,
+            }).save();
+          }
 
           return result;
         }

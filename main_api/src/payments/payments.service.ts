@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { PaymentStrategy } from './payment-strategy.interface';
@@ -26,16 +26,16 @@ export class PaymentsService {
 
   async createCheckoutSession(strategy: PaymentStrategyKey, planId: string, userId: string): Promise<string> {
     this.logger.log(`Attempting to create new checkout session with strategy '${strategy}'`);
-    return await this.paymentStrategyByKey.get(strategy)!.createCheckoutSession(planId, userId);
+    return await this.getStrategy(strategy).createCheckoutSession(planId, userId);
   }
 
   async createPortalSession(strategy: PaymentStrategyKey, sessionId: string): Promise<string> {
     this.logger.log(`Attempting to create new portal session with strategy '${strategy}'`);
-    return await this.paymentStrategyByKey.get(strategy)!.createPortalSession(sessionId);
+    return await this.getStrategy(strategy).createPortalSession(sessionId);
   }
 
   async handleEvent(strategy: PaymentStrategyKey, request: Request): Promise<void> {
     this.logger.log(`Attempted to handle and event with strategy '${strategy}'`);
-    return await this.paymentStrategyByKey.get(strategy)!.handleEvent(request);
+    return await this.getStrategy(strategy).handleEvent(request);
   }
 }

@@ -5,13 +5,21 @@ import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { FeedbackDocument } from 'src/feedback/feedback.schema';
+import { FeedbackService } from 'src/feedback/feedback.service';
+import { PredictionDocument } from 'src/prediction/prediction.schema';
+import { PredictionService } from 'src/prediction/prediction.service';
 import { User, UserDocument } from './user.schema';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly predictionsService: PredictionService,
+    private readonly feedbackService: FeedbackService,
+  ) {}
 
   async updateUser(id: string, userDto: CreateUserDto): Promise<UserDocument> {
     this.logger.log(`Attempting to find user with id '${id}'`);
@@ -80,7 +88,15 @@ export class UsersService {
     }
     this.logger.log(`Deleted user with id '${id}'`);
 
-    // TODO: Handle predictions and feedback
+    // Do not delete predictions and feedback as they are valuable data
+  }
+
+  async getUserDetails(id: string): Promise<[UserDocument, PredictionDocument[], FeedbackDocument[]]> {
+    return await Promise.all([
+      this.getUser(id),
+      this.predictionsService.getByCreatedBy(id),
+      this.feedbackService.getByCreatedBy(id),
+    ]);
   }
 
   async getUserPage(pageRequest: PageRequest) {

@@ -1,11 +1,9 @@
-import { Controller, InternalServerErrorException, Param, ParseEnumPipe, Post, Query, Req, Res } from '@nestjs/common';
+import { Controller, Param, ParseEnumPipe, Post, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
-import ErrorMessage from 'src/common/enums/error-message.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ToUpperPipe } from 'src/common/pipes/to-upper.pipe';
-import { PaymentStrategy } from './payment-strategy.interface';
 import { PaymentsService } from './payments.service';
 import { PaymentStrategyKey } from './paymeny-stategy-key.enum';
 

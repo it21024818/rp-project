@@ -3,6 +3,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { CreatePredictionDto } from 'src/common/dtos/create-prediction-dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
+import { PredictionDto } from 'src/common/dtos/prediction.dto';
 import { Frequency } from 'src/common/enums/frequency.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
@@ -16,6 +17,12 @@ export class PredictionController {
   @Get(':id')
   async getPrediction(@Param('id', ValidateObjectIdPipe) id: string) {
     return await this.predictionService.getPrediction(id);
+  }
+
+  @Get(':id/details')
+  async getPredictionDetails(@Param('id', ValidateObjectIdPipe) id: string) {
+    const details = await this.predictionService.getPredictionDetails(id);
+    return PredictionDto.buildWithAll(...details);
   }
 
   @Get(':id/feedback')

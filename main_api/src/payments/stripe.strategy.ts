@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { ConfigKey } from 'src/common/enums/config-key.enum';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { StripeEvent } from 'src/common/enums/stripe-events.enum';
+import { SubscriptionStatus } from 'src/common/enums/subscriptions-status.enum';
 import { UsersService } from 'src/users/users.service';
 import Stripe from 'stripe';
 import { PaymentStrategy } from './payment-strategy.interface';
@@ -17,6 +18,16 @@ import { Plan } from './plan.schema';
 export class StripeStrategy implements PaymentStrategy {
   private stripe: Stripe;
   private readonly logger = new Logger(StripeStrategy.name);
+  private readonly STRIPE_STATUS_MAPPING: Record<Stripe.Subscription.Status, SubscriptionStatus> = {
+    active: SubscriptionStatus.ACTIVE,
+    trialing: SubscriptionStatus.ACTIVE,
+    paused: SubscriptionStatus.PAUSED,
+    unpaid: SubscriptionStatus.PAUSED,
+    incomplete: SubscriptionStatus.PAUSED,
+    incomplete_expired: SubscriptionStatus.PAUSED,
+    canceled: SubscriptionStatus.ENDED,
+    past_due: SubscriptionStatus.ENDED,
+  };
 
   constructor(
     private readonly paymentsService: PaymentsService,
@@ -139,7 +150,7 @@ export class StripeStrategy implements PaymentStrategy {
     const planId = subscription.items.data[0].price.id as string;
     user.subscription = {
       id: subscription.id,
-      status: subscription.status,
+      status: this.STRIPE_STATUS_MAPPING[subscription.status],
       planId: planId,
       startedTs: new Date(subscription.current_period_start),
       endingTs: new Date(subscription.current_period_end),

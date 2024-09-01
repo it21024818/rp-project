@@ -30,7 +30,7 @@ export class NewsSourceService {
       createdBy: userId,
       domain,
       identifications: [domain],
-      name: domain, // This should be changede later by an admin
+      name: domain, // This should be changed later by an admin
     }).save();
     this.logger.log(`Created news source ${domain} with domain ${domain}`);
 

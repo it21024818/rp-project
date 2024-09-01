@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Post, Put, Query }
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { CreateFeedbackDto } from 'src/common/dtos/create-feedback-dto';
+import { FeedbackDto } from 'src/common/dtos/feedback.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { Frequency } from 'src/common/enums/frequency.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
@@ -17,6 +18,12 @@ export class FeedbackController {
   @Roles(...Object.values(UserRole))
   async getfeedback(@Param('id', ValidateObjectIdPipe) id: string) {
     return await this.feedbackService.getFeedback(id);
+  }
+
+  @Get(':id/details')
+  async getfeedbackDetails(@Param('id', ValidateObjectIdPipe) id: string): Promise<FeedbackDto> {
+    const results = await this.feedbackService.getFeedbackDetails(id);
+    return FeedbackDto.buildWithPrediction(...results);
   }
 
   @Delete(':id')

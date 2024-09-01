@@ -1,5 +1,4 @@
 import { ArgumentMetadata, BadRequestException, Injectable, Logger, PipeTransform } from '@nestjs/common';
-import dayjs from 'dayjs';
 
 @Injectable()
 export class ToUpperPipe implements PipeTransform {

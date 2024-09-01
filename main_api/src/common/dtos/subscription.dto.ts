@@ -2,7 +2,7 @@ import { Prop } from '@nestjs/mongoose';
 import { SubscriptionStatus } from 'src/common/enums/subscriptions-status.enum';
 import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 
-export class Subscription {
+export class SubscriptionDto {
   @Prop()
   id: string;
   @Prop()

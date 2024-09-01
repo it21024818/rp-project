@@ -11,7 +11,7 @@ import { NewsSourceService } from './news-source.service';
     MongooseModule.forFeature([{ name: NewsSource.name, schema: NewsSourceSchema }]),
   ],
   providers: [NewsSourceService],
-  exports: [NewsSourceService],
+  exports: [NewsSourceService, MongooseModule],
   controllers: [NewsSourceController],
 })
 export class NewsSourceModule {}

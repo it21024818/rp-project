@@ -20,11 +20,13 @@ export class Prediction extends Audit {
   @Prop()
   keywords?: string[];
   @Prop({ type: String, enum: PredictionStatus })
-  status?: PredictionStatus;
+  status: PredictionStatus;
   @Prop()
   sourcePredictionId?: string;
   @Prop()
   newsSourceId?: string;
+  @Prop()
+  error?: string;
 }
 
 export const PredictionSchema = SchemaFactory.createForClass(Prediction);

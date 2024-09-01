@@ -1,6 +1,5 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { Model } from 'mongoose';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { PredictionResult } from 'src/common/dtos/prediction-result.dto';
@@ -14,9 +13,11 @@ import { Sentiment } from 'src/common/enums/sentiment.enum';
 import { Text } from 'src/common/enums/text.enum';
 import { AnalyticsUtils } from 'src/common/util/analytics.util';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { Feedback } from 'src/feedback/feedback.schema';
 import { FeedbackService } from 'src/feedback/feedback.service';
 import { NewsSearchService } from 'src/news-search/news-search.service';
 import { SearchResult } from 'src/news-search/search-result';
+import { NewsSource, NewsSourceDocument } from 'src/news-source/news-source.schema';
 import { NewsSourceService } from 'src/news-source/news-source.service';
 import { PredictionFeignClient } from './prediction.feign';
 import { Prediction, PredictionDocument } from './prediction.schema';
@@ -51,6 +52,25 @@ export class PredictionService {
     return foundPrediction;
   }
 
+  async getPredictionDetails(
+    id: string,
+  ): Promise<[Prediction, Feedback[], NewsSource | undefined, Prediction | undefined]> {
+    const prediction = await this.getPrediction(id);
+    const [feedback, newsSource, sourcePrediction] = await Promise.all([
+      this.feedbackService.getFeedbackByPredictionId(id),
+      prediction.newsSourceId ? this.newsSourceService.getNewsSource(prediction.newsSourceId) : undefined,
+      prediction.sourcePredictionId ? this.getPrediction(prediction.sourcePredictionId) : undefined,
+    ]);
+    return [prediction, feedback, newsSource, sourcePrediction];
+  }
+
+  async getByCreatedBy(createdBy: string) {
+    this.logger.log(`Attempting to find predictions that were created by ${createdBy}`);
+    const foundPredictions = await this.predictionModel.find({ createdBy });
+    this.logger.log(`Found ${foundPredictions.length} predictions that were created by ${createdBy}`);
+    return foundPredictions;
+  }
+
   async getPredictionFeedback(id: string) {
     await this.getPrediction(id);
     this.logger.log(`Validated prediction ${id} exists`);
@@ -76,8 +96,15 @@ export class PredictionService {
   async createPrediction(text: string, url: string, userId: string): Promise<PredictionDocument> {
     this.logger.log(`Creating new prediction record from user ${userId} for text ${text}`);
 
+    const MIN_TEXT_LENGTH = 10;
+    if (text.split(' ').length < MIN_TEXT_LENGTH) {
+      throw new BadRequestException(ErrorMessage.PREDICTION_TEXT_TOO_SHORT, {
+        description: `Text '${text}' requiring fake news prediction is too short. It needs to be longer than ${MIN_TEXT_LENGTH} words long`,
+      });
+    }
+
     const domain = new URL(url).hostname;
-    let newsSource: Awaited<ReturnType<NewsSourceService['getNewsSource']>>;
+    let newsSource: NewsSourceDocument;
     try {
       newsSource = await this.newsSourceService.getNewsSourceByIdentification(domain);
     } catch (error) {
@@ -104,7 +131,7 @@ export class PredictionService {
       // Check for existing record. We do not need to re-predict in this case
       const existingPrediction = await this.predictionModel.findOne({
         text,
-        status: PredictionStatus.COMPLETED,
+        status: PredictionStatus.COMPLETED, // We should only get completed predictions. Not in-progress or failed
         result: { $exists: true },
       });
 
@@ -161,6 +188,7 @@ export class PredictionService {
     } catch (error) {
       this.logger.error(`Error occurred while creating prediction record for text ${text}`, error);
       savedPrediction.status = PredictionStatus.FAILED;
+      savedPrediction.error = error; // We should save this for debugging purposes
       savedPrediction.updatedAt = new Date();
       savedPrediction.updatedBy = userId;
       await savedPrediction.save();
@@ -180,7 +208,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'positive' | 'negative' | 'fake' | 'notFake' | 'tweet' | 'news'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -205,7 +233,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'center' | 'left' | 'right' | 'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -229,7 +257,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'low' | 'high' | 'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -252,7 +280,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'sarc' | 'notSarc' | 'gen' | 'hyperbole' | 'rhet' | 'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,
@@ -278,7 +306,7 @@ export class PredictionService {
   ): Promise<TimeBasedAnalytics<'fake' | 'notFake'>> {
     return await AnalyticsUtils.getTimeBasedAnalytics({
       model: this.predictionModel,
-      filters: newsSourceId ? { newsSourceId } : {},
+      filters: { newsSourceId },
       options: {
         startDate,
         endDate,

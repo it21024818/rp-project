@@ -27,7 +27,7 @@ export class AuditedRequestService {
     @InjectModel(AuditedRequest.name) private readonly auditedRequestModel: Model<AuditedRequest>,
   ) {}
 
-  async createAuditedRequest(request: Request, response: Response) {
+  async createAuditedRequest(request: Request, _response: Response) {
     const userAgent = request.headers['user-agent'];
     const authorization = request.headers['authorization'];
     if (!userAgent) {
@@ -37,7 +37,7 @@ export class AuditedRequestService {
 
     const detectionResult = this.detector.detect(userAgent);
 
-    let audience: string = '';
+    let audience = '';
     if (authorization) {
       const token = authorization.split(' ')[1];
       const payload = await this.jwtTokenService.getPayload(token);

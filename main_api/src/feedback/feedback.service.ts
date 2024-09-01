@@ -1,17 +1,15 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import dayjs from 'dayjs';
-import _ from 'lodash';
 import { Model } from 'mongoose';
 import { FeedbackDetails } from 'src/common/dtos/feedback-details.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
-import { Frequency, FrequencyUtil } from 'src/common/enums/frequency.enum';
+import { Frequency } from 'src/common/enums/frequency.enum';
 import { Reaction } from 'src/common/enums/reaction.enum';
-import { Audit } from 'src/common/schema/audit.schema';
 import { AnalyticsUtils } from 'src/common/util/analytics.util';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { Prediction } from 'src/prediction/prediction.schema';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { Feedback, FeedbackDocument } from './feedback.schema';
 
@@ -38,6 +36,19 @@ export class FeedbackService {
     }
 
     return foundFeedback;
+  }
+
+  async getFeedbackDetails(id: string): Promise<[Feedback, Prediction]> {
+    const feedback = await this.getFeedback(id);
+    const prediction = await this.predictionService.getPrediction(feedback.predictionId);
+    return [feedback, prediction];
+  }
+
+  async getByCreatedBy(createdBy: string) {
+    this.logger.log(`Attempting to find predictions that were created by ${createdBy}`);
+    const foundPredictions = await this.feedbackModel.find({ createdBy });
+    this.logger.log(`Found ${foundPredictions.length} predictions that were created by ${createdBy}`);
+    return foundPredictions;
   }
 
   async getFeedbackByPredictionId(id: string) {
