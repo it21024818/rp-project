@@ -12,6 +12,6 @@ import { FeedbackService } from './feedback.service';
   ],
   providers: [FeedbackService],
   controllers: [FeedbackController],
-  exports: [FeedbackService],
+  exports: [FeedbackService, MongooseModule],
 })
 export class FeedbackModule {}

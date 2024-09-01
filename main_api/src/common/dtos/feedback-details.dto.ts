@@ -4,7 +4,7 @@ import { Sentiment } from '../enums/sentiment.enum';
 
 export class FeedbackDetails {
   message?: string;
-  textQualityScore?: number;
+  textQuality?: boolean;
   sentiment?: Sentiment;
   sarcasm?: Sarcasm;
   bias?: PoliticalLeaning;
