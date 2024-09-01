@@ -12,6 +12,7 @@ import { Reaction } from 'src/common/enums/reaction.enum';
 import { Audit } from 'src/common/schema/audit.schema';
 import { AnalyticsUtils } from 'src/common/util/analytics.util';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { Prediction } from 'src/prediction/prediction.schema';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { Feedback, FeedbackDocument } from './feedback.schema';
 
@@ -38,6 +39,12 @@ export class FeedbackService {
     }
 
     return foundFeedback;
+  }
+
+  async getFeedbackDetails(id: string): Promise<[Feedback, Prediction]> {
+    const feedback = await this.getFeedback(id);
+    const prediction = await this.predictionService.getPrediction(feedback.predictionId);
+    return [feedback, prediction];
   }
 
   async getByCreatedBy(createdBy: string) {
