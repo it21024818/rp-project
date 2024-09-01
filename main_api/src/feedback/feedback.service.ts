@@ -40,6 +40,13 @@ export class FeedbackService {
     return foundFeedback;
   }
 
+  async getByCreatedBy(createdBy: string) {
+    this.logger.log(`Attempting to find predictions that were created by ${createdBy}`);
+    const foundPredictions = await this.feedbackModel.find({ createdBy });
+    this.logger.log(`Found ${foundPredictions.length} predictions that were created by ${createdBy}`);
+    return foundPredictions;
+  }
+
   async getFeedbackByPredictionId(id: string) {
     this.logger.log(`Attempting to find feedback with prediction-id ${id}`);
     const foundFeedback = await this.feedbackModel.find({ predictionId: id });

@@ -51,6 +51,13 @@ export class PredictionService {
     return foundPrediction;
   }
 
+  async getByCreatedBy(createdBy: string) {
+    this.logger.log(`Attempting to find predictions that were created by ${createdBy}`);
+    const foundPredictions = await this.predictionModel.find({ createdBy });
+    this.logger.log(`Found ${foundPredictions.length} predictions that were created by ${createdBy}`);
+    return foundPredictions;
+  }
+
   async getPredictionFeedback(id: string) {
     await this.getPrediction(id);
     this.logger.log(`Validated prediction ${id} exists`);
