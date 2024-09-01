@@ -36,20 +36,18 @@ def weighted_prediction(expert_predictions):
 
 def combine_expert_outputs(text):
     # sarcasm_prediction, sarcasm_news_pred, sarcasm_news_confidence = detect_sarcasm(text)
-    bias_labels, predicted_fake_news, confidence_fake_news, fake_news_boolean = predict_bias_and_fake_news(text, bias_model)
+    # bias_labels, predicted_fake_news, confidence_fake_news, fake_news_boolean = predict_bias_and_fake_news(text, bias_model)
     # sentiment_prediction, sentiment_news_pred, sentiment_news_confidence = detect_sentiment(text)
     # quality_prediction, quality_news_pred, quality_news_confidence = detect_quality(text)
 
-    sarcasm_news_pred, sarcasm_news_confidence = 1, 0.76
-    sentiment_news_pred, sentiment_news_confidence = 0, 0.6
-    quality_news_pred, quality_news_confidence = 1, 0.78
-    sarcasm_prediction = "not sarcastic"
-    sentiment_prediction = "no sentiment"
-    quality_prediction = "good quality"
+    sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence = 1, 0.76, 1, 0.76, 1, 0.76
+    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.6, 0, 0.6, 0, 0.6
+    quality_pred, quality_confidence, quality_news_pred, quality_news_confidence = 1, 0.78, 1, 0.78
+    bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = 1, 0.8, 1, 0.8
 
     expert_predictions = [
         (sarcasm_news_pred, sarcasm_news_confidence),
-        (fake_news_boolean, confidence_fake_news),
+        (bias_news_pred, bias_news_confidence),
         (sentiment_news_pred, sentiment_news_confidence),
         (quality_news_pred, quality_news_confidence)
     ]
@@ -57,24 +55,30 @@ def combine_expert_outputs(text):
     # Calculate the final prediction
     final_score = weighted_prediction(expert_predictions)
 
-    return final_score, bias_labels, sarcasm_prediction, sentiment_prediction, quality_prediction
+    return final_score, sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence, sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence, quality_pred, quality_confidence, quality_news_pred, quality_news_confidence, bias_pred, bias_confidence, bias_news_pred, bias_news_confidence
 
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.get_json(force=True)
     text = data.get('text', '')
-    final_score, bias_labels, sarcasm_prediction, sentiment_prediction, quality_prediction = combine_expert_outputs(text)
+    final_score, sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence, sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence, quality_pred, quality_confidence, quality_news_pred, quality_news_confidence, bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = combine_expert_outputs(text)
 
-    # Further processing and return predictions as needed
+    # Map the results to the PredictionResponseDto structure
     response = {
-        "final_score": final_score,
-        "sarcasm_detection": sarcasm_prediction,
-        "quality_assessment": quality_prediction,
-        "predicted_bias": bias_labels,
-        "sentiment_prediction": sentiment_prediction,
+        "sarcasmPresentResult": {"prediction": sarcasm_pred, "confidence": sarcasm_confidence},  
+        "sarcasmTypeResult": {"prediction": sarcasm_type_pred, "confidence": sarcasm_type_confidence},  
+        "sarcasmFakeResult": {"prediction": sarcasm_news_pred, "confidence": sarcasm_news_confidence}, 
+        "sentimentFakeResult": {"prediction": sentiment_news_pred, "confidence": sentiment_news_confidence},  
+        "sentimentTypeResult": {"prediction": sentiment_type_pred, "confidence": sentiment_type_confidence},  
+        "sentimentTextTypeResult": {"prediction": sentiment_pred, "confidence": sentiment_confidence},  
+        "textQualityResult": {"prediction": quality_pred, "confidence": quality_confidence},  
+        "textFakeResult": {"prediction": quality_news_pred, "confidence": quality_news_confidence},  
+        "biasResult": {"prediction": bias_pred, "confidence": bias_confidence},  
+        "biasFakeResult": {"prediction": bias_news_pred, "confidence": bias_news_confidence},
+        "finalFakeResult": final_score
     }
-    
-    return jsonify(response)
+
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
