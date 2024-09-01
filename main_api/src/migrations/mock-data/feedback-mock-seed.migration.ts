@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { hash } from 'bcryptjs';
 import { shuffle, take } from 'lodash';
 import { Model } from 'mongoose';
 import { Migration } from 'src/common/decorators/migration.decorator';
@@ -11,7 +10,6 @@ import { Sarcasm } from 'src/common/enums/sarcasm.enum';
 import { Sentiment } from 'src/common/enums/sentiment.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { Feedback } from 'src/feedback/feedback.schema';
-import { NewsSource } from 'src/news-source/news-source.schema';
 import { Prediction } from 'src/prediction/prediction.schema';
 import { User } from 'src/users/user.schema';
 

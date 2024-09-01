@@ -1,6 +1,5 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import _ from 'lodash';
 import { Model } from 'mongoose';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { PredictionResult } from 'src/common/dtos/prediction-result.dto';

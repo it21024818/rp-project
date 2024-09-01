@@ -24,7 +24,7 @@ export class AnalyticsUtils {
     const end = dayjs(endDate);
     const stop = 9999;
     while (current.isBefore(end) && bins.length < stop) {
-      let currentBin: (typeof bins)[number] = { startDate: current.toDate(), endDate: end.toDate() } as any;
+      const currentBin: (typeof bins)[number] = { startDate: current.toDate(), endDate: end.toDate() } as any;
       const next = current.add(1, FrequencyUtil.getDayJsUnit(frequency));
       for (const field in fields) {
         const predicate = fields[field];
@@ -38,7 +38,7 @@ export class AnalyticsUtils {
       bins = [...bins, currentBin];
       current = next;
     }
-    let sum: TimeBasedAnalytics<string>['sum'] = {
+    const sum: TimeBasedAnalytics<string>['sum'] = {
       total: 0,
     };
     for (const field in fields) {

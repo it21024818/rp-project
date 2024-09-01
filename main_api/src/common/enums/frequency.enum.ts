@@ -1,5 +1,4 @@
-import dayjs, { Dayjs } from 'dayjs';
-import { TimeBin } from '../dtos/time-bin.dto';
+import dayjs from 'dayjs';
 
 export const Frequency = {
   DAILY: 'DAILY',

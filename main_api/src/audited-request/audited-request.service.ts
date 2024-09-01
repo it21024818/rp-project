@@ -37,7 +37,7 @@ export class AuditedRequestService {
 
     const detectionResult = this.detector.detect(userAgent);
 
-    let audience: string = '';
+    let audience = '';
     if (authorization) {
       const token = authorization.split(' ')[1];
       const payload = await this.jwtTokenService.getPayload(token);

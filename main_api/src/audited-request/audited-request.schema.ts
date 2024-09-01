@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
+import { FlattenMaps, HydratedDocument } from 'mongoose';
 import { Audit } from 'src/common/schema/audit.schema';
 
 export type AuditedRequestDocument = HydratedDocument<AuditedRequest>;

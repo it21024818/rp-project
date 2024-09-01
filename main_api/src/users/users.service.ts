@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
-import { UserDto } from 'src/common/dtos/user.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { MongooseUtil } from 'src/common/util/mongoose.util';
 import { FeedbackDocument } from 'src/feedback/feedback.schema';
