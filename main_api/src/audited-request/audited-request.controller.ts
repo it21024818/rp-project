@@ -3,7 +3,10 @@ import { Frequency } from 'src/common/enums/frequency.enum';
 import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { AuditedRequestService } from './audited-request.service';
 
-@Controller('audited-requests')
+@Controller({
+  path: 'audited-requests',
+  version: '1',
+})
 export class AuditedRequestController {
   constructor(private readonly auditedRequestService: AuditedRequestService) {}
 

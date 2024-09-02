@@ -1,9 +1,11 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
+import { MongooseUtil } from 'src/common/util/mongoose.util';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { NewsSource } from './news-source.schema';
 
@@ -63,6 +65,10 @@ export class NewsSourceService {
     }
 
     return foundNewsSource;
+  }
+
+  async getPredictionPage(pageRequest: PageRequest) {
+    return await MongooseUtil.getDocumentPage(this.newsSourceModel, pageRequest);
   }
 
   async getSentimentAnalytics(

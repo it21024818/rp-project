@@ -10,9 +10,21 @@ import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { FeedbackService } from './feedback.service';
 
-@Controller('feedback')
+@Controller({
+  path: 'feedback',
+  version: '1',
+})
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
+
+  @Get('analytics')
+  async getPoliticalBiasAnalytics(
+    @Query('start-date', TransformDatePipe) startDate: Date,
+    @Query('end-date', TransformDatePipe) endDate: Date,
+    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
+  ) {
+    return await this.feedbackService.getAnalytics(startDate, endDate, frequency);
+  }
 
   @Get(':id')
   @Roles(...Object.values(UserRole))
@@ -53,18 +65,9 @@ export class FeedbackController {
     return await this.feedbackService.updateFeedback(id, reaction, details, userId);
   }
 
-  @Get('search')
+  @Post('search')
   @Roles(UserRole.ADMIN)
   async getfeedbackPage(@Body() pageRequest: PageRequest) {
     return await this.feedbackService.getFeedbackPage(pageRequest);
-  }
-
-  @Get('analytics')
-  async getPoliticalBiasAnalytics(
-    @Query('start-date', TransformDatePipe) startDate: Date,
-    @Query('end-date', TransformDatePipe) endDate: Date,
-    @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
-  ) {
-    return await this.feedbackService.getAnalytics(startDate, endDate, frequency);
   }
 }

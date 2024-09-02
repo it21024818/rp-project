@@ -1,16 +1,28 @@
-import { Controller, Get, Param, ParseEnumPipe, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseEnumPipe, Post, Query } from '@nestjs/common';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { Frequency } from 'src/common/enums/frequency.enum';
+import { UserRole } from 'src/common/enums/user-roles.enum';
 import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { NewsSourceService } from './news-source.service';
 
-@Controller('news-sources')
+@Controller({
+  path: 'news-sources',
+  version: '1',
+})
 export class NewsSourceController {
   constructor(private readonly newsSourceService: NewsSourceService) {}
 
   @Get(':id')
   async getNewsSource(@Param('id', ValidateObjectIdPipe) id: string) {
     return await this.newsSourceService.getNewsSource(id);
+  }
+
+  @Post('search')
+  @Roles(...Object.values(UserRole))
+  async getPredictionPage(@Body() pageRequest: PageRequest) {
+    return await this.newsSourceService.getPredictionPage(pageRequest);
   }
 
   @Get(':id/analytics/final')
