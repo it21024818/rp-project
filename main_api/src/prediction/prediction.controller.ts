@@ -10,7 +10,10 @@ import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { PredictionService } from './prediction.service';
 
-@Controller('predictions')
+@Controller({
+  path: 'predictions',
+  version: '1',
+})
 export class PredictionController {
   constructor(private readonly predictionService: PredictionService) {}
 
@@ -41,7 +44,7 @@ export class PredictionController {
     return await this.predictionService.createPrediction(text, url, userId);
   }
 
-  @Get('search')
+  @Post('search')
   @Roles(...Object.values(UserRole))
   async getPredictionPage(@Body() pageRequest: PageRequest) {
     return await this.predictionService.getPredictionPage(pageRequest);
@@ -53,6 +56,7 @@ export class PredictionController {
     @Query('end-date', TransformDatePipe) endDate: Date,
     @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
   ) {
+    console.log(startDate, endDate, frequency);
     return await this.predictionService.getFinalAnalytics(startDate, endDate, frequency);
   }
 

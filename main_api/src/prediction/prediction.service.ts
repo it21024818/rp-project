@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import _ from 'lodash';
 import { Model } from 'mongoose';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { PredictionResult } from 'src/common/dtos/prediction-result.dto';
@@ -90,11 +91,12 @@ export class PredictionService {
       });
     }
 
+    await this.feedbackService.deleteFeedbackByPredictionId(id);
     this.logger.log(`Deleted prediction with id '${id}'`);
   }
 
   async createPrediction(text: string, url: string, userId: string): Promise<PredictionDocument> {
-    this.logger.log(`Creating new prediction record from user ${userId} for text ${text}`);
+    this.logger.log(`Creating new prediction record from user '${userId}' for text '${_.truncate(text)}'`);
 
     const MIN_TEXT_LENGTH = 10;
     if (text.split(' ').length < MIN_TEXT_LENGTH) {
@@ -137,14 +139,14 @@ export class PredictionService {
 
       if (existingPrediction) {
         this.logger.log(
-          `Found exactly similar prediction ${existingPrediction.id} for prediction ${savedPrediction.id}`,
+          `Found exactly similar prediction '${existingPrediction.id}' for prediction '${savedPrediction.id}'`,
         );
         sourcePredictionId = existingPrediction.id;
         transformedResult = existingPrediction.result ?? ({} as PredictionResult);
         searchResults = existingPrediction.searchResults ?? [];
         keywords = existingPrediction.keywords ?? [];
       } else {
-        this.logger.log(`No similar prediction found for prediction ${savedPrediction.id}. Starting prediction job`);
+        this.logger.log(`No similar prediction found for prediction '${savedPrediction.id}'. Starting prediction job`);
 
         // If this text has not already been predicted for, then we need to proceed with the
         // prediction job
@@ -154,7 +156,7 @@ export class PredictionService {
         await savedPrediction.save();
         const predictionResult = await this.predictionFeignClient.getPredictionForText(text);
         transformedResult = PredictionUtil.buildPredictionResult(predictionResult);
-        this.logger.log(`Built prediction result for prediction ${savedPrediction.id}`);
+        this.logger.log(`Built prediction result for prediction '${savedPrediction.id}'`);
 
         // Get related web-pages
         savedPrediction.status = PredictionStatus.EXTRACTING_KEYWORDS;
@@ -162,8 +164,8 @@ export class PredictionService {
         savedPrediction.updatedBy = userId;
         savedPrediction.result = transformedResult;
         await savedPrediction.save();
-        keywords = await this.predictionFeignClient.extractKeywords(text);
-        this.logger.log(`Extracted keywords for prediction ${savedPrediction.id}`);
+        keywords = (await this.predictionFeignClient.extractKeywords(text)).keywords;
+        this.logger.log(`Extracted keywords for prediction '${savedPrediction.id}'`);
 
         // Search for news articles
         savedPrediction.status = PredictionStatus.SEARCHING_RESULTS;
@@ -172,7 +174,7 @@ export class PredictionService {
         savedPrediction.keywords = keywords;
         await savedPrediction.save();
         searchResults = await this.newsSearchService.performSearch(keywords.join(' '));
-        this.logger.log(`Search results found for prediction ${savedPrediction.id}`);
+        this.logger.log(`Search results found for prediction '${savedPrediction.id}'`);
       }
 
       // Update record
@@ -184,11 +186,11 @@ export class PredictionService {
       savedPrediction.updatedAt = new Date();
       savedPrediction.updatedBy = userId;
       await savedPrediction.save();
-      this.logger.log(`Prediction job completed for prediction ${savedPrediction.id}`);
+      this.logger.log(`Prediction job completed for prediction '${savedPrediction.id}'`);
     } catch (error) {
-      this.logger.error(`Error occurred while creating prediction record for text ${text}`, error);
+      this.logger.error(`Error occurred while creating prediction '${savedPrediction.id}'`, error.stack);
       savedPrediction.status = PredictionStatus.FAILED;
-      savedPrediction.error = error; // We should save this for debugging purposes
+      savedPrediction.error = error.stack; // We should save this for debugging purposes
       savedPrediction.updatedAt = new Date();
       savedPrediction.updatedBy = userId;
       await savedPrediction.save();

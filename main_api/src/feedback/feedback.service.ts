@@ -71,6 +71,12 @@ export class FeedbackService {
     this.logger.log(`Deleted Feedback with id '${id}'`);
   }
 
+  async deleteFeedbackByPredictionId(id: string) {
+    this.logger.log(`Attempting to delete feedback(s) with prediction id'${id}'`);
+    const deletedFeedback = await this.feedbackModel.deleteMany({ predictionId: id });
+    this.logger.log(`Deleted ${deletedFeedback.deletedCount} feedback(s) with id '${id}'`);
+  }
+
   async createFeedback(
     feedback: FeedbackDetails,
     reaction: Reaction,

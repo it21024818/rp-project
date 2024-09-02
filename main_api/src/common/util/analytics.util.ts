@@ -19,17 +19,24 @@ export class AnalyticsUtils {
   }): Promise<TimeBasedAnalytics<T>> {
     let bins: TimeBasedAnalytics<string>['bins'] = [];
     const { startDate, endDate, frequency } = options;
-    const items = await model.find({ createdAt: { $gte: startDate, $lt: endDate }, ...filters });
+    const sanitizedFilters: Record<string, any> = {};
+    for (const key in filters) {
+      if (filters[key]) {
+        sanitizedFilters[key] = filters[key];
+      }
+    }
+    console.log({ createdAt: { $gte: startDate, $lt: endDate }, ...sanitizedFilters });
+    const items = await model.find({ createdAt: { $gte: startDate, $lt: endDate }, ...sanitizedFilters });
     let current = dayjs(startDate);
     const end = dayjs(endDate);
     const stop = 9999;
     while (current.isBefore(end) && bins.length < stop) {
-      const currentBin: (typeof bins)[number] = { startDate: current.toDate(), endDate: end.toDate() } as any;
       const next = current.add(1, FrequencyUtil.getDayJsUnit(frequency));
+      const currentBin: (typeof bins)[number] = { startDate: current.toDate(), endDate: next.toDate() } as any;
       for (const field in fields) {
         const predicate = fields[field];
         const count = items
-          .filter(item => dayjs(item.createdAt).isBefore(end))
+          .filter(item => dayjs(item.createdAt).isBefore(next))
           .filter(item => dayjs(item.createdAt).isAfter(current))
           .filter(predicate).length;
         currentBin[field] = count;

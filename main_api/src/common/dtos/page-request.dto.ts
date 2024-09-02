@@ -1,4 +1,4 @@
-import { IsNumber, IsObject, IsOptional } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 import { SortOrder } from 'mongoose';
 
 export const CriteriaOperator = {
@@ -24,7 +24,6 @@ export class PageRequest {
 
   @IsOptional()
   @IsObject()
-  @IsNumber()
   sort?: {
     field: string;
     direction: SortOrder;

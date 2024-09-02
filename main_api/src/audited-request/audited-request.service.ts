@@ -38,13 +38,13 @@ export class AuditedRequestService {
     const detectionResult = this.detector.detect(userAgent);
 
     let audience = '';
-    if (authorization) {
-      const token = authorization.split(' ')[1];
-      const payload = await this.jwtTokenService.getPayload(token);
-      if (payload.sub) {
-        audience = payload.sub;
-      }
-    }
+    // if (authorization) {
+    //   const token = authorization.split(' ')[1];
+    //   const payload = await this.jwtTokenService.getPayload(token);
+    //   if (payload.sub) {
+    //     audience = payload.sub;
+    //   }
+    // }
     return await new this.auditedRequestModel({
       createdAt: new Date(),
       audience,

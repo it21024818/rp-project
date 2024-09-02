@@ -1,12 +1,17 @@
 import { ArgumentMetadata, BadRequestException, Injectable, Logger, PipeTransform } from '@nestjs/common';
 import dayjs from 'dayjs';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class TransformDatePipe implements PipeTransform {
   private readonly logger = new Logger(TransformDatePipe.name);
 
-  transform(value: any, metadata: ArgumentMetadata) {
+  transform(value: string | undefined, metadata: ArgumentMetadata) {
     try {
+      if (value === null || value === undefined || isEmpty(value)) {
+        throw Error('Value is null or undefined');
+      }
+
       dayjs(value);
       return new Date(value);
     } catch (error) {

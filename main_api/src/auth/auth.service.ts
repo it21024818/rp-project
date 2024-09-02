@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { BadRequestException, ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcryptjs';
-import { first, isUndefined } from 'lodash';
+import { isUndefined } from 'lodash';
 import { Model } from 'mongoose';
 import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
