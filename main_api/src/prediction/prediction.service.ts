@@ -208,7 +208,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'positive' | 'negative' | 'fake' | 'notFake' | 'tweet' | 'news'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -217,12 +217,12 @@ export class PredictionService {
         frequency,
       },
       fields: {
-        fake: item => item.result?.sentimentFakeResult.prediction,
-        notFake: item => !item.result?.sentimentFakeResult.prediction,
-        positive: item => item.result?.sentimentTypeResult.prediction == Sentiment.POSITIVE,
-        negative: item => item.result?.sentimentTypeResult.prediction == Sentiment.NEGATIVE,
-        tweet: item => item.result?.sentimentTextTypeResult.prediction == Text.TWEET,
-        news: item => item.result?.sentimentTextTypeResult.prediction == Text.NEWS,
+        fake: { path: 'result.sentimentFakeResult.prediction', value: true },
+        notFake: { path: 'result.sentimentFakeResult.prediction', value: false },
+        positive: { path: 'result.sentimentTypeResult.prediction', value: Sentiment.POSITIVE },
+        negative: { path: 'result.sentimentTypeResult.prediction', value: Sentiment.NEGATIVE },
+        tweet: { path: 'result.sentimentTextTypeResult.prediction', value: Text.TWEET },
+        news: { path: 'result.sentimentTextTypeResult.prediction', value: Text.NEWS },
       },
     });
   }
@@ -233,7 +233,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'center' | 'left' | 'right' | 'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -242,11 +242,11 @@ export class PredictionService {
         frequency,
       },
       fields: {
-        fake: item => item.result?.biasFakeResult.prediction,
-        notFake: item => !item.result?.biasFakeResult.prediction,
-        left: item => item.result?.biasResult.prediction === PoliticalLeaning.LEFT,
-        right: item => item.result?.biasResult.prediction === PoliticalLeaning.RIGHT,
-        center: item => item.result?.biasResult.prediction === PoliticalLeaning.CENTER,
+        fake: { path: 'result.biasFakeResult.prediction', value: true },
+        notFake: { path: 'result.biasFakeResult.prediction', value: false },
+        left: { path: 'result.biasResult.prediction', value: PoliticalLeaning.LEFT },
+        right: { path: 'result.biasResult.prediction', value: PoliticalLeaning.RIGHT },
+        center: { path: 'result.biasResult.prediction', value: PoliticalLeaning.CENTER },
       },
     });
   }
@@ -257,7 +257,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'low' | 'high' | 'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -266,10 +266,10 @@ export class PredictionService {
         frequency,
       },
       fields: {
-        fake: item => item.result?.textFakeResult.prediction,
-        notFake: item => !item.result?.textFakeResult.prediction,
-        high: item => item.result?.textQualityResult.prediction,
-        low: item => !item.result?.textQualityResult.prediction,
+        fake: { path: 'result.textFakeResult.prediction', value: true },
+        notFake: { path: 'result.textFakeResult.prediction', value: false },
+        high: { path: 'result.textQualityResult.prediction', value: true },
+        low: { path: 'result.textQualityResult.prediction', value: false },
       },
     });
   }
@@ -280,7 +280,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'sarc' | 'notSarc' | 'gen' | 'hyperbole' | 'rhet' | 'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -289,13 +289,13 @@ export class PredictionService {
         frequency,
       },
       fields: {
-        fake: item => item.result?.sarcasmFakeResult.prediction,
-        notFake: item => !item.result?.sarcasmFakeResult.prediction,
-        sarc: item => item.result?.sarcasmPresentResult.prediction,
-        notSarc: item => !item.result?.sarcasmPresentResult.prediction,
-        gen: item => item.result?.sarcasmTypeResult.prediction === Sarcasm.GENERIC,
-        hyperbole: item => item.result?.sarcasmTypeResult.prediction === Sarcasm.HYPERBOLE,
-        rhet: item => item.result?.sarcasmTypeResult.prediction === Sarcasm.RHETORICAL_QUESTION,
+        fake: { path: 'result.sarcasmFakeResult.prediction', value: true },
+        notFake: { path: 'result.sarcasmFakeResult.prediction', value: false },
+        sarc: { path: 'result.sarcasmPresentResult.prediction', value: true },
+        notSarc: { path: 'result.sarcasmPresentResult.prediction', value: false },
+        gen: { path: 'result.sarcasmTypeResult.prediction', value: Sarcasm.GENERIC },
+        hyperbole: { path: 'result.sarcasmTypeResult.prediction', value: Sarcasm.HYPERBOLE },
+        rhet: { path: 'result.sarcasmTypeResult.prediction', value: Sarcasm.RHETORICAL_QUESTION },
       },
     });
   }
@@ -306,7 +306,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -315,8 +315,8 @@ export class PredictionService {
         frequency,
       },
       fields: {
-        fake: item => item.result?.finalFakeResult,
-        notFake: item => !item.result?.finalFakeResult,
+        fake: { path: 'result.finalFakeResult', value: true },
+        notFake: { path: 'result.finalFakeResult', value: false },
       },
     });
   }

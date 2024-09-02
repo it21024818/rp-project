@@ -138,7 +138,7 @@ export class FeedbackService {
     endDate: Date,
     frequency: Frequency,
   ): Promise<TimeBasedAnalytics<'good' | 'bad'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.feedbackModel,
       options: {
         startDate,
@@ -146,8 +146,8 @@ export class FeedbackService {
         frequency,
       },
       fields: {
-        bad: item => item.reaction == Reaction.BAD,
-        good: item => item.reaction == Reaction.GOOD,
+        bad: { path: 'reaction', value: Reaction.BAD },
+        good: { path: 'reaction', value: Reaction.GOOD },
       },
     });
   }

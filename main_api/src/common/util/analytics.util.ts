@@ -54,4 +54,111 @@ export class AnalyticsUtils {
     sum.total = _.sum(Object.values(sum));
     return { sum, bins } as TimeBasedAnalytics<T>;
   }
+
+  public static async getOptimizedTimeBasedAnalytics<T extends string, V extends Audit>({
+    model,
+    options,
+    fields,
+    filters,
+  }: {
+    model: Model<V>;
+    options: { startDate: Date; endDate: Date; frequency: Frequency };
+    fields: Record<string, { path: string; value: any }>;
+    filters?: Record<string, string | undefined>;
+  }): Promise<TimeBasedAnalytics<T>> {
+    const { startDate, endDate, frequency } = options;
+
+    // Sanitize filters by removing undefined values
+    const sanitizedFilters = Object.entries(filters ?? {}).reduce<Record<string, any>>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
+    const fieldAggregations = Object.entries(fields).reduce((acc, [fieldKey, { path, value }]) => {
+      acc[fieldKey] = {
+        $sum: {
+          $cond: [{ $eq: [`$${path}`, value] }, 1, 0],
+        },
+      };
+      return acc;
+    }, {} as Record<string, any>);
+
+    // Determine date format based on frequency
+    let dateFormat: string;
+    switch (frequency) {
+      case 'DAILY':
+        dateFormat = '%Y-%m-%d';
+        break;
+      case 'WEEKLY':
+        dateFormat = '%Y-%U';
+        break;
+      case 'MONTHLY':
+        dateFormat = '%Y-%m';
+        break;
+      case 'YEARLY':
+        dateFormat = '%Y';
+        break;
+      default:
+        dateFormat = '%Y-%m-%d'; // Default to daily if frequency is unknown
+    }
+
+    const pipeline = [
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lt: endDate },
+          ...sanitizedFilters,
+        },
+      },
+      {
+        $addFields: {
+          bin: {
+            $dateToString: {
+              format: dateFormat,
+              date: '$createdAt',
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$bin',
+          count: { $sum: 1 },
+          ...fieldAggregations, // Aggregate fields by counting matches
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          bins: {
+            $push: {
+              startDate: '$_id',
+              endDate: '$_id',
+              ...Object.fromEntries(Object.keys(fields).map(fieldKey => [fieldKey, `$${fieldKey}`])),
+            },
+          },
+          total: { $sum: '$count' },
+        },
+      },
+      {
+        $addFields: {
+          sum: {
+            total: '$total',
+            ...Object.fromEntries(Object.keys(fields).map(fieldKey => [fieldKey, { $sum: `$bins.${fieldKey}` }])),
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          bins: 1,
+          sum: 1,
+        },
+      },
+    ];
+
+    const result = (await model.aggregate(pipeline)).at(0);
+    return result as TimeBasedAnalytics<T>;
+  }
 }

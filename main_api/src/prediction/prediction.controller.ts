@@ -56,7 +56,6 @@ export class PredictionController {
     @Query('end-date', TransformDatePipe) endDate: Date,
     @Query('frequency', new ParseEnumPipe(Frequency)) frequency: Frequency,
   ) {
-    console.log(startDate, endDate, frequency);
     return await this.predictionService.getFinalAnalytics(startDate, endDate, frequency);
   }
 

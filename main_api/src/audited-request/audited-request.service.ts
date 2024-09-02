@@ -58,7 +58,7 @@ export class AuditedRequestService {
     endDate: Date,
     frequency: Frequency,
   ): Promise<TimeBasedAnalytics<'web' | 'mobile' | 'extension'>> {
-    return await AnalyticsUtils.getTimeBasedAnalytics({
+    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
       model: this.auditedRequestModel,
       options: {
         startDate,
@@ -66,9 +66,9 @@ export class AuditedRequestService {
         frequency,
       },
       fields: {
-        web: item => item.audience === Audience.WEB_APP,
-        extension: item => item.audience === Audience.EXTENSION,
-        mobile: item => item.audience === Audience.MOBILE_APP,
+        web: { path: 'audience', value: Audience.WEB_APP },
+        extension: { path: 'audience', value: Audience.EXTENSION },
+        mobile: { path: 'audience', value: Audience.MOBILE_APP },
       },
     });
   }
