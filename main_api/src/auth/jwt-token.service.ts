@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { readFile } from 'fs/promises';
 import { JWTPayload, KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
+import _ from 'lodash';
 import { join } from 'path';
 import { Audience } from 'src/common/enums/audience.enum';
 import ErrorMessage from 'src/common/enums/error-message.enum';
@@ -59,7 +60,7 @@ export class JwtTokenService {
   }
 
   async verifyAccessToken(token: string): Promise<string> {
-    this.logger.log(`Verifying access token '${token}'...`);
+    this.logger.debug(`Verifying access token '${_.truncate(token)}'...`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],

@@ -4,7 +4,7 @@ export const EmailPurpose = {
     template: 'registration',
   },
   RESET_PASSWORD: {
-    subject: 'Ligthouse - Reset your password',
+    subject: 'Lighthouse - Reset your password',
     template: 'reset-password',
   },
 } as const;

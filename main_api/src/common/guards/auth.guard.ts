@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
       }
 
       // Check whether token is latest
-      if (tokenFamily.activeRefreshToken !== token) {
+      if (tokenFamily.activeAccessToken !== token) {
         await this.cacheManager.del(id);
         throw new ForbiddenException('Old access token used');
       }

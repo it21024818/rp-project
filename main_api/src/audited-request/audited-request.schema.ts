@@ -9,8 +9,8 @@ export type FlatAuditedRequest = FlattenMaps<AuditedRequest & { _id: string }>;
 export class AuditedRequest extends Audit {
   @Prop()
   endpoint: string;
-  @Prop()
-  origin: string;
+  @Prop({ type: Object })
+  origin: object;
   @Prop()
   audience: string;
 }

@@ -35,6 +35,7 @@ export class TokenService {
     const token = await this.tokenModel.findOne({
       code,
       purpose: tokenPurpose,
+      tokenStatus: TokenStatus.ACTIVE, // We want to make sure tokens are not re-used
     });
 
     if (token === null) {
@@ -54,6 +55,7 @@ export class TokenService {
       tokenPurpose,
       tokenStatus: TokenStatus.ACTIVE,
     });
+    // TODO: Fix this. Its not revoking
     await Promise.all(
       revokedTokens.map(async token => {
         token.tokenStatus = TokenStatus.REVOKED;

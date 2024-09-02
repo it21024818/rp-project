@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { BadRequestException, ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { compare, hash } from 'bcryptjs';
-import { isUndefined } from 'lodash';
+import { first, isUndefined } from 'lodash';
 import { Model } from 'mongoose';
 import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
@@ -133,7 +133,7 @@ export class AuthService {
       throw new BadRequestException(ErrorMessage.USER_ALREADY_EXISTS);
     }
     const createdUser = new this.userModel(userDto);
-    createdUser.roles = [UserRole.ADMIN];
+    createdUser.roles = [UserRole.USER];
     createdUser.password = await hash(createdUser.password, 10);
     createdUser.isAuthorized = false;
     const savedUser = await createdUser.save();
@@ -155,11 +155,13 @@ export class AuthService {
   }
 
   async sendRegistrationMail(email: string) {
+    this.logger.log(`Attempting to send registration email to user with email '${email}'`);
     await this.tokenService.revokeAllActiveSignUpTokens(email);
     const token = await this.tokenService.createSignUpToken(email);
     this.emailService.sendMail(email, TokenPurpose.SIGN_UP, {
       token: token.code,
     });
+    this.logger.log(`Successfully sent registration email to user with email '${email}'`);
   }
 
   async authorizeUser(tokenCode: string) {
@@ -187,11 +189,14 @@ export class AuthService {
     const token = await this.tokenService.createResetPasswordToken(email);
     this.emailService.sendMail(email, TokenPurpose.RESET_PASSWORD, {
       token: token.code,
+      firstName: existingUser.firstName,
+      link: 'http://localhost:3000/reset-password',
     });
   }
 
   async resetUserPassword(password: string, tokenCode: string) {
-    const { email } = await this.tokenService.claimToken(tokenCode, TokenPurpose.SIGN_UP);
+    this.logger.log(`Attempting to reset password for user with token code '${tokenCode}'`);
+    const { email } = await this.tokenService.claimToken(tokenCode, TokenPurpose.RESET_PASSWORD);
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser === null) {
       this.logger.warn(`Could not find user with email '${email}'`);
@@ -201,6 +206,7 @@ export class AuthService {
 
     existingUser.password = await hash(password, 10);
     const savedUser = await existingUser.save();
+    this.logger.log(`Successfully reset password for user with email '${email}'`);
     return savedUser.toJSON();
   }
 

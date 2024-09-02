@@ -8,13 +8,13 @@ export class EmailService {
 
   constructor(private readonly mailerService: MailerService) {}
 
-  async sendMail(to: string, purpose: EmailPurpose, data?: { token?: string }) {
+  async sendMail(to: string, purpose: EmailPurpose, data?: any) {
     const emailData = EmailPurpose[purpose];
 
     this.mailerService
       .sendMail({
         to,
-        from: 'noreply@sera.com',
+        from: 'noreply@lighthouse.com',
         subject: emailData.subject,
         template: emailData.template,
         context: data,

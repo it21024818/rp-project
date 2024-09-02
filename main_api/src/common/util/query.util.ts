@@ -6,7 +6,7 @@ import ErrorMessage from '../enums/error-message.enum';
 
 export class QueryUtil {
   static buildSort = (sort: PageRequest['sort']) => {
-    const sortArr: [string, SortOrder][] = Object.entries(sort ?? {}).map(([key, value]) => [key, value as SortOrder]);
+    const sortArr: [string, SortOrder][] = [Object.values(sort ?? {}) as [string, SortOrder]];
     return sortArr;
   };
 

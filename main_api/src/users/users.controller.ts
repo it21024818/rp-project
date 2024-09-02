@@ -7,7 +7,10 @@ import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { UsersService } from './users.service';
 
-@Controller('users')
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
