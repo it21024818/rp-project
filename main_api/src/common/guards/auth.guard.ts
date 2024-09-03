@@ -4,7 +4,7 @@ import { Request } from 'express';
 import { isUndefined } from 'lodash';
 import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { UsersService } from 'src/users/users.service';
-import { TokenFamily } from '../schema/token-family.dto';
+import { TokenFamily } from '../dtos/token-family.dto';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
