@@ -10,7 +10,7 @@ import { LoginDto } from 'src/common/dtos/login.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
-import { TokenFamily } from 'src/common/schema/tokenFamily.schema';
+import { TokenFamily } from 'src/common/schema/token-family.dto';
 import { EmailService } from 'src/email/email.service';
 import { TokenService } from 'src/token/token.service';
 import { User } from 'src/users/user.schema';

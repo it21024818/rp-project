@@ -9,7 +9,7 @@ import { Page } from 'src/common/dtos/page.dto';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
-import { Audit } from 'src/common/schema/audit.schema';
+import { Audit } from 'src/core/audit.schema';
 
 @Injectable()
 export class CoreService {

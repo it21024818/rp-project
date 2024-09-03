@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
-import { Audit } from 'src/common/schema/audit.schema';
+import { Audit } from 'src/core/audit.schema';
 import { UserRole } from '../common/enums/user-roles.enum';
 import { Subscription } from './subscription.class';
 
