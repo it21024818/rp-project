@@ -12,8 +12,7 @@ import { PredictionStatus } from 'src/common/enums/prediction-status.enum';
 import { Sarcasm } from 'src/common/enums/sarcasm.enum';
 import { Sentiment } from 'src/common/enums/sentiment.enum';
 import { Text } from 'src/common/enums/text.enum';
-import { AnalyticsUtils } from 'src/common/util/analytics.util';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { CoreService } from 'src/core/core.service';
 import { Feedback } from 'src/feedback/feedback.schema';
 import { FeedbackService } from 'src/feedback/feedback.service';
 import { NewsSearchService } from 'src/news-search/news-search.service';
@@ -29,6 +28,7 @@ export class PredictionService {
   private readonly logger = new Logger(PredictionService.name);
 
   constructor(
+    private coreService: CoreService,
     @Inject(forwardRef(() => FeedbackService))
     private feedbackService: FeedbackService,
     private readonly newsSearchService: NewsSearchService,
@@ -199,7 +199,7 @@ export class PredictionService {
   }
 
   async getPredictionPage(pageRequest: PageRequest) {
-    return await MongooseUtil.getDocumentPage(this.predictionModel, pageRequest);
+    return await this.coreService.getDocumentPage(this.predictionModel, pageRequest);
   }
 
   async getSentimentAnalytics(
@@ -208,7 +208,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'positive' | 'negative' | 'fake' | 'notFake' | 'tweet' | 'news'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -233,7 +233,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'center' | 'left' | 'right' | 'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -257,7 +257,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'low' | 'high' | 'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -280,7 +280,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'sarc' | 'notSarc' | 'gen' | 'hyperbole' | 'rhet' | 'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {
@@ -306,7 +306,7 @@ export class PredictionService {
     frequency: Frequency,
     newsSourceId?: string,
   ): Promise<TimeBasedAnalytics<'fake' | 'notFake'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.predictionModel,
       filters: { newsSourceId },
       options: {

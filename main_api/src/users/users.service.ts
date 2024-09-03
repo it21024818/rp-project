@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { CoreService } from 'src/core/core.service';
 import { FeedbackDocument } from 'src/feedback/feedback.schema';
 import { FeedbackService } from 'src/feedback/feedback.service';
 import { PredictionDocument } from 'src/prediction/prediction.schema';
@@ -16,6 +16,7 @@ export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
   constructor(
+    private readonly coreService: CoreService,
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly predictionsService: PredictionService,
     private readonly feedbackService: FeedbackService,
@@ -100,6 +101,6 @@ export class UsersService {
   }
 
   async getUserPage(pageRequest: PageRequest) {
-    return await MongooseUtil.getDocumentPage(this.userModel, pageRequest);
+    return await this.coreService.getDocumentPage(this.userModel, pageRequest);
   }
 }

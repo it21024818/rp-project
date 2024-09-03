@@ -32,6 +32,7 @@ import { TokenModule } from './token/token.module';
 import { TokenService } from './token/token.service';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
+import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { UsersService } from './users/users.service';
     MigrationsModule,
     OauthModule,
     NewsSourceModule,
+    CoreModule,
   ],
   providers: [
     AuthService,

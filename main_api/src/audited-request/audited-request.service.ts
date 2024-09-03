@@ -7,7 +7,7 @@ import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import { Audience } from 'src/common/enums/audience.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
-import { AnalyticsUtils } from 'src/common/util/analytics.util';
+import { CoreService } from 'src/core/core.service';
 import { AuditedRequest } from './audited-request.schema';
 
 @Injectable()
@@ -24,6 +24,7 @@ export class AuditedRequestService {
 
   constructor(
     private readonly jwtTokenService: JwtTokenService,
+    private readonly coreService: CoreService,
     @InjectModel(AuditedRequest.name) private readonly auditedRequestModel: Model<AuditedRequest>,
   ) {}
 
@@ -58,7 +59,7 @@ export class AuditedRequestService {
     endDate: Date,
     frequency: Frequency,
   ): Promise<TimeBasedAnalytics<'web' | 'mobile' | 'extension'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.auditedRequestModel,
       options: {
         startDate,

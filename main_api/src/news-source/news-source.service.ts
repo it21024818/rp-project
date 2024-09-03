@@ -5,7 +5,7 @@ import { PageRequest } from 'src/common/dtos/page-request.dto';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { CoreService } from 'src/core/core.service';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { NewsSource } from './news-source.schema';
 
@@ -13,6 +13,7 @@ import { NewsSource } from './news-source.schema';
 export class NewsSourceService {
   private readonly logger = new Logger(NewsSourceService.name);
   constructor(
+    private readonly coreService: CoreService,
     @Inject(forwardRef(() => PredictionService))
     private predictionService: PredictionService,
     @InjectModel(NewsSource.name) private readonly newsSourceModel: Model<NewsSource>,
@@ -68,7 +69,7 @@ export class NewsSourceService {
   }
 
   async getPredictionPage(pageRequest: PageRequest) {
-    return await MongooseUtil.getDocumentPage(this.newsSourceModel, pageRequest);
+    return await this.coreService.getDocumentPage(this.newsSourceModel, pageRequest);
   }
 
   async getSentimentAnalytics(
