@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export const Frequency = {
   DAILY: 'DAILY',
   WEEKLY: 'WEEKLY',

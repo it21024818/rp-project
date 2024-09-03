@@ -19,6 +19,7 @@ import { ConfigKey } from './common/enums/config-key.enum';
 import { AuthGuard } from './common/guards/auth.guard';
 import { LogGuard } from './common/guards/log.guard';
 import { RolesGuard } from './common/guards/roles.guard';
+import { CoreModule } from './core/core.module';
 import { EmailModule } from './email/email.module';
 import { EmailService } from './email/email.service';
 import { FeedbackModule } from './feedback/feedback.module';
@@ -32,7 +33,6 @@ import { TokenModule } from './token/token.module';
 import { TokenService } from './token/token.service';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
-import { CoreModule } from './core/core.module';
 
 @Module({
   imports: [

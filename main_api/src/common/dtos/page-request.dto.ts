@@ -1,4 +1,4 @@
-import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsObject, IsOptional } from 'class-validator';
 import { SortOrder } from 'mongoose';
 
 export const CriteriaOperator = {
