@@ -1,7 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { readFile } from 'fs/promises';
-import { KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
+import { JWTPayload, KeyLike, SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
+import _ from 'lodash';
 import { join } from 'path';
+import { Audience } from 'src/common/enums/audience.enum';
+import ErrorMessage from 'src/common/enums/error-message.enum';
 
 @Injectable()
 export class JwtTokenService {
@@ -19,12 +22,7 @@ export class JwtTokenService {
 
   private async setup() {
     this.logger.log('Setting up private and public keys...');
-    const [
-      accessPrivateKey,
-      accessPublicKey,
-      refreshPrivateKey,
-      refreshPublicKey,
-    ] = await Promise.all([
+    const [accessPrivateKey, accessPublicKey, refreshPrivateKey, refreshPublicKey] = await Promise.all([
       this.loadKey('./assets/certs/access-private-key.pem', true),
       this.loadKey('./assets/certs/access-public-key.pem'),
       this.loadKey('./assets/certs/refresh-private-key.pem', true),
@@ -43,6 +41,7 @@ export class JwtTokenService {
       .setIssuedAt()
       .setSubject(id)
       .setIssuer(this.issuer)
+      .setAudience(Object.values(Audience))
       .setExpirationTime('2h')
       .setProtectedHeader({ alg: this.keyAlgorithm })
       .sign(this.accessPrivateKey);
@@ -54,29 +53,58 @@ export class JwtTokenService {
       .setIssuedAt()
       .setSubject(id)
       .setIssuer(this.issuer)
+      .setAudience(Object.values(Audience))
       .setExpirationTime('7d')
       .setProtectedHeader({ alg: this.keyAlgorithm })
       .sign(this.refreshPrivateKey);
   }
 
   async verifyAccessToken(token: string): Promise<string> {
+    this.logger.debug(`Verifying access token '${_.truncate(token)}'...`);
+    const { payload } = await jwtVerify(token, this.accessPublicKey, {
+      issuer: this.issuer,
+      requiredClaims: ['sub', 'aud'],
+      algorithms: [this.keyAlgorithm],
+      audience: Object.values(Audience),
+    });
+    if (!payload.sub) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Access token does not contain a subject',
+      });
+    }
+    return payload.sub;
+  }
+
+  async getPayload(token: string): Promise<JWTPayload> {
     this.logger.log(`Verifying access token '${token}'...`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
-      requiredClaims: ['sub'],
+      requiredClaims: ['sub', 'aud'],
       algorithms: [this.keyAlgorithm],
+      audience: Object.values(Audience),
     });
-    return payload.sub!;
+    if (!payload.sub) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Access token does not contain a subject',
+      });
+    }
+    return payload;
   }
 
   async verifyRefreshToken(token: string): Promise<string> {
     this.logger.log(`Verifying refresh token '${token}'...`);
     const { payload } = await jwtVerify(token, this.refreshPublicKey, {
       issuer: this.issuer,
-      requiredClaims: ['sub'],
+      requiredClaims: ['sub', 'aud'],
       algorithms: [this.keyAlgorithm],
+      audience: Object.values(Audience),
     });
-    return payload.sub!;
+    if (!payload.sub) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Refresh token does not contain a subject',
+      });
+    }
+    return payload.sub;
   }
 
   private async loadKey(path: string, isPrivate?: boolean) {

@@ -1,13 +1,10 @@
 import { Model } from 'mongoose';
 import { PageRequest } from '../dtos/page-request.dto';
-import { QueryUtil } from './query.util';
 import { PageUtil } from './page.util';
+import { QueryUtil } from './query.util';
 
 export class MongooseUtil {
-  static async getDocumentPage<T>(
-    model: Model<T>,
-    { pageNum = 1, pageSize = 10, filter, sort }: PageRequest,
-  ) {
+  static async getDocumentPage<T>(model: Model<T>, { pageNum = 1, pageSize = 10, filter, sort }: PageRequest) {
     try {
       const [content, totalDocuments] = await Promise.all([
         model
@@ -17,7 +14,7 @@ export class MongooseUtil {
           .limit(pageSize),
         model.count(),
       ]);
-      const jsonContent = content.map((doc) => doc.toJSON());
+      const jsonContent = content.map(doc => doc.toJSON());
       const page = PageUtil.buildPage(jsonContent, {
         pageNum,
         pageSize,

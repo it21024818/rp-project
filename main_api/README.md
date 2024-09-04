@@ -37,7 +37,10 @@ WIP
 $ curl -fsSL https://bun.sh/install | bash
 
 # If using oh-my-zsh. Make sure bun is included in the ~/.zshrc
-$ source ~/.zshrc 
+$ source ~/.zshrc
+
+# Make sure to setup local redis
+$ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 #### For Windows
@@ -50,6 +53,9 @@ $ powershell -c "irm bun.sh/install.ps1|iex"
 
 ```bash
 $ bun install
+
+# Make sure to setup local redis
+$ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 ## Running the app
@@ -78,16 +84,11 @@ $ bun run test:e2e
 $ bun run test:cov
 ```
 
-## Support
+## Errors
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+ECONNREFUSED ::1:6379
+Happens because Redis server is unreachable
 
-## Stay in touch
+## References
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+https://medium.com/@uttiyaghosh/strategy-pattern-in-spring-boot-0d6e025eef41

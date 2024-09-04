@@ -2,16 +2,18 @@ version: '3'
 
 services:
   ml-api:
+    image: dinuka07/rp-project/ml-api-image:latest
     build: ./ml_api
     ports:
       - "5000:5000"
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
-    depends_on:
-      - backend
+    # depends_on:
+    #   - backend
 
   backend:
+    image: dinuka07/rp-project/main-api-image:latest
     build: ./main_api
     ports:
       - "3000:3000"
@@ -21,6 +23,7 @@ services:
       - ml-api
 
   frontend:
+    image: dinuka07/rp-project/web-app-image:latest
     build: ./web_app
     ports:
       - "3001:3001"

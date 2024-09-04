@@ -1,19 +1,16 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Body,
-  Post,
-  Delete,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { DetailedUserDto } from 'src/common/dtos/detailed-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
-import { UsersService } from './users.service';
-import { ValidateEmailPipe } from 'src/common/pipes/validate-email.pipe';
+import { UserDto } from 'src/common/dtos/user.dto';
+import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
+import { UsersService } from './users.service';
 
-@Controller('users')
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -24,31 +21,19 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id', ValidateObjectIdPipe) id: string) {
-    const { password, ...user } = (
-      await this.usersService.getUser(id)
-    ).toJSON();
+    const { password: _password, ...user } = (await this.usersService.getUser(id)).toJSON();
     return user;
   }
 
   @Delete(':id')
+  @Roles(...Object.values(UserRole))
   async deleteUser(@Param('id', ValidateObjectIdPipe) id: string) {
     await this.usersService.deleteUser(id);
   }
 
-  @Put('assign')
-  async inviteToRoom(
-    @Query('email', ValidateEmailPipe) email: string,
-    @Query('room-id', ValidateObjectIdPipe) roomId: string,
-  ) {
-    const user = await this.usersService.getUserByEmail(email);
-    await this.usersService.assignToRoom(user.id, roomId);
-  }
-
-  @Put('unassign')
-  async unassignFromRoom(
-    @Query('user-id', ValidateObjectIdPipe) userId: string,
-    @Query('room-id', ValidateObjectIdPipe) roomId: string,
-  ) {
-    await this.usersService.unassignFromRoom(userId, roomId);
+  @Get(':id/details')
+  async getUserDetails(@Param('id', ValidateObjectIdPipe) id: string): Promise<UserDto> {
+    const details = await this.usersService.getUserDetails(id);
+    return DetailedUserDto.buildFrom(...details);
   }
 }
