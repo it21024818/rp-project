@@ -25,6 +25,7 @@ const ErrorMessage = {
   NOT_AUTHENTICATED: 'Not authenticated',
   INVALID_TOKEN: 'Invalid token',
   EMAIL_NOT_VERIFIED: 'Email not verified',
+  OAUTH_CLIENT_ID_NOT_FOUND: 'OAuth client ID not found',
 
   // Misc
   INVALID_FILE_NAME: 'Invalid file name',
