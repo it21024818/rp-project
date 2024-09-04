@@ -14,27 +14,25 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class GoogleService {
   private readonly logger = new Logger(GoogleService.name);
+  private client: OAuth2Client;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private readonly userService: UsersService,
     private readonly authService: AuthService,
-  ) {}
-
-  async generateUrl(res: Response) {
-    this.logger.log('Creating Google OAuth2Client');
-    const redirectURL = `http://localhost:3000/v1/auth/oauth/google/redirect`;
-    console.log(redirectURL);
-    const client = new OAuth2Client(
+  ) {
+    const redirectURL = `${this.configService.get(ConfigKey.MAIN_SERVER_BASE_URL)}v1/auth/oauth/google/redirect`;
+    this.client = new OAuth2Client(
       this.configService.get(ConfigKey.GOOGLE_OAUTH_CLIENT_ID),
       this.configService.get(ConfigKey.GOOGLE_OAUTH_CLIENT_SECRET),
       redirectURL,
     );
+  }
 
-    // Generate the url that will be used for the consent dialog.
+  async generateUrl(res: Response) {
     this.logger.log('Generating Google OAuth URL');
-    const authorizeUrl = client.generateAuthUrl({
+    const authorizeUrl = this.client.generateAuthUrl({
       access_type: 'offline',
       scope: `${GoogleScope.USER_PROFILE} ${GoogleScope.USER_EMAIL}`,
       prompt: 'consent',
@@ -47,18 +45,8 @@ export class GoogleService {
   }
 
   async authorizeUser(code: string) {
-    this.logger.log('Creating Google OAuth2Client');
-    const redirectURL = `http://localhost:3000/v1/auth/oauth/google/redirect`;
-    const client = new OAuth2Client(
-      this.configService.get(ConfigKey.GOOGLE_OAUTH_CLIENT_ID),
-      this.configService.get(ConfigKey.GOOGLE_OAUTH_CLIENT_SECRET),
-      redirectURL,
-    );
-
     this.logger.log('Getting user details response from google');
-    const tokenResponse = await client.getToken(code);
-    await client.setCredentials(tokenResponse.tokens);
-    const accessToken = client.credentials.access_token;
+    const accessToken = (await this.client.getToken(code)).tokens.access_token;
     const data = (
       await firstValueFrom(
         this.httpService.post<{ email: string; given_name: string; family_name: string }>(
