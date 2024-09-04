@@ -11,7 +11,6 @@ export class DetailedUserDto {
   lastName: string;
   email: string;
   roles: UserRole[];
-  isAuthorized: boolean;
   subscription?: SubscriptionDto;
   stripeCustomerId?: string;
   predictions: PredictionDto[];
@@ -29,7 +28,6 @@ export class DetailedUserDto {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      isAuthorized: user.isAuthorized,
       roles: user.roles,
       stripeCustomerId: user.stripeCustomerId,
       subscription: user.subscription,

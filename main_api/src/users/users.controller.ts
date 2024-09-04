@@ -21,8 +21,7 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id', ValidateObjectIdPipe) id: string) {
-    const { password: _password, ...user } = (await this.usersService.getUser(id)).toJSON();
-    return user;
+    return (await this.usersService.getUser(id)).toJSON();
   }
 
   @Delete(':id')

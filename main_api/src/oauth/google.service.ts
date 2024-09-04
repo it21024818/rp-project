@@ -5,10 +5,11 @@ import { Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from 'src/auth/auth.service';
+import { AuthType } from 'src/common/enums/auth-type.enum';
 import { ConfigKey } from 'src/common/enums/config-key.enum';
 import { GoogleScope } from 'src/common/enums/google-scopes.enum';
 import { nestApp } from 'src/main';
-import { User } from 'src/users/user.schema';
+import { User, UserDocument } from 'src/users/user.schema';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -59,14 +60,28 @@ export class GoogleService {
     const { email, family_name: lastName, given_name: firstName } = data;
 
     this.logger.log(`Checking whether user with ${email} email exists`);
-    let existingUser: User;
+    let existingUser: UserDocument;
     try {
       existingUser = await this.userService.getUserByEmail(email);
+      const credentials = await this.authService.getCredentials(existingUser.id);
+      const googleAuth = credentials.strategies.find(strategy => strategy.type === AuthType.GOOGLE_OAUTH);
+      if (!googleAuth) {
+        this.logger.warn(`User with email address ${email} does not have Google OAuth strategy. Adding`);
+        credentials.strategies.push({
+          type: AuthType.GOOGLE_OAUTH,
+          isActive: true,
+          createdAt: new Date(),
+          createdBy: existingUser.id,
+          archived: false,
+        });
+        await credentials.save();
+      }
     } catch (error) {
       this.logger.warn(`User with email address ${email} does not existing. Creating`);
-      existingUser = await this.authService.registerOAuthUser({ email, firstName, lastName });
+      existingUser = await this.authService.registerOAuthUser({ email, firstName, lastName }, AuthType.GOOGLE_OAUTH);
     }
 
-    return await this.authService.loginUserWithoutPassword(existingUser.email);
+    this.logger.log("Finished setting up user's Google OAuth strategy");
+    return await this.authService.loginUserWithOAuth(existingUser.email, AuthType.GOOGLE_OAUTH);
   }
 }

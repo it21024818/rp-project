@@ -19,8 +19,8 @@ export class UserMigration implements OnModuleInit {
         email: 'it21058578@my.sliit.lk',
         firstName: 'Tharindu',
         lastName: 'Gunasekera',
-        isAuthorized: true,
-        password: await hash('password', 10),
+        // isAuthorized: true,
+        // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
       },
       {
@@ -29,8 +29,8 @@ export class UserMigration implements OnModuleInit {
         email: 'it21070358 @my.sliit.lk',
         firstName: 'Disira',
         lastName: 'Thihan',
-        isAuthorized: true,
-        password: await hash('password', 10),
+        // isAuthorized: true,
+        // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
       },
       {
@@ -39,8 +39,8 @@ export class UserMigration implements OnModuleInit {
         email: 'it21024818@my.sliit.lk',
         firstName: 'Dinuka',
         lastName: 'Dissanayake',
-        isAuthorized: true,
-        password: await hash('password', 10),
+        // isAuthorized: true,
+        // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
       },
       {
@@ -49,8 +49,8 @@ export class UserMigration implements OnModuleInit {
         email: 'it21028014@my.sliit.lk',
         firstName: 'Sansika',
         lastName: 'Kodithuwakku',
-        isAuthorized: true,
-        password: await hash('password', 10),
+        // isAuthorized: true,
+        // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
       },
     ];

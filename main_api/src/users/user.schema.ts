@@ -19,9 +19,6 @@ export class User extends Audit {
   @Prop({ isRequired: true, unique: true })
   email: string;
 
-  @Prop({ isRequired: true })
-  password: string;
-
   @Prop({
     isRequired: true,
     validate: {
@@ -32,9 +29,6 @@ export class User extends Audit {
     },
   })
   roles: UserRole[];
-
-  @Prop({ isRequired: true })
-  isAuthorized: boolean;
 
   @Prop()
   subscription?: Subscription;

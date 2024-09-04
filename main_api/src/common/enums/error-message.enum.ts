@@ -7,6 +7,7 @@ const ErrorMessage = {
   FILE_NOT_FOUND: 'File not found',
   NEWS_SOURCE_NOT_FOUND: 'News source not found',
   PAYMENT_STRATEGY_NOT_FOUND: 'Payment strategy not found',
+  CREDENTIALS_NOT_FOUND: 'Credentials not found',
 
   // Payments
   SESSION_URL_INVALID: 'Session URL invalid',

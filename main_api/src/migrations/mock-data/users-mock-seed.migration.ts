@@ -24,8 +24,8 @@ export class UsersMockSeedMigration implements OnModuleInit {
         email: faker.internet.email({ firstName, lastName }),
         firstName,
         lastName,
-        isAuthorized: true,
-        password: await hash('password', 10),
+        // isAuthorized: true,
+        // password: await hash('password', 10),
         roles: [UserRole.USER],
         stripeCustomerId: 'stripe_' + faker.database.mongodbObjectId(),
         ...(faker.number.int({ max: 10 }) > 3
