@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, RawBodyRequest } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
@@ -117,15 +117,15 @@ export class StripeStrategy implements PaymentStrategy {
     return portalSession.url;
   }
 
-  async handleEvent(request: Request) {
+  async handleEvent(request: RawBodyRequest<Request>) {
     const endpointSecret = this.configService.get(ConfigKey.STRIPE_WEBHOOK_ENDPOINT_SECRET);
-    let event = request.body;
+    let event: any;
     if (endpointSecret) {
       const signature = request.headers['stripe-signature'] as string;
       try {
-        event = this.stripe.webhooks.constructEvent(request.body, signature, endpointSecret) as Stripe.Event;
+        event = this.stripe.webhooks.constructEvent(request.rawBody!, signature, endpointSecret) as Stripe.Event;
       } catch (err) {
-        this.logger.warn(`⚠️  Webhook signature verification failed. Received ${signature}`, err.message);
+        this.logger.error(`Webhook signature verification failed`, err.stack);
         throw new BadRequestException();
       }
     }
@@ -146,6 +146,7 @@ export class StripeStrategy implements PaymentStrategy {
   }
 
   private async handleCustomerSubscriptionUpdated(subscription: Stripe.Subscription) {
+    this.logger.log(`Handling subscription ${subscription.id} for customer ${subscription.customer}...`);
     const user = await this.usersService.getUserByStripeCustomerId(subscription.customer as string);
     const planId = subscription.items.data[0].price.id as string;
     user.subscription = {
@@ -156,5 +157,6 @@ export class StripeStrategy implements PaymentStrategy {
       endingTs: new Date(subscription.current_period_end),
     };
     await user.save();
+    this.logger.log(`Subscription updated for user ${user._id}.`);
   }
 }
