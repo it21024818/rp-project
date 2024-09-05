@@ -35,6 +35,9 @@ export class User extends Audit {
 
   @Prop()
   stripeCustomerId?: string;
+
+  @Prop({ isRequired: true })
+  predictionsCount: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
