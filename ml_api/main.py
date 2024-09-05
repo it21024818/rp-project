@@ -7,7 +7,7 @@ from experts.bias_expert import load_bias_model, predict_bias_and_fake_news
 # from google.colab import drive
 # import gdown
 # from tensorflow.keras.models import load_model
-from keybert import KeyBERT
+# from keybert import KeyBERT
 # import numpy as np
 import nltk
 from nltk.tokenize import word_tokenize
