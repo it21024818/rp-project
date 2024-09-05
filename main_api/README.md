@@ -79,6 +79,15 @@ docker run --rm -it stripe/stripe-cli listen
   --forward-to http://<your_ipv4_address>:3000/v1/payments/stripe/webhook
 ```
 
+When this command runs you will get your **webhook signing secret**. It will appear in the output as follows.
+
+```bash
+A newer version of the Stripe CLI is available, please update to: v1.21.3
+> Ready! You are using Stripe API Version [2024-06-20]. Your webhook signing secret is <secret_here> (^C to quit)
+```
+
+Copy this secret and substitute its value with the value of `STRIPE_WEBHOOK_ENDPOINT_SECRET` in the .env file. Once all this is done **make sure to restart the server manually** so that environment value changes may take effect.
+
 You should now be able to make calls to the `/v1/payments/stripe/checkout` and have them redirect to appropriate pages while also having proper database updates for subscriptions
 
 ## Test
