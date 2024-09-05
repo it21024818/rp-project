@@ -21,14 +21,14 @@ $ curl -fsSL https://bun.sh/install | bash
 
 # If using oh-my-zsh. Make sure bun is included in the ~/.zshrc
 $ source ~/.zshrc
+```
 
 #### For Windows
 
-```
-
+```bash
 $ powershell -c "irm bun.sh/install.ps1|iex"
 
-````
+```
 
 ### Project Installation
 
@@ -37,7 +37,7 @@ $ bun install
 
 # Make sure to setup local redis
 $ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
-````
+```
 
 ## Running the app
 
@@ -51,6 +51,35 @@ $ bun run start:dev
 # production mode
 $ bun run start:prod
 ```
+
+### Testing Payments
+
+#### Stripe
+
+For this purpose you need to get the stripe CLI properly running to handle webhook events. The easiest way to do this is using a docker container. To get this docker container running you will need a **Stripe Secret Key** and and your machines **IPV4 address**. The **Stripe Secret Key** will be shared with you as part of the .env file. This will be under the name `STRIPE_PRIVATE_KEY`
+
+You will have to acquire your **IPV4 address** by checking your config. This can be done by using the the `ipconfig` command in your local terminal. Search through the output until you find the address as given below or otherwise. (Sensitive information has been removed)
+
+```
+Ethernet adapter vEthernet (WSL (Hyper-V firewall)):
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : xxxx::xxxx:xxxx:xxxx:xxxx%xx
+   IPv4 Address. . . . . . . . . . . : xxx.xxx.xxx.xxx <- You want this
+   Subnet Mask . . . . . . . . . . . : xxx.xxx.xxx.xxx
+   Default Gateway . . . . . . . . . :
+```
+
+After you have gathered the above, run the below command while substituting those values with the placeholders
+
+```bash
+# Get a local stripe-cli instance running
+docker run --rm -it stripe/stripe-cli listen
+  --api-key <stripe_secret_key>
+  --forward-to http://<your_ipv4_address>:3000/v1/payments/stripe/webhook
+```
+
+You should now be able to make calls to the `/v1/payments/stripe/checkout` and have them redirect to appropriate pages while also having proper database updates for subscriptions
 
 ## Test
 
