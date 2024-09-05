@@ -9,6 +9,7 @@ import { PaletteMode } from "@mui/material";
 import getLPTheme from "./themes/theme";
 import AppAppBar from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import RoutePaths from "./config";
 
 function App() {
   const [mode, setMode] = React.useState<PaletteMode>("light");
@@ -29,7 +30,7 @@ function App() {
         <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
       )}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path={RoutePaths.home} element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SingUpPage />} />
       </Routes>
