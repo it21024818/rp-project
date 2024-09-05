@@ -70,7 +70,7 @@ Ethernet adapter vEthernet (WSL (Hyper-V firewall)):
    Default Gateway . . . . . . . . . :
 ```
 
-After you have gathered the above, run the below command while substituting those values with the placeholders
+After you have gathered the above, run the below command while substituting those values with the placeholders. The reason we need to get our specific IPV4 addrtess for the docker command is that the docker command does not recognize `localhost` as the `localhost` of the host machine, but as `localhost` of its container. The workaround for this using a special `docker run` flag `--network=host` only works for linux. For windows getting our host machine's IPV4 manually and specifying it in the URL seems to be the most straightforward way.
 
 ```bash
 # Get a local stripe-cli instance running
