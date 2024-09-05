@@ -9,6 +9,9 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+    # volumes:
+    #   - ml-api-data:/app/data
     # depends_on:
     #   - backend
 
@@ -31,3 +34,14 @@ services:
       - NODE_ENV=development
     depends_on:
       - backend
+
+  redis:
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  # ml-api-data:
+  redis-data:
