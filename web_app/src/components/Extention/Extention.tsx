@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { alpha } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -7,13 +8,22 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import InputFileUpload from "../FileUploadButton/FileUploadButton";
+// import InputFileUpload from "../FileUploadButton/FileUploadButton";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
+import React, { useState } from "react";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import RadialBarChart from "./RadialBarChart";
+
+import { usePredictionMutation } from "../../store/apiquery/predictionsApiSlice";
+
+import { SearchResult } from "../../../types";
 
 const BorderLinearProgress = styled(LinearProgress)<{
   cl1: string;
@@ -38,17 +48,48 @@ const StyledTextField = styled(TextField)({
   },
 });
 
-const value = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. ...an environment where businesses and policymakers can collaborate to develop favourable regulations. What is important is that the Bill is ‘binding,’ and this binding nature of the obligations may well turn out to be directory making prescribed timelines in the Bill no longer of the essence, ensuring a commitment to achieving its targets.
-
-Overcoming the limitations of previous laws
-
-The agencies set up to implement the reforms discussed in this article, are proposed to replace the Board of Investment (BoI) of Sri Lanka Law, No. 4 of 1978 (BoI Law) with the Economic Commission. The effectiveness of the BOI has been mixed, with criticisms around inefficiency, political interference, and inadequate support for diverse economic activities. There is a lack of independence in the existing institutions which hinders their ability to create distinct regulatory environments tailored for economic activities for instance, the head of both the Port City Commission and the Board of Investment is currently the same person, despite the fact that the Colombo Port City Economic Commission Act is intended to operate independently from BOI Law. 
-
-A more structured approach to economic development
-
-The Bill proposes establishing specialised bodies or agencies: (i) The Economic Commission of Sri Lanka (EC), (ii) Investment Zones Sri Lanka (Zones SL), (iii) Office of International Trade (OIT), (iv) National Productivity Commission (NPC), and (v) Sri Lanka Institute of Exports and International Trade. By decentralising functions and responsibilities, and establishing autonomous bodies empowered to ensure timely decision-making, they can operate more efficiently without the bottlenecks often associated with a single large entity like the BOI. These agencies will also have the liberty to drive innovation by promoting research, development, and the adoption of new technologies.`;
-
 export default function Hero() {
+  const [makePrediction, result] = usePredictionMutation();
+
+  const [formData, setFormData] = useState({
+    text: "",
+    url: "http://www.google.com",
+  });
+
+  const handleValue = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    console.log(formData.text);
+
+    try {
+      const result = await makePrediction(formData);
+
+      if ("data" in result && result.data) {
+        console.log("Prediction done successfully");
+        setFormData({
+          text: "",
+          url: "http://www.google.com",
+        });
+        console.log(result.data?.result?.biasFakeResult?.confidence);
+      } else if ("error" in result && result.error) {
+        console.error("Prediction done failed", result.error);
+      }
+    } catch (error) {
+      console.error("Prediction done failed`", error);
+    }
+  };
+
+  console.log(result?.data);
+
   return (
     <Box
       id="hero"
@@ -178,7 +219,7 @@ export default function Hero() {
           display="flex"
           flexDirection="column"
         >
-          <InputFileUpload />
+          {/* <InputFileUpload /> */}
           <Typography
             textAlign="center"
             color="text.secondary"
@@ -196,6 +237,10 @@ export default function Hero() {
           <TextField
             id="outlined-multiline-static"
             label="Insert your news article "
+            type="text"
+            name="text"
+            value={formData.text}
+            onChange={handleValue}
             multiline
             rows={20}
             defaultValue="Default Value"
@@ -214,320 +259,408 @@ export default function Hero() {
               marginTop: "20px",
             }}
             startIcon={<CheckCircleIcon />}
+            onClick={handleSubmit}
           >
             Check
           </Button>
         </Box>
         {/* New Box for the results */}
-        <Box
-          id="image"
-          sx={(theme) => ({
-            mt: { xs: 8, sm: 10 },
-            alignSelf: "center",
-            height: { xs: 200, sm: 700 },
-            width: "100%",
-            backgroundImage:
-              theme.palette.mode === "light"
-                ? 'url("/static/images/templates/templates-images/hero-light.png")'
-                : 'url("/static/images/templates/templates-images/hero-dark.png")',
-            backgroundSize: "cover",
-            borderRadius: "10px",
-            outline: "1px solid",
-            outlineColor:
-              theme.palette.mode === "light"
-                ? alpha("#BFCCD9", 0.5)
-                : alpha("#9CCCFC", 0.1),
-            boxShadow:
-              theme.palette.mode === "light"
-                ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
-                : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
-            textAlign: "center",
-            padding: 2,
-          })}
-          display="flex"
-          flexDirection="column"
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Box
-                id="image"
-                sx={(theme) => ({
-                  mt: { xs: 8, sm: 4 },
-                  alignSelf: "center",
-                  height: { xs: 100, sm: 600 },
-                  width: "100%",
-                  backgroundImage:
-                    theme.palette.mode === "light"
-                      ? 'url("/static/images/templates/templates-images/hero-light.png")'
-                      : 'url("/static/images/templates/templates-images/hero-dark.png")',
-                  backgroundSize: "cover",
-                  borderRadius: "10px",
-                  outline: "1px solid",
-                  outlineColor:
-                    theme.palette.mode === "light"
-                      ? alpha("#BFCCD9", 0.5)
-                      : alpha("#9CCCFC", 0.1),
-                  boxShadow:
-                    theme.palette.mode === "light"
-                      ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
-                      : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
-                  textAlign: "center",
-                })}
-                display="flex"
-                flexDirection="column"
-              >
-                <Typography
-                  textAlign="left"
-                  marginLeft="40px"
-                  color="text.secondary"
-                  variant="h6"
-                  fontWeight="100px"
-                  sx={{
+
+        {result?.isSuccess ? (
+          <Box
+            id="image"
+            sx={(theme) => ({
+              mt: { xs: 8, sm: 10 },
+              alignSelf: "center",
+              width: "100%",
+              backgroundImage:
+                theme.palette.mode === "light"
+                  ? 'url("/static/images/templates/templates-images/hero-light.png")'
+                  : 'url("/static/images/templates/templates-images/hero-dark.png")',
+              backgroundSize: "cover",
+              borderRadius: "10px",
+              outline: "1px solid",
+              outlineColor:
+                theme.palette.mode === "light"
+                  ? alpha("#BFCCD9", 0.5)
+                  : alpha("#9CCCFC", 0.1),
+              boxShadow:
+                theme.palette.mode === "light"
+                  ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
+                  : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
+              textAlign: "center",
+              padding: 2,
+            })}
+            display="flex"
+            flexDirection="column"
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Box
+                  id="image"
+                  sx={(theme) => ({
+                    mt: { xs: 8, sm: 4 },
                     alignSelf: "center",
-                    width: { sm: "100%", md: "100%" },
-                    marginTop: "20px",
-                  }}
+                    width: "100%",
+                    backgroundImage:
+                      theme.palette.mode === "light"
+                        ? 'url("/static/images/templates/templates-images/hero-light.png")'
+                        : 'url("/static/images/templates/templates-images/hero-dark.png")',
+                    backgroundSize: "cover",
+                    borderRadius: "10px",
+                    outline: "1px solid",
+                    outlineColor:
+                      theme.palette.mode === "light"
+                        ? alpha("#BFCCD9", 0.5)
+                        : alpha("#9CCCFC", 0.1),
+                    boxShadow:
+                      theme.palette.mode === "light"
+                        ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
+                        : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
+                    textAlign: "center",
+                  })}
+                  display="flex"
+                  flexDirection="column"
                 >
-                  Inserted News article
-                </Typography>
-                <StyledTextField
-                  multiline
-                  variant="outlined"
-                  value={value}
-                  sx={{ padding: "20px" }}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  fullWidth
-                />
-                <Alert
-                  severity="success"
-                  color="success"
-                  variant="outlined"
-                  sx={{
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    backgroundColor: "#DCF3EB",
-                  }}
-                >
-                  This news a true news.
-                </Alert>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box
-                id="image"
-                sx={(theme) => ({
-                  mt: { xs: 8, sm: 4 },
-                  alignSelf: "center",
-                  height: { xs: 200, sm: 600 },
-                  width: "100%",
-                  backgroundImage:
-                    theme.palette.mode === "light"
-                      ? 'url("/static/images/templates/templates-images/hero-light.png")'
-                      : 'url("/static/images/templates/templates-images/hero-dark.png")',
-                  backgroundSize: "cover",
-                  borderRadius: "10px",
-                  outline: "1px solid",
-                  outlineColor:
-                    theme.palette.mode === "light"
-                      ? alpha("#BFCCD9", 0.5)
-                      : alpha("#9CCCFC", 0.1),
-                  boxShadow:
-                    theme.palette.mode === "light"
-                      ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
-                      : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
-                  textAlign: "center",
-                })}
-                display="flex"
-                flexDirection="column"
-              >
-                <Typography
-                  textAlign="left"
-                  marginLeft="40px"
-                  color="text.secondary"
-                  variant="h6"
-                  fontWeight="100px"
-                  sx={{
+                  <Typography
+                    textAlign="left"
+                    marginLeft="40px"
+                    color="text.secondary"
+                    variant="h6"
+                    fontWeight="100px"
+                    sx={{
+                      alignSelf: "center",
+                      width: { sm: "100%", md: "100%" },
+                      marginTop: "20px",
+                    }}
+                  >
+                    Inserted News article
+                  </Typography>
+                  <StyledTextField
+                    multiline
+                    variant="outlined"
+                    value={result.data?.text}
+                    sx={{ padding: "20px" }}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    fullWidth
+                  />
+
+                  {result?.data?.result?.finalFakeResult == true ? (
+                    <Alert
+                      severity="success"
+                      color="success"
+                      variant="outlined"
+                      sx={{
+                        marginLeft: "20px",
+                        marginRight: "20px",
+                        backgroundColor: "#DCF3EB",
+                      }}
+                    >
+                      This news a true news.
+                    </Alert>
+                  ) : (
+                    <Alert
+                      severity="error"
+                      color="error"
+                      variant="outlined"
+                      sx={{
+                        marginLeft: "20px",
+                        marginRight: "20px",
+                        backgroundColor: "#DCF3EB",
+                      }}
+                    >
+                      This news a false news.
+                    </Alert>
+                  )}
+                  {result?.data?.searchResults?.map(
+                    (searchResult: SearchResult, index: number) => (
+                      <Card
+                        key={index}
+                        sx={{
+                          marginLeft: "20px",
+                          marginRight: "20px",
+                          marginTop: "10px",
+                          backgroundColor: "#F5F5F5",
+                        }}
+                      >
+                        <CardMedia
+                          sx={{ height: 140 }}
+                          image={
+                            searchResult?.thumbnail?.[0]?.src ||
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAD4C_d3004nh_n_-dTCPbsPtI7c0kyEWBmg3uMZvtXU7xbmElTMASozE&s"
+                          }
+                          title="Thumbnail"
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            Title: {searchResult?.title}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ color: "text.secondary" }}
+                          >
+                            {searchResult?.description}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ color: "text.secondary" }}
+                          >
+                            {searchResult?.link}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    )
+                  )}
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box
+                  id="image"
+                  sx={(theme) => ({
+                    mt: { xs: 8, sm: 4 },
                     alignSelf: "center",
-                    width: { sm: "100%", md: "100%" },
-                    marginTop: "20px",
-                  }}
+                    width: "100%",
+                    backgroundImage:
+                      theme.palette.mode === "light"
+                        ? 'url("/static/images/templates/templates-images/hero-light.png")'
+                        : 'url("/static/images/templates/templates-images/hero-dark.png")',
+                    backgroundSize: "cover",
+                    borderRadius: "10px",
+                    outline: "1px solid",
+                    outlineColor:
+                      theme.palette.mode === "light"
+                        ? alpha("#BFCCD9", 0.5)
+                        : alpha("#9CCCFC", 0.1),
+                    boxShadow:
+                      theme.palette.mode === "light"
+                        ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
+                        : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
+                    textAlign: "center",
+                  })}
+                  display="flex"
+                  flexDirection="column"
                 >
-                  Fake news detection Factors Weights
-                </Typography>
-                <Grid container spacing={2}>
-                  <Grid item xs={10}>
-                    <Typography
-                      textAlign="left"
-                      marginLeft="40px"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      Tone of text segments
-                    </Typography>
+                  <Typography
+                    textAlign="left"
+                    marginLeft="40px"
+                    color="text.secondary"
+                    variant="h6"
+                    fontWeight="100px"
+                    sx={{
+                      alignSelf: "center",
+                      width: { sm: "100%", md: "100%" },
+                      marginTop: "20px",
+                    }}
+                  >
+                    Fake news detection Factors Weights
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={10}>
+                      <Typography
+                        textAlign="left"
+                        marginLeft="40px"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        Tone of text segments
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Typography
+                        textAlign="left"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        {result.data?.result?.sentimentFakeResult?.confidence *
+                          100}{" "}
+                        %
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={2}>
-                    <Typography
-                      textAlign="left"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      30%
-                    </Typography>
+                  <BorderLinearProgress
+                    variant="determinate"
+                    value={
+                      result.data?.result?.sentimentFakeResult?.confidence * 100
+                    }
+                    sx={{
+                      marginLeft: "40px",
+                      marginRight: "40px",
+                      marginTop: "20px",
+                    }}
+                    cl1={"#4A90E2"}
+                    cl2={"#1A237E"}
+                  />
+                  <Grid container spacing={2}>
+                    <Grid item xs={10}>
+                      <Typography
+                        textAlign="left"
+                        marginLeft="40px"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        Sarcastic nature
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Typography
+                        textAlign="left"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        {result.data?.result?.sarcasmFakeResult?.confidence *
+                          100}{" "}
+                        %
+                      </Typography>
+                    </Grid>
                   </Grid>
-                </Grid>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={50}
-                  sx={{
-                    marginLeft: "40px",
-                    marginRight: "40px",
-                    marginTop: "20px",
-                  }}
-                  cl1={"#4A90E2"}
-                  cl2={"#1A237E"}
-                />
-                <Grid container spacing={2}>
-                  <Grid item xs={10}>
-                    <Typography
-                      textAlign="left"
-                      marginLeft="40px"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      Sarcastic nature
-                    </Typography>
+                  <BorderLinearProgress
+                    variant="determinate"
+                    value={
+                      result.data?.result?.sarcasmFakeResult?.confidence * 100
+                    }
+                    sx={{
+                      marginLeft: "40px",
+                      marginRight: "40px",
+                      marginTop: "20px",
+                    }}
+                    cl1={"#FFB74D"}
+                    cl2={"#E65100"}
+                  />
+                  <Grid container spacing={2}>
+                    <Grid item xs={10}>
+                      <Typography
+                        textAlign="left"
+                        marginLeft="40px"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        Political bias
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Typography
+                        textAlign="left"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        {result.data?.result?.biasFakeResult?.confidence * 100}{" "}
+                        %
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={2}>
-                    <Typography
-                      textAlign="left"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      30%
-                    </Typography>
+                  <BorderLinearProgress
+                    variant="determinate"
+                    value={
+                      result.data?.result?.biasFakeResult?.confidence * 100
+                    }
+                    sx={{
+                      marginLeft: "40px",
+                      marginRight: "40px",
+                      marginTop: "20px",
+                    }}
+                    cl1={"#81C784"}
+                    cl2={"#2E7D32"}
+                  />
+                  <Grid container spacing={2}>
+                    <Grid item xs={10}>
+                      <Typography
+                        textAlign="left"
+                        marginLeft="40px"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        Quality of the text
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Typography
+                        textAlign="left"
+                        color="GrayText"
+                        variant="subtitle2"
+                        sx={{
+                          alignSelf: "center",
+                          width: { sm: "100%", md: "100%" },
+                          marginTop: "40px",
+                        }}
+                      >
+                        {result.data?.result?.textFakeResult?.confidence * 100}{" "}
+                        %
+                      </Typography>
+                    </Grid>
                   </Grid>
-                </Grid>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={50}
-                  sx={{
-                    marginLeft: "40px",
-                    marginRight: "40px",
-                    marginTop: "20px",
-                  }}
-                  cl1={"#FFB74D"}
-                  cl2={"#E65100"}
-                />
-                <Grid container spacing={2}>
-                  <Grid item xs={10}>
-                    <Typography
-                      textAlign="left"
-                      marginLeft="40px"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      Political bias
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Typography
-                      textAlign="left"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      30%
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={50}
-                  sx={{
-                    marginLeft: "40px",
-                    marginRight: "40px",
-                    marginTop: "20px",
-                  }}
-                  cl1={"#81C784"}
-                  cl2={"#2E7D32"}
-                />
-                <Grid container spacing={2}>
-                  <Grid item xs={10}>
-                    <Typography
-                      textAlign="left"
-                      marginLeft="40px"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      Quality of the text
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Typography
-                      textAlign="left"
-                      color="GrayText"
-                      variant="subtitle2"
-                      sx={{
-                        alignSelf: "center",
-                        width: { sm: "100%", md: "100%" },
-                        marginTop: "40px",
-                      }}
-                    >
-                      30%
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <BorderLinearProgress
-                  variant="determinate"
-                  value={50}
-                  sx={{
-                    marginLeft: "40px",
-                    marginRight: "40px",
-                    marginTop: "20px",
-                  }}
-                  cl1={"#BA68C8"}
-                  cl2={"#6A1B9A"}
-                />
-              </Box>
+                  <BorderLinearProgress
+                    variant="determinate"
+                    value={
+                      result.data?.result?.textFakeResult?.confidence * 100
+                    }
+                    sx={{
+                      marginLeft: "40px",
+                      marginRight: "40px",
+                      marginTop: "20px",
+                    }}
+                    cl1={"#BA68C8"}
+                    cl2={"#6A1B9A"}
+                  />
+                  <Typography
+                    textAlign="left"
+                    marginLeft="40px"
+                    color="text.secondary"
+                    variant="h6"
+                    fontWeight="100px"
+                    sx={{
+                      alignSelf: "center",
+                      width: { sm: "100%", md: "100%" },
+                      marginTop: "40px",
+                    }}
+                  >
+                    Analytics
+                  </Typography>
+
+                  <RadialBarChart result={result.data} />
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        ) : (
+          ""
+        )}
       </Container>
     </Box>
   );

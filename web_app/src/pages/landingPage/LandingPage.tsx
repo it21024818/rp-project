@@ -5,7 +5,6 @@ import Hero from "../../components/Extention/Extention";
 import Highlights from "../../components/Highlight/Highlights";
 import Pricing from "../../components/Pricing/Pricing";
 import Features from "../../components/Features/Features";
-import Reviews from "../../components/Reviews/Reviews";
 import FAQ from "../../components/FAQ/FAQ";
 
 export default function LandingPage() {
@@ -16,8 +15,6 @@ export default function LandingPage() {
       <Box sx={{ bgcolor: "background.default" }}>
         <Divider />
         <Features />
-        <Divider />
-        <Reviews />
         <Divider />
         <Highlights />
         <Divider />
