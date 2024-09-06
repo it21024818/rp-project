@@ -16,6 +16,7 @@ services:
     #   - backend
     networks:
       - private 
+      - public
 
   backend:
     image: dinuka07/rp-project/main-api-image:latest
@@ -28,12 +29,13 @@ services:
       - ml-api
     networks:
       - private 
+      - public
 
   frontend:
     image: dinuka07/rp-project/web-app-image:latest
     build: ./web_app
     ports:
-      - "5173:3001"
+      - "3001:5173"
     environment:
       - NODE_ENV=development
     depends_on:
@@ -49,7 +51,8 @@ services:
     volumes:
       - redis-data:/data
     networks:
-      - private 
+      - private
+      - public 
 
 volumes:
   # ml-api-data:
