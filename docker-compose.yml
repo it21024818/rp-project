@@ -12,8 +12,6 @@ services:
       - PYTHONUNBUFFERED=1
     # volumes:
     #   - ml-api-data:/app/data
-    # depends_on:
-    #   - backend
     networks:
       - private 
       - public
@@ -27,6 +25,7 @@ services:
       - NODE_ENV=development
     depends_on:
       - ml-api
+      - redis
     networks:
       - private 
       - public
@@ -43,6 +42,7 @@ services:
     networks:
       - private 
       - public
+    command: vite --host 0.0.0.0
 
   redis:
     image: redis/redis-stack-server:latest
