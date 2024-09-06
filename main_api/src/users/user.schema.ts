@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
 import { Audit } from 'src/core/audit.schema';
+import { PaymentStrategy } from 'src/payments/payment-strategy.interface';
+import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 import { UserRole } from '../common/enums/user-roles.enum';
 import { Subscription } from './subscription.class';
 
@@ -30,11 +32,8 @@ export class User extends Audit {
   })
   roles: UserRole[];
 
-  @Prop()
-  subscription?: Subscription;
-
-  @Prop()
-  stripeCustomerId?: string;
+  @Prop({ type: Object })
+  subscription?: Partial<Record<PaymentStrategyKey, Subscription>>;
 
   @Prop({ isRequired: true })
   predictionsCount: number;

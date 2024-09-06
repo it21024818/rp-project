@@ -1,4 +1,5 @@
 import { Feedback } from 'src/feedback/feedback.schema';
+import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 import { Prediction } from 'src/prediction/prediction.schema';
 import { User } from 'src/users/user.schema';
 import { UserRole } from '../enums/user-roles.enum';
@@ -11,7 +12,7 @@ export class DetailedUserDto {
   lastName: string;
   email: string;
   roles: UserRole[];
-  subscription?: SubscriptionDto;
+  subscription?: Partial<Record<PaymentStrategyKey, SubscriptionDto>>;
   stripeCustomerId?: string;
   predictions: PredictionDto[];
   feedback: FeedbackDto[];
@@ -29,8 +30,7 @@ export class DetailedUserDto {
       firstName: user.firstName,
       lastName: user.lastName,
       roles: user.roles,
-      stripeCustomerId: user.stripeCustomerId,
-      subscription: user.subscription,
+      subscription: user.subscription as Partial<Record<PaymentStrategyKey, SubscriptionDto>>,
       archived: user.archived,
       createdAt: user.createdAt,
       createdBy: user.createdBy,

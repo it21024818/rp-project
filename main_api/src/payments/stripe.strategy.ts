@@ -54,12 +54,13 @@ export class StripeStrategy implements PaymentStrategy {
   private async getCustomer(userId: string): Promise<Stripe.Customer> {
     this.logger.log(`Fetching customer for user ${userId}...`);
     const user = await this.usersService.getUser(userId);
+    const subscription = user.subscription?.[PaymentStrategyKey.STRIPE];
     let customer: Stripe.Customer;
-    if (user.stripeCustomerId) {
+    if (subscription?.customerId) {
       this.logger.log(
-        `Customer already exists for user ${userId}. Fetching customer details for id ${user.stripeCustomerId}...`,
+        `Customer already exists for user ${userId}. Fetching customer details for id ${subscription?.customerId}...`,
       );
-      const customerResponse = await this.stripe.customers.retrieve(user.stripeCustomerId);
+      const customerResponse = await this.stripe.customers.retrieve(subscription?.customerId);
       if (customerResponse.deleted) {
         throw new BadRequestException(ErrorMessage.CUSTOMER_DELETED, {
           description: `Customer for user ${userId}  has been deleted`,
@@ -75,7 +76,13 @@ export class StripeStrategy implements PaymentStrategy {
           userId: userId,
         },
       });
-      user.stripeCustomerId = customer.id;
+      if (!user.subscription) {
+        user.subscription = {};
+      }
+      user.subscription[PaymentStrategyKey.STRIPE] = {
+        customerId: customer.id,
+        status: SubscriptionStatus.ACTIVE,
+      };
       await user.save();
     }
     return customer;
@@ -149,12 +156,16 @@ export class StripeStrategy implements PaymentStrategy {
     this.logger.log(`Handling subscription ${subscription.id} for customer ${subscription.customer}...`);
     const user = await this.usersService.getUserByStripeCustomerId(subscription.customer as string);
     const planId = subscription.items.data[0].price.id as string;
-    user.subscription = {
-      id: subscription.id,
+    if (!user.subscription) {
+      user.subscription = {};
+    }
+    user.subscription[PaymentStrategyKey.STRIPE] = {
+      subscriptionId: subscription.id,
       status: this.STRIPE_STATUS_MAPPING[subscription.status],
       planId: planId,
       startedTs: new Date(subscription.current_period_start),
       endingTs: new Date(subscription.current_period_end),
+      customerId: subscription.customer as string,
     };
     await user.save();
     this.logger.log(`Subscription updated for user ${user._id}.`);

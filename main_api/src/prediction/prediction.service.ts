@@ -104,10 +104,10 @@ export class PredictionService {
 
     const MAX_FREE_PREDICTIONS_PER_DAY = 10;
     const existingUser = await this.usersService.getUser(userId);
-    if (
-      existingUser.subscription?.status !== SubscriptionStatus.ACTIVE &&
-      existingUser.predictionsCount >= MAX_FREE_PREDICTIONS_PER_DAY
-    ) {
+    const isAnySubscriptionNotActive = !Object.values(existingUser.subscription ?? {})
+      .map(subscription => subscription.status)
+      .includes(SubscriptionStatus.ACTIVE);
+    if (isAnySubscriptionNotActive && existingUser.predictionsCount >= MAX_FREE_PREDICTIONS_PER_DAY) {
       throw new BadRequestException(ErrorMessage.PREDICTION_QUOTA_EXCEEDED, {
         description: `Daily prediction quota of ${MAX_FREE_PREDICTIONS_PER_DAY} prediction(s) for free user ${userId} has been exceeded`,
       });
