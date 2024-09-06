@@ -14,6 +14,13 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/IT21058578/rp-project.git'
             }
         }
+
+        stage('Dependencies') {
+            steps {
+                sh 'cp /path/to/.env main_api/.env'
+                sh 'cp -r /path/to/models ml_api/models'
+            }
+        }
         
         stage('Build Services') {
             steps {
