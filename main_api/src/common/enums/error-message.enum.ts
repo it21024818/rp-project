@@ -38,6 +38,7 @@ const ErrorMessage = {
   PREDICTION_TEXT_TOO_SHORT: 'Prediction text too short',
   PREDICTION_QUOTA_EXCEEDED: 'Prediction quota exceeded',
   INVALID_OPERATOR: 'Invalid operator',
+  ACTIVE_SUBSCRIPTION_EXISTS: 'Active subscription exists',
 } as const;
 
 export default ErrorMessage;

@@ -89,6 +89,8 @@ export class StripeStrategy implements PaymentStrategy {
   }
 
   async createCheckoutSession(planId: string, userId: string) {
+    this.logger.log(`Creating checkout session for user ${userId} and plan ${planId}...`);
+    await this.verifyUserHasNoActiveSubscription(userId);
     const plan = await this.planModel.findById(planId);
     const customer = await this.getCustomer(userId);
     const session = await this.stripe.checkout.sessions.create({
@@ -112,15 +114,23 @@ export class StripeStrategy implements PaymentStrategy {
       });
     }
 
+    this.logger.log(`Checkout session created for user ${userId} and plan ${planId}.`);
     return session.url;
   }
 
   async createPortalSession(sessionId: string) {
+    this.logger.log(`Creating billing portal session for checkout session ${sessionId}...`);
     const checkoutSession = await this.stripe.checkout.sessions.retrieve(sessionId);
     const portalSession = await this.stripe.billingPortal.sessions.create({
       customer: checkoutSession.customer as string,
       return_url: `${this.configService.get(ConfigKey.WEB_APP_BASE_URL)}`,
     });
+    if (!portalSession.url) {
+      throw new InternalServerErrorException(ErrorMessage.SESSION_URL_INVALID, {
+        description: `Return url was ${portalSession?.url}`,
+      });
+    }
+    this.logger.log(`Billing portal session created for checkout session ${sessionId}.`);
     return portalSession.url;
   }
 
@@ -169,5 +179,18 @@ export class StripeStrategy implements PaymentStrategy {
     };
     await user.save();
     this.logger.log(`Subscription updated for user ${user._id}.`);
+  }
+
+  private async verifyUserHasNoActiveSubscription(userId: string) {
+    this.logger.log(`Verifying user ${userId} has no active subscription...`);
+    const existingUser = await this.usersService.getUser(userId);
+    const isAnySubscriptionActive = Object.values(existingUser.subscription ?? {})
+      .map(subscription => subscription.status)
+      .includes(SubscriptionStatus.ACTIVE);
+    if (isAnySubscriptionActive) {
+      throw new BadRequestException(ErrorMessage.ACTIVE_SUBSCRIPTION_EXISTS, {
+        description: 'User already has an active subscription',
+      });
+    }
   }
 }
