@@ -36,6 +36,7 @@ const ErrorMessage = {
   INVALID_OPERATOR_OR_VALUE_FOR_FIELD: 'Invalid operator or value for field',
   CONFIG_ERROR: 'Config error',
   PREDICTION_TEXT_TOO_SHORT: 'Prediction text too short',
+  PREDICTION_QUOTA_EXCEEDED: 'Prediction quota exceeded',
   INVALID_OPERATOR: 'Invalid operator',
 } as const;
 

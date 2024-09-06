@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
+import { EditUserRequestDto } from 'src/common/dtos/request/edit-user.request.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { CoreService } from 'src/core/core.service';
 import { FeedbackDocument } from 'src/feedback/feedback.schema';
@@ -22,7 +23,7 @@ export class UsersService {
     private readonly feedbackService: FeedbackService,
   ) {}
 
-  async updateUser(id: string, userDto: CreateUserDto): Promise<UserDocument> {
+  async updateUser(id: string, userDto: EditUserRequestDto): Promise<UserDocument> {
     this.logger.log(`Attempting to find user with id '${id}'`);
     const updatedUser = await this.userModel.findByIdAndUpdate(id, userDto);
 

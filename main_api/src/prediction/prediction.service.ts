@@ -11,6 +11,7 @@ import { PoliticalLeaning } from 'src/common/enums/political-leaning.enum';
 import { PredictionStatus } from 'src/common/enums/prediction-status.enum';
 import { Sarcasm } from 'src/common/enums/sarcasm.enum';
 import { Sentiment } from 'src/common/enums/sentiment.enum';
+import { SubscriptionStatus } from 'src/common/enums/subscriptions-status.enum';
 import { Text } from 'src/common/enums/text.enum';
 import { CoreService } from 'src/core/core.service';
 import { Feedback } from 'src/feedback/feedback.schema';
@@ -19,6 +20,7 @@ import { NewsSearchService } from 'src/news-search/news-search.service';
 import { SearchResult } from 'src/news-search/search-result';
 import { NewsSource, NewsSourceDocument } from 'src/news-source/news-source.schema';
 import { NewsSourceService } from 'src/news-source/news-source.service';
+import { UsersService } from 'src/users/users.service';
 import { PredictionFeignClient } from './prediction.feign';
 import { Prediction, PredictionDocument } from './prediction.schema';
 import { PredictionUtil } from './prediction.util';
@@ -32,6 +34,7 @@ export class PredictionService {
     @Inject(forwardRef(() => FeedbackService))
     private feedbackService: FeedbackService,
     private readonly newsSearchService: NewsSearchService,
+    private readonly usersService: UsersService,
     @Inject(forwardRef(() => NewsSourceService))
     private newsSourceService: NewsSourceService,
     private readonly predictionFeignClient: PredictionFeignClient,
@@ -97,6 +100,17 @@ export class PredictionService {
 
   async createPrediction(text: string, url: string, userId: string): Promise<PredictionDocument> {
     this.logger.log(`Creating new prediction record from user '${userId}' for text '${_.truncate(text)}'`);
+
+    const MAX_FREE_PREDICTIONS_PER_DAY = 10;
+    const existingUser = await this.usersService.getUser(userId);
+    if (
+      existingUser.subscription?.status !== SubscriptionStatus.ACTIVE &&
+      existingUser.predictionsCount >= MAX_FREE_PREDICTIONS_PER_DAY
+    ) {
+      throw new BadRequestException(ErrorMessage.PREDICTION_QUOTA_EXCEEDED, {
+        description: `Daily prediction quota of ${MAX_FREE_PREDICTIONS_PER_DAY} prediction(s) for free user ${userId} has been exceeded`,
+      });
+    }
 
     const MIN_TEXT_LENGTH = 10;
     if (text.split(' ').length < MIN_TEXT_LENGTH) {
@@ -187,6 +201,10 @@ export class PredictionService {
       savedPrediction.updatedBy = userId;
       await savedPrediction.save();
       this.logger.log(`Prediction job completed for prediction '${savedPrediction.id}'`);
+
+      // Update predictions made only for succesful predictions
+      existingUser.predictionsCount += 1;
+      await existingUser.save();
     } catch (error) {
       this.logger.error(`Error occurred while creating prediction '${savedPrediction.id}'`, error.stack);
       savedPrediction.status = PredictionStatus.FAILED;
