@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseEnumPipe, Post, Query } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { CreatePredictionDto } from 'src/common/dtos/create-prediction-dto';
@@ -9,6 +9,7 @@ import { UserRole } from 'src/common/enums/user-roles.enum';
 import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { PredictionService } from './prediction.service';
+
 
 @Controller({
   path: 'predictions',
@@ -40,6 +41,7 @@ export class PredictionController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createPrediction(@User('_id') userId: string, @Body() { text, url }: CreatePredictionDto) {
     return await this.predictionService.createPrediction(text, url, userId);
   }

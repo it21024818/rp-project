@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseEnumPipe, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseEnumPipe, Post, Put, Query } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { CreateFeedbackDto } from 'src/common/dtos/create-feedback-dto';
@@ -9,6 +9,7 @@ import { UserRole } from 'src/common/enums/user-roles.enum';
 import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
 import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { FeedbackService } from './feedback.service';
+
 
 @Controller({
   path: 'feedback',
@@ -45,6 +46,7 @@ export class FeedbackController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createfeedback(
     @User('_id') userId: string,
     @Query('prediction-id', ValidateObjectIdPipe) predictionId: string,
