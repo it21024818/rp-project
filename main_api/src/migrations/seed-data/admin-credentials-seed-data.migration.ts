@@ -18,7 +18,7 @@ export class AdminCredentialsSeedDataMigration implements OnModuleInit {
 
   @Migration('admin-credentials-seed-data-migration')
   async onModuleInit() {
-    let admins = await this.userModel.find({ roles: { $in: [UserRole.ADMIN] } });
+    let admins = await this.userModel.find();
     const credentials: Credentials[] = admins.map(admin => ({
       createdAt: new Date(),
       createdBy: 'MIGRATION',
