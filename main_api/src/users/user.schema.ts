@@ -22,7 +22,7 @@ export class User extends Audit {
   @Prop({
     isRequired: true,
     validate: {
-      message: (arr: any) => `${arr} is not a valid UserRole enum array`,
+      message: (arr: any) => `${arr} is not a valid value of type UserRole[]`,
       validator: (arr: string[]) => {
         return arr.every(val => Object.values(UserRole).includes(val as UserRole));
       },
