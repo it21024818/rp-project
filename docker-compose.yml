@@ -23,6 +23,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - REDIS_HOST=redis
     depends_on:
       - ml-api
       - redis
@@ -42,7 +43,6 @@ services:
     networks:
       - private 
       - public
-    command: vite --host 0.0.0.0
 
   redis:
     image: redis/redis-stack-server:latest
