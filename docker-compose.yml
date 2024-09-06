@@ -33,7 +33,7 @@ services:
     image: dinuka07/rp-project/web-app-image:latest
     build: ./web_app
     ports:
-      - "3001:3001"
+      - "5173:3001"
     environment:
       - NODE_ENV=development
     depends_on:
