@@ -34,6 +34,7 @@ export class PredictionService {
     @Inject(forwardRef(() => FeedbackService))
     private feedbackService: FeedbackService,
     private readonly newsSearchService: NewsSearchService,
+    @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => NewsSourceService))
     private newsSourceService: NewsSourceService,

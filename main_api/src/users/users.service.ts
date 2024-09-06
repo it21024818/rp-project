@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
@@ -19,6 +19,7 @@ export class UsersService {
   constructor(
     private readonly coreService: CoreService,
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    @Inject(forwardRef(() => PredictionService))
     private readonly predictionsService: PredictionService,
     private readonly feedbackService: FeedbackService,
   ) {}

@@ -22,6 +22,7 @@ export class UserMigration implements OnModuleInit {
         // isAuthorized: true,
         // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
+        predictionsCount: 0,
       },
       {
         createdAt: new Date(),
@@ -32,6 +33,7 @@ export class UserMigration implements OnModuleInit {
         // isAuthorized: true,
         // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
+        predictionsCount: 0,
       },
       {
         createdAt: new Date(),
@@ -42,6 +44,7 @@ export class UserMigration implements OnModuleInit {
         // isAuthorized: true,
         // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
+        predictionsCount: 0,
       },
       {
         createdAt: new Date(),
@@ -52,6 +55,7 @@ export class UserMigration implements OnModuleInit {
         // isAuthorized: true,
         // password: await hash('password', 10),
         roles: [UserRole.ADMIN, UserRole.USER],
+        predictionsCount: 0,
       },
     ];
     this.userModel.insertMany(admins);

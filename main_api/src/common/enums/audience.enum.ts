@@ -1,8 +1,8 @@
 export const Audience = {
-  WEB_APP: 'light-house-web-app',
-  MOBILE_APP: 'light-house-mobile-app',
-  ADMIN_APP: 'light-house-admin-app',
-  EXTENSION: 'light-house-extension',
+  WEB_APP: 'WEB_APP',
+  MOBILE_APP: 'MOBILE_APP',
+  ADMIN_APP: 'ADMIN_APP',
+  EXTENSION: 'EXTENSION',
 } as const;
 
-export type AppType = keyof typeof Audience;
+export type Audience = keyof typeof Audience;

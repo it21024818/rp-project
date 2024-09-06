@@ -27,6 +27,7 @@ export class UsersMockSeedMigration implements OnModuleInit {
         // isAuthorized: true,
         // password: await hash('password', 10),
         roles: [UserRole.USER],
+        predictionsCount: 0,
         stripeCustomerId: 'stripe_' + faker.database.mongodbObjectId(),
         ...(faker.number.int({ max: 10 }) > 3
           ? {}

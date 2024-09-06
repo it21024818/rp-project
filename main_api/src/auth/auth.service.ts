@@ -8,6 +8,7 @@ import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { LoginDto } from 'src/common/dtos/login.dto';
 import { TokenFamily } from 'src/common/dtos/token-family.dto';
+import { Audience } from 'src/common/enums/audience.enum';
 import { AuthType } from 'src/common/enums/auth-type.enum';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
@@ -34,7 +35,7 @@ export class AuthService {
 
   async refreshTokens(oldRefreshToken: string): Promise<Omit<LoginDto, 'user'>> {
     try {
-      const id = await this.jwtTokenService.verifyRefreshToken(oldRefreshToken);
+      const { sub: id, aud: aud } = await this.jwtTokenService.getPayload(oldRefreshToken);
 
       // Get token family
       const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
@@ -50,8 +51,8 @@ export class AuthService {
 
       // Generate new tokens
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwtTokenService.getAccessToken(id),
-        this.jwtTokenService.getRefreshToken(id),
+        this.jwtTokenService.getAccessToken(id, aud as Audience),
+        this.jwtTokenService.getRefreshToken(id, aud as Audience),
       ]);
 
       // Update token family
@@ -69,7 +70,7 @@ export class AuthService {
     }
   }
 
-  async loginUser(email: string, password: string): Promise<LoginDto> {
+  async loginUser(email: string, password: string, aud: Audience): Promise<LoginDto> {
     try {
       const existingUser = await this.usersService.getUserByEmail(email);
       const existingCredentials = await this.getCredentials(existingUser.id);
@@ -82,8 +83,8 @@ export class AuthService {
       }
 
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwtTokenService.getAccessToken(existingUser.id),
-        this.jwtTokenService.getRefreshToken(existingUser.id),
+        this.jwtTokenService.getAccessToken(existingUser.id, aud),
+        this.jwtTokenService.getRefreshToken(existingUser.id, aud),
       ]);
 
       const tokenFamily: TokenFamily = {
@@ -109,8 +110,8 @@ export class AuthService {
       const existingCredentials = await this.getCredentials(existingUser.id);
       this.findAuthDetails(existingCredentials, type); // Just need to verify it exists
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwtTokenService.getAccessToken(existingUser.id),
-        this.jwtTokenService.getRefreshToken(existingUser.id),
+        this.jwtTokenService.getAccessToken(existingUser.id, Audience.WEB_APP), // TODO: We need to dynamically get the audience for oauth solutions
+        this.jwtTokenService.getRefreshToken(existingUser.id, Audience.WEB_APP),
       ]);
 
       const tokenFamily: TokenFamily = {
