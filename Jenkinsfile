@@ -17,8 +17,8 @@ pipeline {
 
         stage('Dependencies') {
             steps {
-                sh 'cp /path/to/.env main_api/.env'
-                sh 'cp -r /path/to/models ml_api/models'
+                sh 'cp /path/to/.env /var/lib/jenkins/workspace/rp-project/main_api/.env'
+                sh 'cp -r /path/to/models /var/lib/jenkins/workspace/rp-project/ml_api/models'
             }
         }
         
