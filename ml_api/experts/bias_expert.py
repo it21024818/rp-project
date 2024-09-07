@@ -60,14 +60,15 @@ def predict_bias_and_fake_news(text, bias_model):
         predicted_bias = torch.argmax(bias_logits, dim=1).item()
         predicted_fake_news = torch.argmax(fake_news_logits, dim=1).item()
 
-        confidence_fake_news = fake_news_probs[0, predicted_fake_news].item()
+        bias_news_confidence = fake_news_probs[0, predicted_fake_news].item()
+        bias_confidence = bias_probs[0, predicted_bias].item()
 
         # Boolean value indicating if the fake news label is "Pants on Fire" or "False"
-        fake_news_boolean = 1 if predicted_fake_news in [0, 1] else 0
+        bias_news_pred = 1 if predicted_fake_news in [0, 1] else 0
 
         # Decode labels
         bias_labels = ['Left', 'Center', 'Right']
         fake_news_labels = ['Pants on Fire', 'False', 'Barely True', 'Half True', 'Mostly True', 'True']
 
         # Return predicted labels and confidence score
-        return bias_labels[predicted_bias], fake_news_labels[predicted_fake_news], confidence_fake_news, fake_news_boolean
+        return predicted_bias, bias_confidence, bias_news_pred, bias_news_confidence
