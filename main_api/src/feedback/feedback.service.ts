@@ -54,6 +54,14 @@ export class FeedbackService {
   async getFeedbackByPredictionId(id: string) {
     this.logger.log(`Attempting to find feedback with prediction-id ${id}`);
     const foundFeedback = await this.feedbackModel.find({ predictionId: id });
+    this.logger.log(`Found ${foundFeedback.length} feedback for prediction-id ${id}`);
+    return foundFeedback;
+  }
+
+  async getFeedbackByPredictionIds(ids: string[]) {
+    this.logger.log(`Attempting to find feedback with ${ids.length} preiction-id(s)`);
+    const foundFeedback = await this.feedbackModel.find({ predictionId: { $in: ids } });
+    this.logger.log(`Found ${foundFeedback.length} feedback for ${ids.length} prediction-id(s)`);
     return foundFeedback;
   }
 
