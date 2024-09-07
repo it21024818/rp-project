@@ -20,6 +20,15 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import RadialBarChart from "./RadialBarChart";
+import Reviews from "../Reviews/Reviews";
+import { checkLogin } from "../../Utils/Generals";
+import { useNavigate } from "react-router-dom";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 
 import { usePredictionMutation } from "../../store/apiquery/predictionsApiSlice";
 
@@ -56,6 +65,8 @@ export default function Hero() {
     url: "http://www.google.com",
   });
 
+  const navigate = useNavigate();
+
   const handleValue = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -65,27 +76,44 @@ export default function Hero() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const [openModal, setOpenModal] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     console.log(formData.text);
 
-    try {
-      const result = await makePrediction(formData);
+    if (checkLogin()) {
+      try {
+        const result = await makePrediction(formData);
 
-      if ("data" in result && result.data) {
-        console.log("Prediction done successfully");
-        setFormData({
-          text: "",
-          url: "http://www.google.com",
-        });
-        console.log(result.data?.result?.biasFakeResult?.confidence);
-      } else if ("error" in result && result.error) {
-        console.error("Prediction done failed", result.error);
+        if ("data" in result && result.data) {
+          console.log("Prediction done successfully");
+          setFormData({
+            text: "",
+            url: "http://www.google.com",
+          });
+          console.log(result.data?.result?.biasFakeResult?.confidence);
+        } else if ("error" in result && result.error) {
+          console.error("Prediction done failed", result.error);
+        }
+      } catch (error) {
+        console.error("Prediction done failed`", error);
       }
-    } catch (error) {
-      console.error("Prediction done failed`", error);
+    } else {
+      setOpenModal(true); // Open the modal
+      return;
     }
+  };
+
+  // Handle closing the modal
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
+  // Handle redirect to the login page
+  const handleGoToLogin = () => {
+    navigate("/login");
   };
 
   console.log(result?.data);
@@ -654,6 +682,7 @@ export default function Hero() {
                   </Typography>
 
                   <RadialBarChart result={result.data} />
+                  <Reviews id={result?.data?._id} />
                 </Box>
               </Grid>
             </Grid>
@@ -662,6 +691,20 @@ export default function Hero() {
           ""
         )}
       </Container>
+
+      <Dialog open={openModal} onClose={handleClose}>
+        <DialogTitle>{"Please Login First"}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Please login first to check fake news.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleGoToLogin} variant="contained">
+            Go to Login
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

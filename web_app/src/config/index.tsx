@@ -1,6 +1,6 @@
 const RoutePaths = {
   home: "/",
-  login: "/",
+  login: "/login",
   signup: "/signup",
   passwordReset: "/reset-password",
 
@@ -27,6 +27,7 @@ const RoutePaths = {
   adminDeliveries: "/companyAdmin/deliveries",
 
   token: "token",
+  userName: "",
 };
 
 export default RoutePaths;

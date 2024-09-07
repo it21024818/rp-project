@@ -1,9 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../../Utils/Generals";
-import { getItem } from "../../Utils/Generals";
-import RoutePaths from "../../config";
+const accessToken = localStorage.getItem("accessToken");
 
-const token = getItem(RoutePaths.token);
+const token = accessToken;
 
 export const usersApiSlice = createApi({
   reducerPath: "api/users",

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { PaletteMode } from "@mui/material";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -12,6 +12,12 @@ import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import ToggleColorMode from "../ColorMode/ToggleColorMode";
 import logo from "../../assets/lighthouse.png";
+import { checkLogin } from "../../Utils/Generals";
+import Avatar from "@mui/material/Avatar";
+import { useDispatch } from "react-redux";
+import { logoutCurrentUser } from "../../store/userSlice";
+import { useNavigate } from "react-router-dom";
+import { LoginOutlined } from "@mui/icons-material";
 
 const logoStyle = {
   width: "40px",
@@ -44,6 +50,36 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
       setOpen(false);
     }
   };
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+
+    // Dispatch logout action
+    dispatch(logoutCurrentUser());
+
+    // Redirect user to login page
+    navigate("/");
+  };
+
+  const [user, setUser] = useState<{
+    firstName: string;
+    lastName: string;
+  } | null>(null); // Adjust user type based on your user object
+
+  useEffect(() => {
+    // Get tokens and user from localStorage
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // Parse user since it's stored as a stringified JSON
+    }
+  }, []);
 
   return (
     <div>
@@ -101,14 +137,6 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection("testimonials")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Testimonials
-                  </Typography>
-                </MenuItem>
-                <MenuItem
                   onClick={() => scrollToSection("highlights")}
                   sx={{ py: "6px", px: "12px" }}
                 >
@@ -142,24 +170,46 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
               }}
             >
               <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
-              <Button
-                color="primary"
-                variant="text"
-                size="small"
-                component="a"
-                href="/login"
-              >
-                Sign in
-              </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                component="a"
-                href="/signup"
-              >
-                Sign up
-              </Button>
+
+              {checkLogin() ? (
+                <>
+                  <Avatar>{user?.firstName[0]}</Avatar>
+                  <Typography variant="body2" color="text.primary">
+                    {user?.firstName + " " + user?.lastName}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    onClick={handleLogout}
+                    startIcon={<LoginOutlined />}
+                  >
+                    Log Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  color="primary"
+                  variant="text"
+                  size="small"
+                  component="a"
+                  href="/login"
+                >
+                  Sign in
+                </Button>
+              )}
+
+              {checkLogin() ? (
+                ""
+              ) : (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  component="a"
+                  href="/signup"
+                >
+                  Sign up
+                </Button>
+              )}
             </Box>
             <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button

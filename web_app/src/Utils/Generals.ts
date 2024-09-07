@@ -1,5 +1,4 @@
 import { useLocation } from "react-router-dom";
-import RoutePaths from "../config";
 
 export const toggleLinkClass = (
   path: string,
@@ -31,7 +30,10 @@ export const removeItem = (keyname: string) => {
 // export const link = (url : string) : string => BASE_STORAGE_URL + url;
 
 export const checkLogin = () => {
-  const isLogged = localStorage.getItem(RoutePaths.token);
+  const accessToken = localStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
+
+  const isLogged = accessToken && user;
   return !!isLogged;
 };
 

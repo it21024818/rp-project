@@ -2,18 +2,22 @@ import { configureStore } from "@reduxjs/toolkit";
 import { authApiSlice } from "./src/store/apiquery/AuthApiSlice";
 import { userSlice } from "./src/store/userSlice";
 import { predictionApiSlice } from "./src/store/apiquery/predictionsApiSlice";
+import { reviewsApiSlice } from "./src/store/apiquery/reviewsApiSlice";
 
 export const store = configureStore({
   reducer: {
     [authApiSlice.reducerPath]: authApiSlice.reducer,
     [predictionApiSlice.reducerPath]: predictionApiSlice.reducer,
+    [reviewsApiSlice.reducerPath]: reviewsApiSlice.reducer,
     user: userSlice.reducer,
     predictions: predictionApiSlice.reducer,
+    reviews: reviewsApiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       authApiSlice.middleware,
-      predictionApiSlice.middleware
+      predictionApiSlice.middleware,
+      reviewsApiSlice.middleware
     ),
 });
 

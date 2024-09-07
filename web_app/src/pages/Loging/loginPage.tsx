@@ -1,4 +1,5 @@
-import * as React from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { SyntheticEvent, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,8 +10,11 @@ import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/Login";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import { useLoginMutation } from "../../store/apiquery/AuthApiSlice";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
@@ -32,13 +36,35 @@ function Copyright(props: any) {
 }
 
 export default function SignInSide() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    audience: "WEB_APP",
+  });
+
+  const navigate = useNavigate();
+
+  const [sendUserInfo, { isLoading, isError }] = useLoginMutation();
+
+  const handleChange = (e: SyntheticEvent) => {
+    const target = e.target as HTMLInputElement;
+    setData({ ...data, [target.name]: target.value });
+  };
+
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const response = await sendUserInfo(data).unwrap();
+      if (response.tokens && response.user) {
+        // Save tokens and user details to local storage
+        localStorage.setItem("accessToken", response.tokens.accessToken);
+        localStorage.setItem("refreshToken", response.tokens.refreshToken);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (
@@ -51,7 +77,6 @@ export default function SignInSide() {
         md={7}
         sx={{
           backgroundImage: 'url("/src/assets/login_side.jpg")',
-
           backgroundColor: (t) =>
             t.palette.mode === "light"
               ? t.palette.grey[50]
@@ -91,6 +116,8 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={data.email}
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -101,19 +128,34 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={data.password}
+              onChange={handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
+            {isError && (
+              <Typography color="error" variant="body2">
+                {"Something went wrong!"}
+              </Typography>
+            )}
+            {isLoading ? (
+              <Box
+                sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 2 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+            )}
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

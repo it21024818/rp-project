@@ -9,7 +9,6 @@ import { PaletteMode } from "@mui/material";
 import getLPTheme from "./themes/theme";
 import AppAppBar from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import RoutePaths from "./config";
 import { CssBaseline } from "@mui/material";
 
 function App() {
@@ -32,7 +31,7 @@ function App() {
       )}
       <CssBaseline />
       <Routes>
-        <Route path={RoutePaths.home} element={<LandingPage />} />
+        <Route path={"/"} element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SingUpPage />} />
       </Routes>

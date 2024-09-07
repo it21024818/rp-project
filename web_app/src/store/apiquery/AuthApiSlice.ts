@@ -1,5 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../../Utils/Generals";
+const accessToken = localStorage.getItem("accessToken");
+
+const token = accessToken;
 
 export const authApiSlice = createApi({
   reducerPath: "api/auth",
@@ -18,26 +21,28 @@ export const authApiSlice = createApi({
 
     register: builder.mutation({
       query: (formData) => ({
-        url: "/auth/register",
+        url: "/v1/auth/register",
         method: "POST",
         body: formData,
       }),
       invalidatesTags: ["Auth"],
     }),
 
-    resendRegistrationMail: builder.mutation<void, { email: string }>({
+    resendRegistrationMail: builder.mutation({
       query: (email) => ({
-        url: `/auth/register/resend`,
+        url: `/v1/auth/register/resend?email=${email}`,
         method: "POST",
-        params: { email },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
     }),
 
-    authorizeUser: builder.mutation<void, { "token-code": string }>({
+    authorizeUser: builder.mutation({
       query: (token) => ({
-        url: `/auth/authorize`,
+        url: `/v1/auth/authorize?token-code=${token}`,
         method: "PUT",
-        params: { "token-code": token },
       }),
     }),
 
