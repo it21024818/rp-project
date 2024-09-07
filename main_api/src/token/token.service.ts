@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
@@ -75,5 +76,19 @@ export class TokenService {
     });
     this.logger.log(`Created '${purpose}' token for user with email ${email}`);
     return await createdToken.save();
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  public async handleExpireOutdatedTokensJob() {
+    this.logger.log('Running job to expire outdated tokens');
+    const outdatedTokens = await this.tokenModel.find({
+      tokenStatus: TokenStatus.ACTIVE,
+      createdAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    });
+    outdatedTokens.forEach(token => {
+      token.tokenStatus = TokenStatus.EXPIRED;
+    });
+    const result = await this.tokenModel.bulkSave(outdatedTokens);
+    this.logger.log(`Succesfully expired ${result.modifiedCount} outdated tokens`);
   }
 }

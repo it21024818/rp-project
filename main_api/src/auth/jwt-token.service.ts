@@ -60,7 +60,7 @@ export class JwtTokenService {
   }
 
   async verifyAccessToken(token: string): Promise<string> {
-    this.logger.debug(`Verifying access token '${_.truncate(token)}'...`);
+    this.logger.debug(`Verifying access token '${_.truncate(token)}'`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],
@@ -76,7 +76,7 @@ export class JwtTokenService {
   }
 
   async getPayload(token: string): Promise<Required<JWTPayload>> {
-    this.logger.log(`Verifying access token '${token}'...`);
+    this.logger.log(`Getting access token '${_.truncate(token)}' payload`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],
@@ -97,7 +97,7 @@ export class JwtTokenService {
   }
 
   async verifyRefreshToken(token: string): Promise<string> {
-    this.logger.log(`Verifying refresh token '${token}'...`);
+    this.logger.log(`Verifying refresh token '${_.truncate(token)}'`);
     const { payload } = await jwtVerify(token, this.refreshPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],

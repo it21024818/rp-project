@@ -38,20 +38,21 @@ export class AuditedRequestService {
 
     const detectionResult = this.detector.detect(userAgent);
 
-    const audience = '';
-    // if (authorization) {
-    //   const token = authorization.split(' ')[1];
-    //   const payload = await this.jwtTokenService.getPayload(token);
-    //   if (payload.sub) {
-    //     audience = payload.sub;
-    //   }
-    // }
-    return await new this.auditedRequestModel({
-      createdAt: new Date(),
-      audience,
-      endpoint: request.baseUrl + request.path,
-      origin: detectionResult,
-    }).save();
+    try {
+      if (authorization) {
+        const token = authorization.split(' ')[1];
+        const payload = await this.jwtTokenService.getPayload(token);
+        const audience = payload.aud;
+        return await new this.auditedRequestModel({
+          createdAt: new Date(),
+          audience,
+          endpoint: request.baseUrl + request.path,
+          origin: detectionResult,
+        }).save();
+      }
+    } catch (error) {
+      this.logger.error(`Could not save request details due to error`, error.stack);
+    }
   }
 
   async getAnalytics(
