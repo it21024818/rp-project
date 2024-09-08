@@ -6,6 +6,7 @@ import { ConfigKey } from 'src/common/enums/config-key.enum';
 import { FeedbackModule } from 'src/feedback/feedback.module';
 import { NewsSearchModule } from 'src/news-search/news-search.module';
 import { NewsSourceModule } from 'src/news-source/news-source.module';
+import { UsersModule } from 'src/users/users.module';
 import { PredictionController } from './prediction.controller';
 import { PredictionFeignClient } from './prediction.feign';
 import { Prediction, PredictionSchema } from './prediction.schema';
@@ -14,6 +15,7 @@ import { PredictionService } from './prediction.service';
 @Module({
   imports: [
     NewsSearchModule,
+    forwardRef(() => UsersModule),
     forwardRef(() => NewsSourceModule),
     forwardRef(() => FeedbackModule),
     MongooseModule.forFeature([{ name: Prediction.name, schema: PredictionSchema }]),

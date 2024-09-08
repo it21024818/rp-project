@@ -7,6 +7,7 @@ const ErrorMessage = {
   FILE_NOT_FOUND: 'File not found',
   NEWS_SOURCE_NOT_FOUND: 'News source not found',
   PAYMENT_STRATEGY_NOT_FOUND: 'Payment strategy not found',
+  CREDENTIALS_NOT_FOUND: 'Credentials not found',
 
   // Payments
   SESSION_URL_INVALID: 'Session URL invalid',
@@ -24,6 +25,7 @@ const ErrorMessage = {
   NOT_AUTHENTICATED: 'Not authenticated',
   INVALID_TOKEN: 'Invalid token',
   EMAIL_NOT_VERIFIED: 'Email not verified',
+  OAUTH_CLIENT_ID_NOT_FOUND: 'OAuth client ID not found',
 
   // Misc
   INVALID_FILE_NAME: 'Invalid file name',
@@ -34,6 +36,9 @@ const ErrorMessage = {
   INVALID_OPERATOR_OR_VALUE_FOR_FIELD: 'Invalid operator or value for field',
   CONFIG_ERROR: 'Config error',
   PREDICTION_TEXT_TOO_SHORT: 'Prediction text too short',
+  PREDICTION_QUOTA_EXCEEDED: 'Prediction quota exceeded',
+  INVALID_OPERATOR: 'Invalid operator',
+  ACTIVE_SUBSCRIPTION_EXISTS: 'Active subscription exists',
 } as const;
 
 export default ErrorMessage;

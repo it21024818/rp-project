@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
-import { Audit } from 'src/common/schema/audit.schema';
+import { Audit } from 'src/core/audit.schema';
+import { PaymentStrategy } from 'src/payments/payment-strategy.interface';
+import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 import { UserRole } from '../common/enums/user-roles.enum';
 import { Subscription } from './subscription.class';
 
@@ -19,13 +21,10 @@ export class User extends Audit {
   @Prop({ isRequired: true, unique: true })
   email: string;
 
-  @Prop({ isRequired: true })
-  password: string;
-
   @Prop({
     isRequired: true,
     validate: {
-      message: (arr: any) => `${arr} is not a valid UserRole enum array`,
+      message: (arr: any) => `${arr} is not a valid value of type UserRole[]`,
       validator: (arr: string[]) => {
         return arr.every(val => Object.values(UserRole).includes(val as UserRole));
       },
@@ -33,14 +32,11 @@ export class User extends Audit {
   })
   roles: UserRole[];
 
+  @Prop({ type: Object })
+  subscription?: Partial<Record<PaymentStrategyKey, Subscription>>;
+
   @Prop({ isRequired: true })
-  isAuthorized: boolean;
-
-  @Prop()
-  subscription?: Subscription;
-
-  @Prop()
-  stripeCustomerId?: string;
+  predictionsCount: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

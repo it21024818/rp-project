@@ -7,7 +7,7 @@ import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import { Audience } from 'src/common/enums/audience.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
-import { AnalyticsUtils } from 'src/common/util/analytics.util';
+import { CoreService } from 'src/core/core.service';
 import { AuditedRequest } from './audited-request.schema';
 
 @Injectable()
@@ -24,6 +24,7 @@ export class AuditedRequestService {
 
   constructor(
     private readonly jwtTokenService: JwtTokenService,
+    private readonly coreService: CoreService,
     @InjectModel(AuditedRequest.name) private readonly auditedRequestModel: Model<AuditedRequest>,
   ) {}
 
@@ -37,20 +38,21 @@ export class AuditedRequestService {
 
     const detectionResult = this.detector.detect(userAgent);
 
-    let audience = '';
-    // if (authorization) {
-    //   const token = authorization.split(' ')[1];
-    //   const payload = await this.jwtTokenService.getPayload(token);
-    //   if (payload.sub) {
-    //     audience = payload.sub;
-    //   }
-    // }
-    return await new this.auditedRequestModel({
-      createdAt: new Date(),
-      audience,
-      endpoint: request.baseUrl + request.path,
-      origin: detectionResult,
-    }).save();
+    try {
+      if (authorization) {
+        const token = authorization.split(' ')[1];
+        const payload = await this.jwtTokenService.getPayload(token);
+        const audience = payload.aud;
+        return await new this.auditedRequestModel({
+          createdAt: new Date(),
+          audience,
+          endpoint: request.baseUrl + request.path,
+          origin: detectionResult,
+        }).save();
+      }
+    } catch (error) {
+      this.logger.error(`Could not save request details due to error`, error.stack);
+    }
   }
 
   async getAnalytics(
@@ -58,7 +60,7 @@ export class AuditedRequestService {
     endDate: Date,
     frequency: Frequency,
   ): Promise<TimeBasedAnalytics<'web' | 'mobile' | 'extension'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.auditedRequestModel,
       options: {
         startDate,

@@ -7,14 +7,17 @@ import { Model } from 'mongoose';
 import { JwtTokenService } from 'src/auth/jwt-token.service';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { LoginDto } from 'src/common/dtos/login.dto';
+import { TokenFamily } from 'src/common/dtos/token-family.dto';
+import { Audience } from 'src/common/enums/audience.enum';
+import { AuthType } from 'src/common/enums/auth-type.enum';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
-import { TokenFamily } from 'src/common/schema/tokenFamily.schema';
 import { EmailService } from 'src/email/email.service';
 import { TokenService } from 'src/token/token.service';
 import { User } from 'src/users/user.schema';
 import { UsersService } from 'src/users/users.service';
+import { AuthDetails, Credentials, CredentialsDocument } from './credentials.schema';
 
 @Injectable()
 export class AuthService {
@@ -27,11 +30,12 @@ export class AuthService {
     private readonly jwtTokenService: JwtTokenService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(Credentials.name) private readonly credentialModel: Model<Credentials>,
   ) {}
 
   async refreshTokens(oldRefreshToken: string): Promise<Omit<LoginDto, 'user'>> {
     try {
-      const id = await this.jwtTokenService.verifyRefreshToken(oldRefreshToken);
+      const { sub: id, aud: aud } = await this.jwtTokenService.getPayload(oldRefreshToken);
 
       // Get token family
       const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
@@ -47,8 +51,8 @@ export class AuthService {
 
       // Generate new tokens
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwtTokenService.getAccessToken(id),
-        this.jwtTokenService.getRefreshToken(id),
+        this.jwtTokenService.getAccessToken(id, aud as Audience),
+        this.jwtTokenService.getRefreshToken(id, aud as Audience),
       ]);
 
       // Update token family
@@ -66,10 +70,12 @@ export class AuthService {
     }
   }
 
-  async loginUser(email: string, password: string): Promise<LoginDto> {
+  async loginUser(email: string, password: string, aud: Audience): Promise<LoginDto> {
     try {
       const existingUser = await this.usersService.getUserByEmail(email);
-      const isPasswordsMatching = await compare(password, existingUser.password);
+      const existingCredentials = await this.getCredentials(existingUser.id);
+      const authDetails = this.findAuthDetails(existingCredentials, AuthType.EMAIL_PASSWORD);
+      const isPasswordsMatching = await compare(password, authDetails.password!);
 
       if (!isPasswordsMatching) {
         this.logger.warn(`User with id '${existingUser.id}' has tried to login but used wrong password`);
@@ -77,8 +83,8 @@ export class AuthService {
       }
 
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwtTokenService.getAccessToken(existingUser.id),
-        this.jwtTokenService.getRefreshToken(existingUser.id),
+        this.jwtTokenService.getAccessToken(existingUser.id, aud),
+        this.jwtTokenService.getRefreshToken(existingUser.id, aud),
       ]);
 
       const tokenFamily: TokenFamily = {
@@ -90,8 +96,7 @@ export class AuthService {
       };
       await this.cacheManager.set(existingUser.id, tokenFamily);
 
-      const { password: _userPassword, ...sanitizedUser } = existingUser.toJSON();
-      return { tokens: { accessToken, refreshToken }, user: sanitizedUser };
+      return { tokens: { accessToken, refreshToken }, user: existingUser.toJSON() };
     } catch (error) {
       this.logger.warn(`Failed to login user with email '${email}'`);
       console.log(error);
@@ -99,13 +104,14 @@ export class AuthService {
     }
   }
 
-  async loginUserWithoutPassword(email: string): Promise<LoginDto> {
+  async loginUserWithOAuth(email: string, type: AuthType): Promise<LoginDto> {
     try {
       const existingUser = await this.usersService.getUserByEmail(email);
-
+      const existingCredentials = await this.getCredentials(existingUser.id);
+      this.findAuthDetails(existingCredentials, type); // Just need to verify it exists
       const [accessToken, refreshToken] = await Promise.all([
-        this.jwtTokenService.getAccessToken(existingUser.id),
-        this.jwtTokenService.getRefreshToken(existingUser.id),
+        this.jwtTokenService.getAccessToken(existingUser.id, Audience.WEB_APP), // TODO: We need to dynamically get the audience for oauth solutions
+        this.jwtTokenService.getRefreshToken(existingUser.id, Audience.WEB_APP),
       ]);
 
       const tokenFamily: TokenFamily = {
@@ -117,8 +123,7 @@ export class AuthService {
       };
       await this.cacheManager.set(existingUser.id, tokenFamily);
 
-      const { password: _userPassword, ...sanitizedUser } = existingUser.toJSON();
-      return { tokens: { accessToken, refreshToken }, user: sanitizedUser };
+      return { tokens: { accessToken, refreshToken }, user: existingUser.toJSON() };
     } catch (error) {
       this.logger.warn(`Failed to login user with email '${email}'`);
       console.log(error);
@@ -132,25 +137,65 @@ export class AuthService {
       this.logger.warn(`Attempted register but user with email '${userDto.email}' already exists`);
       throw new BadRequestException(ErrorMessage.USER_ALREADY_EXISTS);
     }
+
+    // Create user
     const createdUser = new this.userModel(userDto);
     createdUser.roles = [UserRole.USER];
-    createdUser.password = await hash(createdUser.password, 10);
-    createdUser.isAuthorized = false;
     const savedUser = await createdUser.save();
+
+    // Create credentials
+    const createdCredentials = new this.credentialModel({
+      createdAt: new Date(),
+      userId: savedUser.id,
+      strategies: [
+        {
+          type: AuthType.EMAIL_PASSWORD,
+          password: await hash(userDto.password, 10),
+          createdAt: new Date(),
+          createdBy: savedUser.id,
+          isActive: false,
+          archived: false,
+        },
+      ],
+      createdBy: savedUser.id,
+      archived: false,
+    });
+    await createdCredentials.save();
+
     this.sendRegistrationMail(userDto.email);
     return savedUser;
   }
 
-  async registerOAuthUser(userDto: Partial<CreateUserDto>) {
+  async registerOAuthUser(userDto: Partial<CreateUserDto>, authType: Omit<AuthType, 'EMAIL_PASSWORD'>) {
     const existingUser = await this.userModel.findOne({ email: userDto.email });
     if (existingUser !== null) {
       this.logger.warn(`Attempted register but user with email '${userDto.email}' already exists`);
       throw new BadRequestException(ErrorMessage.USER_ALREADY_EXISTS);
     }
+
+    // Create user
     const createdUser = new this.userModel(userDto);
     createdUser.roles = [UserRole.ADMIN];
-    createdUser.isAuthorized = true;
     const savedUser = await createdUser.save();
+
+    // Create credentials
+    const createdCredentials = new this.credentialModel({
+      createdAt: new Date(),
+      userId: savedUser.id,
+      strategies: [
+        {
+          type: authType,
+          createdAt: new Date(),
+          createdBy: savedUser.id,
+          isActive: false,
+          archived: false,
+        },
+      ],
+      createdBy: savedUser.id,
+      archived: false,
+    });
+    await createdCredentials.save();
+
     return savedUser;
   }
 
@@ -166,15 +211,12 @@ export class AuthService {
 
   async authorizeUser(tokenCode: string) {
     const { email } = await this.tokenService.claimToken(tokenCode, TokenPurpose.SIGN_UP);
-    const existingUser = await this.userModel.findOne({ email });
-    if (existingUser == null) {
-      this.logger.warn(`Could not find user with email '${email}'`);
-      throw new BadRequestException(ErrorMessage.USER_NOT_FOUND);
-    }
-
-    existingUser.isAuthorized = true;
-    const savedUser = await existingUser.save();
-    return savedUser.toJSON();
+    const existingUser = await this.usersService.getUserByEmail(email);
+    const existingCredentials = await this.getCredentials(existingUser.id);
+    const authDetails = this.findAuthDetails(existingCredentials, AuthType.EMAIL_PASSWORD);
+    authDetails.isActive = true;
+    await existingCredentials.save();
+    return existingUser.toJSON();
   }
 
   async forgotUserPassword(email: string) {
@@ -197,38 +239,51 @@ export class AuthService {
   async resetUserPassword(password: string, tokenCode: string) {
     this.logger.log(`Attempting to reset password for user with token code '${tokenCode}'`);
     const { email } = await this.tokenService.claimToken(tokenCode, TokenPurpose.RESET_PASSWORD);
-    const existingUser = await this.userModel.findOne({ email });
-    if (existingUser === null) {
-      this.logger.warn(`Could not find user with email '${email}'`);
-      return;
-    }
+    const existingUser = await this.usersService.getUserByEmail(email);
+    const existingCredentials = await this.getCredentials(existingUser.id);
+    const authDetails = this.findAuthDetails(existingCredentials, AuthType.EMAIL_PASSWORD);
     await this.cacheManager.del(existingUser.id);
-
-    existingUser.password = await hash(password, 10);
-    const savedUser = await existingUser.save();
+    authDetails.password = await hash(password, 10);
+    await existingCredentials.save();
     this.logger.log(`Successfully reset password for user with email '${email}'`);
-    return savedUser.toJSON();
+    return existingUser.toJSON();
   }
 
   async changeUserPassword(email: string, password: string, oldPassword: string) {
     try {
-      const existingUser = await this.userModel.findOne({ email });
-      if (existingUser === null) {
-        return;
-      }
-
-      const isPasswordsMatching = await compare(oldPassword, existingUser.password);
-
+      const existingUser = await this.usersService.getUserByEmail(email);
+      const existingCredentials = await this.getCredentials(existingUser.id);
+      const authDetails = this.findAuthDetails(existingCredentials, AuthType.EMAIL_PASSWORD);
+      const isPasswordsMatching = await compare(oldPassword, authDetails.password!);
       if (!isPasswordsMatching) {
         throw Error();
       }
-
-      existingUser.password = await hash(password, 10);
+      authDetails.password = await hash(password, 10);
+      await existingCredentials.save();
       await this.cacheManager.del(existingUser.id);
-
       await existingUser.save();
     } catch (error) {
       throw new BadRequestException(ErrorMessage.INVALID_CREDENTIALS);
     }
+  }
+
+  async getCredentials(userId: string): Promise<CredentialsDocument> {
+    const result = await this.credentialModel.findOne({ userId });
+    if (result === null) {
+      throw new BadRequestException(ErrorMessage.CREDENTIALS_NOT_FOUND, {
+        description: `Could not find credentials for user with id '${userId}'`,
+      });
+    }
+    return result;
+  }
+
+  private findAuthDetails(credentials: Credentials, type: AuthType): AuthDetails {
+    const result = credentials.strategies.find(strategy => strategy.type === type);
+    if (result === undefined) {
+      throw new BadRequestException(ErrorMessage.CREDENTIALS_NOT_FOUND, {
+        description: `Could not find auth details for type '${type}'`,
+      });
+    }
+    return result;
   }
 }

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { FlattenMaps, HydratedDocument, Model } from 'mongoose';
 import { Frequency } from 'src/common/enums/frequency.enum';
-import { Audit } from 'src/common/schema/audit.schema';
+import { Audit } from 'src/core/audit.schema';
 
 export type PlanDocument = HydratedDocument<Plan>;
 export type PlanModel = Model<Plan>;

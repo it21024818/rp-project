@@ -4,15 +4,15 @@ import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 
 export class Subscription {
   @Prop()
-  id: string;
+  subscriptionId?: string;
+  @Prop({ isRequired: true })
+  customerId: string;
   @Prop()
-  planId: string;
+  planId?: string;
   @Prop({ type: String, enum: Object.values(SubscriptionStatus) })
-  status: SubscriptionStatus;
+  status?: SubscriptionStatus;
   @Prop()
-  startedTs: Date;
+  startedTs?: Date;
   @Prop()
-  endingTs: Date;
-  @Prop({ type: String, enum: Object.values(PaymentStrategyKey) })
-  strategy?: PaymentStrategyKey;
+  endingTs?: Date;
 }

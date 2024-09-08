@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, RawBodyRequest } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
@@ -54,12 +54,13 @@ export class StripeStrategy implements PaymentStrategy {
   private async getCustomer(userId: string): Promise<Stripe.Customer> {
     this.logger.log(`Fetching customer for user ${userId}...`);
     const user = await this.usersService.getUser(userId);
+    const subscription = user.subscription?.[PaymentStrategyKey.STRIPE];
     let customer: Stripe.Customer;
-    if (user.stripeCustomerId) {
+    if (subscription?.customerId) {
       this.logger.log(
-        `Customer already exists for user ${userId}. Fetching customer details for id ${user.stripeCustomerId}...`,
+        `Customer already exists for user ${userId}. Fetching customer details for id ${subscription?.customerId}...`,
       );
-      const customerResponse = await this.stripe.customers.retrieve(user.stripeCustomerId);
+      const customerResponse = await this.stripe.customers.retrieve(subscription?.customerId);
       if (customerResponse.deleted) {
         throw new BadRequestException(ErrorMessage.CUSTOMER_DELETED, {
           description: `Customer for user ${userId}  has been deleted`,
@@ -75,13 +76,21 @@ export class StripeStrategy implements PaymentStrategy {
           userId: userId,
         },
       });
-      user.stripeCustomerId = customer.id;
+      if (!user.subscription) {
+        user.subscription = {};
+      }
+      user.subscription[PaymentStrategyKey.STRIPE] = {
+        customerId: customer.id,
+        status: SubscriptionStatus.ACTIVE,
+      };
       await user.save();
     }
     return customer;
   }
 
   async createCheckoutSession(planId: string, userId: string) {
+    this.logger.log(`Creating checkout session for user ${userId} and plan ${planId}...`);
+    await this.verifyUserHasNoActiveSubscription(userId);
     const plan = await this.planModel.findById(planId);
     const customer = await this.getCustomer(userId);
     const session = await this.stripe.checkout.sessions.create({
@@ -105,27 +114,35 @@ export class StripeStrategy implements PaymentStrategy {
       });
     }
 
+    this.logger.log(`Checkout session created for user ${userId} and plan ${planId}.`);
     return session.url;
   }
 
   async createPortalSession(sessionId: string) {
+    this.logger.log(`Creating billing portal session for checkout session ${sessionId}...`);
     const checkoutSession = await this.stripe.checkout.sessions.retrieve(sessionId);
     const portalSession = await this.stripe.billingPortal.sessions.create({
       customer: checkoutSession.customer as string,
       return_url: `${this.configService.get(ConfigKey.WEB_APP_BASE_URL)}`,
     });
+    if (!portalSession.url) {
+      throw new InternalServerErrorException(ErrorMessage.SESSION_URL_INVALID, {
+        description: `Return url was ${portalSession?.url}`,
+      });
+    }
+    this.logger.log(`Billing portal session created for checkout session ${sessionId}.`);
     return portalSession.url;
   }
 
-  async handleEvent(request: Request) {
+  async handleEvent(request: RawBodyRequest<Request>) {
     const endpointSecret = this.configService.get(ConfigKey.STRIPE_WEBHOOK_ENDPOINT_SECRET);
-    let event = request.body;
+    let event: any;
     if (endpointSecret) {
       const signature = request.headers['stripe-signature'] as string;
       try {
-        event = this.stripe.webhooks.constructEvent(request.body, signature, endpointSecret) as Stripe.Event;
+        event = this.stripe.webhooks.constructEvent(request.rawBody!, signature, endpointSecret) as Stripe.Event;
       } catch (err) {
-        this.logger.warn(`⚠️  Webhook signature verification failed. Received ${signature}`, err.message);
+        this.logger.error(`Webhook signature verification failed`, err.stack);
         throw new BadRequestException();
       }
     }
@@ -146,15 +163,34 @@ export class StripeStrategy implements PaymentStrategy {
   }
 
   private async handleCustomerSubscriptionUpdated(subscription: Stripe.Subscription) {
+    this.logger.log(`Handling subscription ${subscription.id} for customer ${subscription.customer}...`);
     const user = await this.usersService.getUserByStripeCustomerId(subscription.customer as string);
     const planId = subscription.items.data[0].price.id as string;
-    user.subscription = {
-      id: subscription.id,
+    if (!user.subscription) {
+      user.subscription = {};
+    }
+    user.subscription[PaymentStrategyKey.STRIPE] = {
+      subscriptionId: subscription.id,
       status: this.STRIPE_STATUS_MAPPING[subscription.status],
       planId: planId,
       startedTs: new Date(subscription.current_period_start),
       endingTs: new Date(subscription.current_period_end),
+      customerId: subscription.customer as string,
     };
     await user.save();
+    this.logger.log(`Subscription updated for user ${user._id}.`);
+  }
+
+  private async verifyUserHasNoActiveSubscription(userId: string) {
+    this.logger.log(`Verifying user ${userId} has no active subscription...`);
+    const existingUser = await this.usersService.getUser(userId);
+    const isAnySubscriptionActive = Object.values(existingUser.subscription ?? {})
+      .map(subscription => subscription.status)
+      .includes(SubscriptionStatus.ACTIVE);
+    if (isAnySubscriptionActive) {
+      throw new BadRequestException(ErrorMessage.ACTIVE_SUBSCRIPTION_EXISTS, {
+        description: 'User already has an active subscription',
+      });
+    }
   }
 }

@@ -12,7 +12,6 @@ export class TransformDatePipe implements PipeTransform {
         throw Error('Value is null or undefined');
       }
 
-      dayjs(value);
       return new Date(value);
     } catch (error) {
       const message = `Validation Failed (${JSON.stringify(value)} is not a valid date for ${metadata.type} '${

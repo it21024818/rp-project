@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, ParseEnumPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseEnumPipe, Post, Put, Query } from '@nestjs/common';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
+import { UpdateNewsSourceRequestDto } from 'src/common/dtos/request/update-news-source.request.dto';
 import { Frequency } from 'src/common/enums/frequency.enum';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { TransformDatePipe } from 'src/common/pipes/transform-date.pipe';
@@ -17,6 +18,11 @@ export class NewsSourceController {
   @Get(':id')
   async getNewsSource(@Param('id', ValidateObjectIdPipe) id: string) {
     return await this.newsSourceService.getNewsSource(id);
+  }
+
+  @Put(':id')
+  async updateNewsSource(@Param('id', ValidateObjectIdPipe) id: string, @Body() body: UpdateNewsSourceRequestDto) {
+    return await this.newsSourceService.updateNewsSource(id, body);
   }
 
   @Post('search')

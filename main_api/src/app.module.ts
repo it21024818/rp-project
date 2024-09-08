@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config/dist';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { redisStore } from 'cache-manager-redis-yet';
 import { RedisClientOptions } from 'redis';
 import { AuditedRequestInterceptor } from './audited-request/audited-request.interceptor';
@@ -19,6 +20,7 @@ import { ConfigKey } from './common/enums/config-key.enum';
 import { AuthGuard } from './common/guards/auth.guard';
 import { LogGuard } from './common/guards/log.guard';
 import { RolesGuard } from './common/guards/roles.guard';
+import { CoreModule } from './core/core.module';
 import { EmailModule } from './email/email.module';
 import { EmailService } from './email/email.service';
 import { FeedbackModule } from './feedback/feedback.module';
@@ -44,6 +46,7 @@ import { UsersService } from './users/users.service';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -98,6 +101,7 @@ import { UsersService } from './users/users.service';
     MigrationsModule,
     OauthModule,
     NewsSourceModule,
+    CoreModule,
   ],
   providers: [
     AuthService,

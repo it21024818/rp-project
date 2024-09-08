@@ -7,8 +7,7 @@ import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
 import { Reaction } from 'src/common/enums/reaction.enum';
-import { AnalyticsUtils } from 'src/common/util/analytics.util';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { CoreService } from 'src/core/core.service';
 import { Prediction } from 'src/prediction/prediction.schema';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { Feedback, FeedbackDocument } from './feedback.schema';
@@ -18,6 +17,7 @@ export class FeedbackService {
   private readonly logger = new Logger(FeedbackService.name);
 
   constructor(
+    private coreService: CoreService,
     @Inject(forwardRef(() => PredictionService))
     private predictionService: PredictionService,
     @InjectModel(Feedback.name)
@@ -54,6 +54,14 @@ export class FeedbackService {
   async getFeedbackByPredictionId(id: string) {
     this.logger.log(`Attempting to find feedback with prediction-id ${id}`);
     const foundFeedback = await this.feedbackModel.find({ predictionId: id });
+    this.logger.log(`Found ${foundFeedback.length} feedback for prediction-id ${id}`);
+    return foundFeedback;
+  }
+
+  async getFeedbackByPredictionIds(ids: string[]) {
+    this.logger.log(`Attempting to find feedback with ${ids.length} preiction-id(s)`);
+    const foundFeedback = await this.feedbackModel.find({ predictionId: { $in: ids } });
+    this.logger.log(`Found ${foundFeedback.length} feedback for ${ids.length} prediction-id(s)`);
     return foundFeedback;
   }
 
@@ -130,7 +138,7 @@ export class FeedbackService {
   }
 
   async getFeedbackPage(pageRequest: PageRequest) {
-    return await MongooseUtil.getDocumentPage(this.feedbackModel, pageRequest);
+    return await this.coreService.getDocumentPage(this.feedbackModel, pageRequest);
   }
 
   async getAnalytics(
@@ -138,7 +146,7 @@ export class FeedbackService {
     endDate: Date,
     frequency: Frequency,
   ): Promise<TimeBasedAnalytics<'good' | 'bad'>> {
-    return await AnalyticsUtils.getOptimizedTimeBasedAnalytics({
+    return await this.coreService.getOptimizedTimeBasedAnalytics({
       model: this.feedbackModel,
       options: {
         startDate,
