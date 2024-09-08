@@ -5,6 +5,7 @@ import { hash } from 'bcryptjs';
 import { Model } from 'mongoose';
 import { Migration } from 'src/common/decorators/migration.decorator';
 import { UserRole } from 'src/common/enums/user-roles.enum';
+import { PaymentStrategyKey } from 'src/payments/paymeny-stategy-key.enum';
 import { User } from 'src/users/user.schema';
 
 @Injectable()
@@ -24,19 +25,20 @@ export class UsersMockSeedMigration implements OnModuleInit {
         email: faker.internet.email({ firstName, lastName }),
         firstName,
         lastName,
-        isAuthorized: true,
-        password: await hash('password', 10),
         roles: [UserRole.USER],
-        stripeCustomerId: 'stripe_' + faker.database.mongodbObjectId(),
+        predictionsCount: 0,
         ...(faker.number.int({ max: 10 }) > 3
           ? {}
           : {
               subscription: {
-                endingTs: faker.date.future({ years: 1 }),
-                id: 'stripe_' + faker.database.mongodbObjectId(),
-                planId: '66cb732ca8a0ab8ddc62b4a9',
-                startedTs: faker.date.past(),
-                status: faker.helpers.arrayElement(['ACTIVE', 'PAUSED', 'ENDED']),
+                [PaymentStrategyKey.STRIPE]: {
+                  endingTs: faker.date.future({ years: 1 }),
+                  subscriptionId: 'stripe_' + faker.database.mongodbObjectId(),
+                  planId: '66cb732ca8a0ab8ddc62b4a9',
+                  startedTs: faker.date.past(),
+                  status: faker.helpers.arrayElement(['ACTIVE', 'PAUSED', 'ENDED']),
+                  customerId: 'stripe_' + faker.database.mongodbObjectId(),
+                },
               },
             }),
       };

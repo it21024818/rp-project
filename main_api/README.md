@@ -2,25 +2,8 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
@@ -38,14 +21,11 @@ $ curl -fsSL https://bun.sh/install | bash
 
 # If using oh-my-zsh. Make sure bun is included in the ~/.zshrc
 $ source ~/.zshrc
-
-# Make sure to setup local redis
-$ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 #### For Windows
 
-```
+```bash
 $ powershell -c "irm bun.sh/install.ps1|iex"
 ```
 
@@ -71,6 +51,44 @@ $ bun run start:dev
 $ bun run start:prod
 ```
 
+### Testing Payments
+
+#### Stripe
+
+For this purpose you need to get the stripe CLI properly running to handle webhook events. The easiest way to do this is using a docker container. To get this docker container running you will need a **Stripe Secret Key** and and your machines **IPV4 address**. The **Stripe Secret Key** will be shared with you as part of the .env file. This will be under the name `STRIPE_PRIVATE_KEY`
+
+You will have to acquire your **IPV4 address** by checking your config. This can be done by using the the `ipconfig` command in your local terminal. Search through the output until you find the address as given below or otherwise. (Sensitive information has been removed)
+
+```
+Ethernet adapter vEthernet (WSL (Hyper-V firewall)):
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : xxxx::xxxx:xxxx:xxxx:xxxx%xx
+   IPv4 Address. . . . . . . . . . . : xxx.xxx.xxx.xxx <- You want this
+   Subnet Mask . . . . . . . . . . . : xxx.xxx.xxx.xxx
+   Default Gateway . . . . . . . . . :
+```
+
+After you have gathered the above, run the below command while substituting those values with the placeholders. The reason we need to get our specific IPV4 addrtess for the docker command is that the docker command does not recognize `localhost` as the `localhost` of the host machine, but as `localhost` of its container. The workaround for this using a special `docker run` flag `--network=host` only works for linux. For windows getting our host machine's IPV4 manually and specifying it in the URL seems to be the most straightforward way.
+
+```bash
+# Get a local stripe-cli instance running
+docker run --rm -it stripe/stripe-cli listen
+  --api-key <stripe_secret_key>
+  --forward-to http://<your_ipv4_address>:3000/v1/payments/stripe/webhook
+```
+
+When this command runs you will get your **webhook signing secret**. It will appear in the output as follows.
+
+```bash
+A newer version of the Stripe CLI is available, please update to: v1.21.3
+> Ready! You are using Stripe API Version [2024-06-20]. Your webhook signing secret is <secret_here> (^C to quit)
+```
+
+Copy this secret and substitute its value with the value of `STRIPE_WEBHOOK_ENDPOINT_SECRET` in the .env file. Once all this is done **make sure to restart the server manually** so that environment value changes may take effect.
+
+You should now be able to make calls to the `/v1/payments/stripe/checkout` and have them redirect to appropriate pages while also having proper database updates for subscriptions
+
 ## Test
 
 ```bash
@@ -86,7 +104,8 @@ $ bun run test:cov
 
 ## Errors
 
-ECONNREFUSED ::1:6379
+> ECONNREFUSED ::1:6379
+
 Happens because Redis server is unreachable
 
 ## References

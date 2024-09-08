@@ -35,20 +35,20 @@ export class JwtTokenService {
     this.logger.log('Finished setting up private and public keys');
   }
 
-  async getAccessToken(id: string): Promise<string> {
-    this.logger.log(`Creating new access token for user with id '${id}'`);
+  async getAccessToken(id: string, aud: Audience): Promise<string> {
+    this.logger.log(`Creating new access token for user with id '${id}' for audience '${aud}'`);
     return new SignJWT({})
       .setIssuedAt()
       .setSubject(id)
       .setIssuer(this.issuer)
-      .setAudience(Object.values(Audience))
+      .setAudience(aud)
       .setExpirationTime('2h')
       .setProtectedHeader({ alg: this.keyAlgorithm })
       .sign(this.accessPrivateKey);
   }
 
-  async getRefreshToken(id: string): Promise<string> {
-    this.logger.log(`Creating new refresh token for user with id '${id}'`);
+  async getRefreshToken(id: string, aud: Audience): Promise<string> {
+    this.logger.log(`Creating new refresh token for user with id '${id}' for audience '${aud}'`);
     return new SignJWT({})
       .setIssuedAt()
       .setSubject(id)
@@ -60,7 +60,7 @@ export class JwtTokenService {
   }
 
   async verifyAccessToken(token: string): Promise<string> {
-    this.logger.debug(`Verifying access token '${_.truncate(token)}'...`);
+    this.logger.debug(`Verifying access token '${_.truncate(token)}'`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],
@@ -75,8 +75,8 @@ export class JwtTokenService {
     return payload.sub;
   }
 
-  async getPayload(token: string): Promise<JWTPayload> {
-    this.logger.log(`Verifying access token '${token}'...`);
+  async getPayload(token: string): Promise<Required<JWTPayload>> {
+    this.logger.log(`Getting access token '${_.truncate(token)}' payload`);
     const { payload } = await jwtVerify(token, this.accessPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],
@@ -88,11 +88,16 @@ export class JwtTokenService {
         description: 'Access token does not contain a subject',
       });
     }
-    return payload;
+    if (!payload.aud) {
+      throw new InternalServerErrorException(ErrorMessage.INVALID_TOKEN, {
+        description: 'Access token does not contain an audience',
+      });
+    }
+    return payload as Required<JWTPayload>;
   }
 
   async verifyRefreshToken(token: string): Promise<string> {
-    this.logger.log(`Verifying refresh token '${token}'...`);
+    this.logger.log(`Verifying refresh token '${_.truncate(token)}'`);
     const { payload } = await jwtVerify(token, this.refreshPublicKey, {
       issuer: this.issuer,
       requiredClaims: ['sub', 'aud'],

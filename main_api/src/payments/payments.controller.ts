@@ -1,26 +1,30 @@
-import { Controller, Param, ParseEnumPipe, Post, Query, Req, Res } from '@nestjs/common';
+import { Controller, Param, ParseEnumPipe, Post, Query, RawBodyRequest, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { User } from 'src/common/decorators/user.decorator';
 import { UserRole } from 'src/common/enums/user-roles.enum';
 import { ToUpperPipe } from 'src/common/pipes/to-upper.pipe';
+import { ValidateObjectIdPipe } from 'src/common/pipes/validate-object-id.pipe';
 import { PaymentsService } from './payments.service';
 import { PaymentStrategyKey } from './paymeny-stategy-key.enum';
 
-@Controller('payments/:strategy')
+
+@Controller({
+  path: 'payments/:strategy',
+  version: '1',
+})
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
   @Post('checkout')
   @Roles(...Object.values(UserRole))
   async createCheckoutSession(
-    @Res() res: Response,
     @Param('strategy', ToUpperPipe, new ParseEnumPipe(PaymentStrategyKey)) strategy: PaymentStrategyKey,
     @User('_id') userId: string,
-    @Query('plan-id') subscriptionPlanId: string,
+    @Query('plan-id', ValidateObjectIdPipe) subscriptionPlanId: string,
   ) {
     const url = await this.paymentsService.createCheckoutSession(strategy, subscriptionPlanId, userId);
-    res.redirect(url);
+    return { url };
   }
 
   @Post('portal')
@@ -36,7 +40,7 @@ export class PaymentsController {
 
   @Post('webhook')
   async handleWebhookEvent(
-    @Req() req: Request,
+    @Req() req: RawBodyRequest<Request>,
     @Param('strategy', ToUpperPipe, new ParseEnumPipe(PaymentStrategyKey)) strategy: PaymentStrategyKey,
   ) {
     await this.paymentsService.handleEvent(strategy, req);

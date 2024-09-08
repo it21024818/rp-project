@@ -2,10 +2,11 @@ import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@ne
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
+import { UpdateNewsSourceRequestDto } from 'src/common/dtos/request/update-news-source.request.dto';
 import { TimeBasedAnalytics } from 'src/common/dtos/time-based-analytics.dto';
 import ErrorMessage from 'src/common/enums/error-message.enum';
 import { Frequency } from 'src/common/enums/frequency.enum';
-import { MongooseUtil } from 'src/common/util/mongoose.util';
+import { CoreService } from 'src/core/core.service';
 import { PredictionService } from 'src/prediction/prediction.service';
 import { NewsSource } from './news-source.schema';
 
@@ -13,6 +14,7 @@ import { NewsSource } from './news-source.schema';
 export class NewsSourceService {
   private readonly logger = new Logger(NewsSourceService.name);
   constructor(
+    private readonly coreService: CoreService,
     @Inject(forwardRef(() => PredictionService))
     private predictionService: PredictionService,
     @InjectModel(NewsSource.name) private readonly newsSourceModel: Model<NewsSource>,
@@ -37,6 +39,18 @@ export class NewsSourceService {
     this.logger.log(`Created news source ${domain} with domain ${domain}`);
 
     return createdNewsSource;
+  }
+
+  async updateNewsSource(id: string, newsSourceDto: UpdateNewsSourceRequestDto) {
+    this.logger.log(`Updating news source with id ${id}`);
+    const newsSource = await this.getNewsSource(id);
+    newsSource.name = newsSourceDto.name ? newsSourceDto.name : newsSource.name;
+    newsSource.identifications = newsSourceDto.identifications
+      ? newsSourceDto.identifications
+      : newsSource.identifications;
+    newsSource.domain = newsSourceDto.domain ? newsSourceDto.domain : newsSource.domain;
+    await newsSource.save();
+    this.logger.log(`Succesfully updated news source with id ${id}`);
   }
 
   async getNewsSource(id: string) {
@@ -68,7 +82,7 @@ export class NewsSourceService {
   }
 
   async getPredictionPage(pageRequest: PageRequest) {
-    return await MongooseUtil.getDocumentPage(this.newsSourceModel, pageRequest);
+    return await this.coreService.getDocumentPage(this.newsSourceModel, pageRequest);
   }
 
   async getSentimentAnalytics(
