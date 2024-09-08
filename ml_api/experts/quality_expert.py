@@ -4,12 +4,6 @@ import numpy as np
 from transformers import RobertaTokenizerFast, RobertaModel
 import torch.nn as nn
 
-
-# Load RoBERTa model and tokenizer via HuggingFace Transformers
-roberta = RobertaModel.from_pretrained('roberta-base')
-tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
-
-
 class RoBERTa_Arch(nn.Module):
     def __init__(self, roberta):
         super(RoBERTa_Arch, self).__init__()
@@ -47,17 +41,18 @@ class RoBERTa_Arch(nn.Module):
 
         return x_fake, x_quality
 
-
-model = RoBERTa_Arch(roberta)
-
 # Load the best model with map_location set to CPU
 def load_quality_model():
+    # Load RoBERTa model and tokenizer via HuggingFace Transformers
+    roberta = RobertaModel.from_pretrained('roberta-base')
+    tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
+    model = RoBERTa_Arch(roberta)
     model_path = 'models/quality_model.pt'
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()  # Set the model to evaluation mode
     return model
 
-def detect_quality(text):
+def detect_quality(text, quality_model):
     # Tokenize and encode sequences in the unseen set
     tokens_unseen = tokenizer.batch_encode_plus(
         [text],
@@ -70,7 +65,7 @@ def detect_quality(text):
     unseen_mask = torch.tensor(tokens_unseen['attention_mask'])
 
     with torch.no_grad():
-        preds_fake, preds_quality = model(unseen_seq, unseen_mask)
+        preds_fake, preds_quality = quality_model(unseen_seq, unseen_mask)
 
         # Convert logits to probabilities using softmax
         fake_probs = torch.nn.functional.softmax(preds_fake.clone().detach(), dim=1).cpu().numpy()
