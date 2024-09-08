@@ -17,7 +17,7 @@ COPY . .
 EXPOSE 3003
 
 # Run the command to build the app
-RUN npm run build
+RUN npm run build --ignore-scripts
 
 # Run the command to start the app
 CMD ["npm", "run", "dev", "--", "--host"]

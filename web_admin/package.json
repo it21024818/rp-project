@@ -42,7 +42,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build -- silent",
+    "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix",

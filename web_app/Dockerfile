@@ -10,6 +10,6 @@ COPY . .
 
 EXPOSE 5173
 
-RUN npm run build
+RUN npm run build --ignore-scripts
 
 CMD ["npm", "run", "dev", "--", "--host"]
