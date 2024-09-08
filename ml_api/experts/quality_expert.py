@@ -45,7 +45,6 @@ class RoBERTa_Arch(nn.Module):
 def load_quality_model():
     # Load RoBERTa model and tokenizer via HuggingFace Transformers
     roberta = RobertaModel.from_pretrained('roberta-base')
-    tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
     model = RoBERTa_Arch(roberta)
     model_path = 'models/quality_model.pt'
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
@@ -53,6 +52,7 @@ def load_quality_model():
     return model
 
 def detect_quality(text, quality_model):
+    tokenizer = RobertaTokenizerFast.from_pretrained('roberta-base')
     # Tokenize and encode sequences in the unseen set
     tokens_unseen = tokenizer.batch_encode_plus(
         [text],
