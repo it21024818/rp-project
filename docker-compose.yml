@@ -44,18 +44,18 @@ services:
       - private 
       - public
 
-  admin:
-    image: dinuka07/rp-project/web-admin-image:latest
-    build: ./web_admin
-    ports:
-      - "3003:3003"
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - backend
-    networks:
-      - private 
-      - public
+  # admin:
+  #   image: dinuka07/rp-project/web-admin-image:latest
+  #   build: ./web_admin
+  #   ports:
+  #     - "3003:3003"
+  #   environment:
+  #     - NODE_ENV=development
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - private 
+  #     - public
 
   redis:
     image: redis/redis-stack-server:latest

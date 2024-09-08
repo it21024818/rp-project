@@ -170,7 +170,7 @@ export default function Reviews({ id }: ReviewsProps) {
                 sx={{ marginTop: "20px" }}
                 name="reaction"
                 value={newReview.reaction === ReactionEnum.GOOD ? 1 : 0}
-                onChange={(event, newValue) => {
+                onChange={(_event, newValue) => {
                   setNewReview({
                     ...newReview,
                     reaction:
