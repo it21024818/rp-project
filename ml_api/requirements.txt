@@ -6,4 +6,4 @@ pandas
 nltk
 # joblib
 # keybert
-# numpy
+numpy

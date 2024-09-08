@@ -3,7 +3,7 @@ import torch.nn as nn
 import pandas as pd
 import json
 from transformers import BertTokenizer, BertModel
-# import requests
+import requests
 
 # Define the BERT model with task-specific heads
 class MisinformationModel(nn.Module):
