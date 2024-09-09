@@ -36,8 +36,6 @@ export const checkLogin = () => {
   return !!isLogged;
 };
 
-export const BASE_URL = 'http://localhost:3000'; // BASE URL FOR API FETCHING
-
 const active = 'd-block p-3 fd-nav-active'; // WHERE MENU IS ACTIVE CLASS
 
 const inactive = 'd-block p-3 text-black'; // WHERE MENU IS NOT ACTIVE CLASS

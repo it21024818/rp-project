@@ -3,8 +3,8 @@
   "background_color": "#f2f5f9",
   "display": "standalone",
   "start_url": ".",
-  "short_name": "Lighthouse",
-  "name": "Lighthouse Admin Dashboard",
+  "short_name": "LightHouse",
+  "name": "LightHouse Admin Dashboard",
   "icons": [
     {
       "src": "/icon-192x192.png",

@@ -119,7 +119,7 @@ function LineGraph({ namePage }) {
     fill: {
       opacity: 1
     },
-    labels: ['Bitcoin', 'Ripple', 'Cardano', 'Ethereum'],
+    labels: ['Test1', 'Test2', 'Test3', 'Test4'],
     legend: {
       labels: {
         colors: theme.colors.alpha.trueWhite[100]

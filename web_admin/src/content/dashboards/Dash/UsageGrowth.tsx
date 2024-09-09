@@ -88,7 +88,7 @@ const CardAddAction = styled(Card)(
 `
 );
 
-function UsageGrowth() {
+function UsageGrowth({ analytics }) {
   return (
     <>
       <Box

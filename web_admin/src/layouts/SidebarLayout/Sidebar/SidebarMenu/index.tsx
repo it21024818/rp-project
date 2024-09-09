@@ -20,6 +20,7 @@ import Feedback from '@mui/icons-material/Feedback';
 import People from '@mui/icons-material/People';
 import Newspaper from '@mui/icons-material/Newspaper';
 import Man from '@mui/icons-material/Man';
+import Repo from '@mui/icons-material/Report';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -321,6 +322,30 @@ function SidebarMenu() {
                       startIcon={<Man />}
                     >
                       User Profile
+                    </Button>
+                  </ListItem>
+                </List>
+              </SubMenuWrapper>
+            </List>
+            <List
+              component="div"
+              subheader={
+                <ListSubheader component="div" disableSticky>
+                  Reports
+                </ListSubheader>
+              }
+            >
+              <SubMenuWrapper>
+                <List component="div">
+                  <ListItem component="div">
+                    <Button
+                      disableRipple
+                      component={RouterLink}
+                      onClick={closeSidebar}
+                      to="/reports"
+                      startIcon={<Repo />}
+                    >
+                      System Reports
                     </Button>
                   </ListItem>
                 </List>

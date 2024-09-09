@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { NavLink } from 'react-router-dom';
 
@@ -22,6 +22,9 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
+import { useDispatch } from 'react-redux';
+import { logoutCurrentUser } from 'src/store/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -59,10 +62,9 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
-  const user = {
-    name: 'Disira Thihan',
+  const userStat = {
     avatar: '/static/images/avatars/1.jpg',
-    jobtitle: 'Web Developer'
+    jobtitle: 'System Admin'
   };
 
   const ref = useRef<any>(null);
@@ -76,15 +78,47 @@ function HeaderUserbox() {
     setOpen(false);
   };
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+
+    // Dispatch logout action
+    dispatch(logoutCurrentUser());
+
+    // Redirect user to login page
+    navigate('/login');
+  };
+
+  const [user, setUser] = useState<{
+    firstName: string;
+    lastName: string;
+  } | null>(null);
+
+  useEffect(() => {
+    // Get tokens and user from localStorage
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
     <>
       <UserBoxButton color="secondary" ref={ref} onClick={handleOpen}>
-        <Avatar variant="rounded" alt={user.name} src={user.avatar} />
+        <Avatar variant="rounded" alt={user?.firstName} src={userStat.avatar} />
         <Hidden mdDown>
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">
+              {user?.firstName + ' ' + user?.lastName}
+            </UserBoxLabel>
             <UserBoxDescription variant="body2">
-              {user.jobtitle}
+              {userStat.jobtitle}
             </UserBoxDescription>
           </UserBoxText>
         </Hidden>
@@ -106,11 +140,17 @@ function HeaderUserbox() {
         }}
       >
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
-          <Avatar variant="rounded" alt={user.name} src={user.avatar} />
+          <Avatar
+            variant="rounded"
+            alt={user?.firstName}
+            src={userStat.avatar}
+          />
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">
+              {user?.firstName + ' ' + user?.lastName}
+            </UserBoxLabel>
             <UserBoxDescription variant="body2">
-              {user.jobtitle}
+              {userStat?.jobtitle}
             </UserBoxDescription>
           </UserBoxText>
         </MenuUserBox>
@@ -123,7 +163,7 @@ function HeaderUserbox() {
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>
-          <Button color="primary" fullWidth>
+          <Button color="primary" onClick={handleLogout} fullWidth>
             <LockOpenTwoToneIcon sx={{ mr: 1 }} />
             Sign out
           </Button>

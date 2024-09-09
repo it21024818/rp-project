@@ -2,18 +2,7 @@ import { Card, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PredictionsTable from './RecentPredictionsTable';
 import { subDays } from 'date-fns';
-import { useGetPredictionsMutation } from 'src/store/apiquery/predictionsApiSlice'; // Import your mutation
-
-// export type PredictionStatus = 'Reviewed' | 'Pending';
-
-// export interface Prediction {
-//   id: string;
-//   truncatedText: string;
-//   fakeStatus: boolean;
-//   feedback: 'Good' | 'Bad';
-//   createdAt: string;
-//   status: PredictionStatus;
-// }
+import { useGetPredictionsMutation } from 'src/store/apiquery/predictionsApiSlice';
 
 function RecentPredictions() {
   const [predictions, setPredictions] = useState([]);

@@ -83,22 +83,38 @@ function PredictionsDetails({ prediction }: { prediction: Prediction }) {
                 </Grid>
 
                 {/* Display Prediction Text */}
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  md={3}
+                  my={2}
+                  textAlign={{ sm: 'right' }}
+                >
                   <Box pr={3} pb={2}>
                     Text:
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={8} md={9}>
+                <Grid item xs={12} sm={8} md={9} my={2}>
+                  <Divider />
                   <Text color="black">{prediction?.text}</Text>
                 </Grid>
 
                 {/* Display Prediction Results */}
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  md={3}
+                  my={2}
+                  textAlign={{ sm: 'right' }}
+                >
                   <Box pr={3} pb={2}>
                     Prediction Results:
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={8} md={9}>
+                <Grid item xs={12} sm={8} md={9} my={2}>
+                  <Divider />
                   <Text color="black">
                     {prediction?.result?.finalFakeResult ? 'Fake' : 'Not Fake'}
                   </Text>
@@ -113,13 +129,11 @@ function PredictionsDetails({ prediction }: { prediction: Prediction }) {
                 <Grid item xs={12} sm={8} md={9}>
                   {prediction?.searchResults?.map((result, index) => (
                     <Box key={index} mb={2}>
-                      <Typography variant="h6">
+                      <Divider />
+                      <Typography variant="h6" sx={{ my: 2 }}>
                         <Link href={result.link} target="_blank" rel="noopener">
                           {result.title}
                         </Link>
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        {result.description}
                       </Typography>
                       {result.thumbnail && (
                         <Box display="flex" gap={1}>
@@ -135,10 +149,17 @@ function PredictionsDetails({ prediction }: { prediction: Prediction }) {
                           ))}
                         </Box>
                       )}
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        sx={{ my: 2 }}
+                      >
+                        {result.description}
+                      </Typography>
                     </Box>
                   ))}
+                  <Divider />
                 </Grid>
-
                 {/* Display Keywords */}
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
                   <Box pr={3} pb={2}>
@@ -169,12 +190,20 @@ function PredictionsDetails({ prediction }: { prediction: Prediction }) {
                 </Grid>
 
                 {/* Display Source Prediction Id */}
-                <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  md={3}
+                  my={2}
+                  textAlign={{ sm: 'right' }}
+                >
                   <Box pr={3} pb={2}>
                     News Source:
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={8} md={9}>
+                <Grid item xs={12} sm={8} md={9} my={2}>
+                  <Divider />
                   <Text color="black">{prediction?.sourcePredictionId}</Text>
                 </Grid>
               </Grid>

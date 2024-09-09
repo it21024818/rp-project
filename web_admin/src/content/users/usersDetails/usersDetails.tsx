@@ -8,10 +8,35 @@ import {
   Button
 } from '@mui/material';
 
-import { User } from 'src/models/models';
 import DoneTwoToneIcon from '@mui/icons-material/DoneTwoTone';
 import Text from 'src/components/Text';
 import Label from 'src/components/Label';
+
+export type UserRole = 'USER' | 'ADMIN';
+export type SubscriptionStatus = 'ACTIVE' | 'ENDED' | 'PAUSED';
+
+export interface Subscription {
+  endingTs: string;
+  id: string;
+  planId: string;
+  startedTs: string;
+  status: SubscriptionStatus;
+}
+
+export interface User {
+  _id: string;
+  createdBy: string;
+  createdAt: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  roles: UserRole[];
+  isAuthorized: boolean;
+  subscription: Subscription;
+  stripeCustomerId: string;
+  __v: number;
+}
 
 function UsersDetails({ user }: { user: User }) {
   return (
@@ -26,10 +51,10 @@ function UsersDetails({ user }: { user: User }) {
           >
             <Box>
               <Typography variant="h4" gutterBottom>
-                Prediction Details
+                User Details
               </Typography>
               <Typography variant="subtitle2">
-                Review the detailed information of the prediction
+                The detailed information of the user.
               </Typography>
             </Box>
           </Box>
@@ -44,7 +69,7 @@ function UsersDetails({ user }: { user: User }) {
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>{user.id}</b>
+                    <b>{user._id}</b>
                   </Text>
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>

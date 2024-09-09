@@ -3,7 +3,18 @@ import Chart from 'react-apexcharts';
 import type { ApexOptions } from 'apexcharts';
 import { Card, Grid, useTheme, CardHeader, Divider } from '@mui/material';
 
-function Analytics() {
+interface Bin {
+  web: number;
+  extension: number;
+  mobile: number;
+  startDate: string;
+}
+
+function Analytics({ analytics }) {
+  const webDataStat = analytics?.sum?.web || 0;
+  const mobileDataStat = analytics?.sum?.mobile || 0;
+  const extensionDataStat = analytics?.sum?.extension || 0;
+
   const theme = useTheme();
 
   // Options for the login analytics chart
@@ -67,7 +78,7 @@ function Analytics() {
   const loginChartData = [
     {
       name: 'Logins',
-      data: [100, 150, 75] // Replace with actual login data for mobile, web, extension
+      data: [mobileDataStat, webDataStat, extensionDataStat]
     }
   ];
 
@@ -132,7 +143,7 @@ function Analytics() {
   const predictionChartData = [
     {
       name: 'Prediction Requests',
-      data: [80, 120, 90] // Replace with actual prediction request data for mobile, web, extension
+      data: [mobileDataStat, webDataStat, extensionDataStat]
     }
   ];
 

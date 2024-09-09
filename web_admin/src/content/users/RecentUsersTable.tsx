@@ -23,15 +23,33 @@ import EditTwoToneIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import BulkActions from './BulkActions';
 import { Link } from 'react-router-dom';
 
-export interface User {
+export type UserRole = 'USER' | 'ADMIN';
+export type SubscriptionStatus = 'ACTIVE' | 'ENDED' | 'PAUSED';
+
+export interface Subscription {
+  endingTs: string;
   id: string;
+  planId: string;
+  startedTs: string;
+  status: SubscriptionStatus;
+}
+
+export interface User {
+  _id: string;
+  createdBy: string;
+  createdAt: string;
   firstName: string;
   lastName: string;
   email: string;
+  password: string;
+  roles: UserRole[];
+  isAuthorized: boolean;
+  subscription: Subscription;
+  stripeCustomerId: string;
+  __v: number;
 }
 
 interface RecentUsersTableProps {
-  className?: string;
   users: User[];
 }
 
@@ -50,7 +68,7 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
   const [limit, setLimit] = useState<number>(5);
 
   const handleSelectAllUsers = (event: ChangeEvent<HTMLInputElement>): void => {
-    setSelectedUsers(event.target.checked ? users.map((user) => user.id) : []);
+    setSelectedUsers(event.target.checked ? users.map((user) => user._id) : []);
   };
 
   const handleSelectOneUser = (
@@ -109,15 +127,15 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
           </TableHead>
           <TableBody>
             {paginatedUsers.map((user) => {
-              const isUserSelected = selectedUsers.includes(user.id);
+              const isUserSelected = selectedUsers.includes(user._id);
               return (
-                <TableRow hover key={user.id} selected={isUserSelected}>
+                <TableRow hover key={user._id} selected={isUserSelected}>
                   <TableCell padding="checkbox">
                     <Checkbox
                       color="primary"
                       checked={isUserSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneUser(event, user.id)
+                        handleSelectOneUser(event, user._id)
                       }
                       value={isUserSelected}
                     />
@@ -166,7 +184,7 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to="/users/details"
+                        to={`/users/details/${user._id}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />

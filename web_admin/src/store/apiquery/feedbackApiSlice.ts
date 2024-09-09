@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { BASE_URL } from '../../Utils/Generals';
-// const accessToken = localStorage.getItem('accessToken');
+const BASE_URL = process.env.REACT_APP_EXTERNAL_URL;
+const accessToken = localStorage.getItem('accessToken');
 
-const token =
-  'yJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MjU3NDUyNTcsInN1YiI6IjY2Y2I3MGM1OWY2YTA2MjIxMmNkZjYxNiIsImlzcyI6IlVFRSIsImF1ZCI6WyJsaWdodC1ob3VzZS13ZWItYXBwIiwibGlnaHQtaG91c2UtbW9iaWxlLWFwcCIsImxpZ2h0LWhvdXNlLWFkbWluLWFwcCIsImxpZ2h0LWhvdXNlLWV4dGVuc2lvbiJdLCJleHAiOjE3MjU3NTI0NTd9.FUMHNXCdPQjNikQx9HEOBhIE2VTuzAgWqVIe5GCJmvFJWyXat38d7v7Zmf_3rlBilNCYVDjF4iZ1jAbTwFZpvSAMUgUyzwMA-ecjmuHk9ELQcdRzDT-jsCwMTh2PGf5VuQATvEqSSNNa5Y0Q0X3jXYUMZETJB9YsF76HSROE1rsqkbL7Wd9f4Gnbs3-v37nxwOoSeVkoRxWgmoaU-DYzBfpDhhZ2BTpA19e481sZgT8wdwYDRbBIIuITRcF1Yf2qKCW2aT67ue5F1XEPlnhAR7F5EHbW_r3uKWJH3zmKxcS-fCtZsNGgBLE9AmZ7WHZwRqqe02OrEn4DHe28mwfP0w';
+// import { token } from '../../Utils/Generals';
+const token = accessToken;
 
 export const feedbackApiSlice = createApi({
   reducerPath: 'api/feedback',
@@ -21,7 +21,7 @@ export const feedbackApiSlice = createApi({
   endpoints: (builder) => ({
     feedback: builder.mutation({
       query: (formData) => ({
-        url: `/v1/feedbacks`,
+        url: `/v1/feedback`,
         method: 'POST',
         body: formData
       }),
@@ -38,6 +38,11 @@ export const feedbackApiSlice = createApi({
     getfeedback: builder.query({
       query: (id: string) => `/v1/feedback/${id}`,
       providesTags: ['feedback']
+    }),
+    getfeedbackAnalytics: builder.query({
+      query: ({ frequency, startDate, endDate }) =>
+        `/v1/feedback/analytics?frequency=${frequency}&start-date=${startDate}&end-date=${endDate}`,
+      providesTags: ['feedback']
     })
   })
 });
@@ -45,5 +50,6 @@ export const feedbackApiSlice = createApi({
 export const {
   useFeedbackMutation,
   useGetfeedbacksMutation,
-  useGetfeedbackQuery
+  useGetfeedbackQuery,
+  useGetfeedbackAnalyticsQuery
 } = feedbackApiSlice;

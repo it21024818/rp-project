@@ -5,6 +5,11 @@ import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import Footer from 'src/components/Footer';
 
 import LineGraph from '../../common/LineGraph';
+import FinalGraph from './finalAnalytics/LineGraph';
+import SentimentGraph from './sentimentAnalytics/LineGraph';
+import QualityGraph from './qualityAnalytics/LineGraph';
+import SarcasmGraph from './sarcasmAnalytics/LineGraph';
+import BiasGraph from './biasAnalytics/LineGraph';
 
 function PredictionAnalytics() {
   return (
@@ -24,34 +29,19 @@ function PredictionAnalytics() {
           spacing={4}
         >
           <Grid item xs={12}>
-            <LineGraph namePage={'How many predictions are fake / not fake'} />
+            <FinalGraph namePage={'How many predictions are fake / not fake'} />
           </Grid>
           <Grid item xs={12}>
-            <LineGraph
-              namePage={'How many predictions are negative / positive'}
-            />
+            <SentimentGraph namePage={'How many predictions are Sentiment'} />
           </Grid>
           <Grid item xs={12}>
-            <LineGraph
-              namePage={'How many predictions are left / right / center'}
-            />
+            <QualityGraph namePage={'How many predictions are Quality'} />
           </Grid>
           <Grid item xs={12}>
-            <LineGraph
-              namePage={
-                'How many predictions have low / med / high text quality'
-              }
-            />
+            <SarcasmGraph namePage={'How many predictions are Sarcasm'} />
           </Grid>
           <Grid item xs={12}>
-            <LineGraph
-              namePage={'How many predictions are sarcastic / not sarcastic'}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <LineGraph
-              namePage={'How many predictions are gen / hyp / rheto'}
-            />
+            <BiasGraph namePage={'How many predictions are Bias'} />
           </Grid>
         </Grid>
       </Container>

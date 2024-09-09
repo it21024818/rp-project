@@ -70,31 +70,42 @@ const CardCoverAction = styled(Box)(
 );
 
 const ProfileCover = ({ user }) => {
+  const userStat = {
+    savedCards: 7,
+    name: 'Disira Thihan',
+    coverImg: '/static/images/placeholders/covers/lightHouseCover.png',
+    avatar: '/static/images/avatars/1.jpg',
+    description:
+      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage",
+    jobtitle: 'Web Developer',
+    location: 'Barcelona, Spain',
+    followers: '465'
+  };
   return (
     <>
       <Box display="flex" mb={3}>
         <Box>
           <Typography variant="h3" component="h3" gutterBottom>
-            Profile for {user.name}
+            Profile for {user?.firstName}
           </Typography>
           <Typography variant="subtitle2">
-            This is a profile page. Easy to modify, always blazing fast
+            Hi {user?.firstName}, these are your stats...
           </Typography>
         </Box>
       </Box>
       <CardCover>
-        <CardMedia image={user.coverImg} />
+        <CardMedia image={userStat?.coverImg} />
       </CardCover>
       <AvatarWrapper>
-        <Avatar variant="rounded" alt={user.name} src={user.avatar} />
+        <Avatar variant="rounded" alt={user?.name} src={userStat?.avatar} />
       </AvatarWrapper>
       <Box py={2} pl={2} mb={3}>
         <Typography gutterBottom variant="h4">
-          {user.name}
+          {user?.roles[0]}
         </Typography>
-        <Typography variant="subtitle2">{user.description}</Typography>
+        <Typography variant="subtitle2">{user?.description}</Typography>
         <Typography sx={{ py: 2 }} variant="subtitle2" color="text.primary">
-          {user.jobtitle} | {user.location}
+          {user?.roles[1]} | {user?.email}
         </Typography>
       </Box>
     </>

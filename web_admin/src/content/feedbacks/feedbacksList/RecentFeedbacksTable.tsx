@@ -29,38 +29,49 @@ import EditTwoToneIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import BulkActions from './BulkActions';
 import { Link } from 'react-router-dom';
 
-// Define the Feedback interface
+export type FeedbackReaction = 'GOOD' | 'BAD';
+
 export interface Feedback {
-  id: string;
-  predictionId: string;
-  fakeStatus: boolean;
-  feedback: 'Good' | 'Bad';
+  _id: string;
+  createdBy: string;
   createdAt: string;
+  predictionId: string;
+  reaction: FeedbackReaction;
+  details: {
+    message: string;
+    sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL';
+    sarcasm: 'GENERIC' | 'RHETORICAL_QUESTION' | 'HYPERBOLE';
+    bias: 'LEFT' | 'CENTER' | 'RIGHT';
+    isFake: boolean;
+    textQuality?: boolean;
+  };
 }
 
 interface RecentFeedbackTableProps {
-  className?: string;
   feedbacks: Feedback[];
 }
 
 interface Filters {
-  feedback?: 'Good' | 'Bad';
+  feedback?: string;
 }
 
 // Get the feedback label
-const getFeedbackLabel = (feedback: 'Good' | 'Bad'): JSX.Element => {
+const getFeedbackLabel = (feedback: FeedbackReaction): JSX.Element => {
   const map = {
-    Good: {
+    GOOD: {
       text: 'Good',
       color: 'success'
     },
-    Bad: {
+    BAD: {
       text: 'Bad',
       color: 'error'
     }
   };
 
-  const { text, color }: any = map[feedback];
+  const { text, color }: any = map[feedback] || {
+    text: 'Unknown',
+    color: 'default'
+  };
 
   return <Label color={color}>{text}</Label>;
 };
@@ -70,7 +81,7 @@ const applyFilters = (feedbacks: Feedback[], filters: Filters): Feedback[] => {
   return feedbacks.filter((feedback) => {
     let matches = true;
 
-    if (filters.feedback && feedback.feedback !== filters.feedback) {
+    if (filters.feedback && feedback.reaction !== filters.feedback) {
       matches = false;
     }
 
@@ -102,12 +113,12 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
       name: 'All'
     },
     {
-      id: 'Good',
-      name: 'Good'
+      id: 'GOOD',
+      name: 'GOOD'
     },
     {
-      id: 'Bad',
-      name: 'Bad'
+      id: 'BAD',
+      name: 'BAD'
     }
   ];
 
@@ -128,7 +139,7 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
     event: ChangeEvent<HTMLInputElement>
   ): void => {
     setSelectedFeedbacks(
-      event.target.checked ? feedbacks.map((feedback) => feedback.id) : []
+      event.target.checked ? feedbacks.map((feedback) => feedback._id) : []
     );
   };
 
@@ -207,6 +218,7 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
               <TableCell>Prediction ID</TableCell>
               <TableCell>Fake Status</TableCell>
               <TableCell align="center">Feedback</TableCell>
+              <TableCell>Message</TableCell>
               <TableCell align="right">Created At</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
@@ -214,16 +226,20 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
           <TableBody>
             {paginatedFeedbacks.map((feedback) => {
               const isFeedbackSelected = selectedFeedbacks.includes(
-                feedback.id
+                feedback._id
               );
               return (
-                <TableRow hover key={feedback.id} selected={isFeedbackSelected}>
+                <TableRow
+                  hover
+                  key={feedback._id}
+                  selected={isFeedbackSelected}
+                >
                   <TableCell padding="checkbox">
                     <Checkbox
                       color="primary"
                       checked={isFeedbackSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneFeedback(event, feedback.id)
+                        handleSelectOneFeedback(event, feedback._id)
                       }
                       value={isFeedbackSelected}
                     />
@@ -243,15 +259,27 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
                     <Typography
                       variant="body1"
                       fontWeight="bold"
-                      color={feedback.fakeStatus ? 'error' : 'success'}
+                      color={feedback.details.isFake ? 'error' : 'success'}
                       gutterBottom
                       noWrap
                     >
-                      {feedback.fakeStatus ? 'Fake' : 'Not Fake'}
+                      {feedback.details.isFake ? 'Fake' : 'Not Fake'}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    {getFeedbackLabel(feedback.feedback)}
+                    {getFeedbackLabel(feedback.reaction)}
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      color="text.primary"
+                      gutterBottom
+                      noWrap
+                      maxWidth={300}
+                    >
+                      {feedback.details.message}
+                    </Typography>
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="body2" color="text.secondary" noWrap>
@@ -269,7 +297,7 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to="/predictions/details"
+                        to={`/predictions/details/${feedback.predictionId}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />

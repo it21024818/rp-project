@@ -1,52 +1,52 @@
-import { Card } from '@mui/material';
-import { Feedback } from 'src/models/models';
-import RecentFeedbackTable from './RecentFeedbacksTable';
+import { Card, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
+import FeedbacksTable from './RecentFeedbacksTable';
 import { subDays } from 'date-fns';
+import { useGetfeedbacksMutation } from 'src/store/apiquery/feedbackApiSlice';
 
-function RecentFeedback() {
-  const feedbacks: Feedback[] = [
-    {
-      id: '1',
-      predictionId: 'PRED12345',
-      fakeStatus: true,
-      feedback: 'Good',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '2',
-      predictionId: 'PRED67890',
-      fakeStatus: false,
-      feedback: 'Bad',
-      createdAt: subDays(new Date(), 1).toISOString()
-    },
-    {
-      id: '3',
-      predictionId: 'PRED11223',
-      fakeStatus: true,
-      feedback: 'Good',
-      createdAt: subDays(new Date(), 5).toISOString()
-    },
-    {
-      id: '4',
-      predictionId: 'PRED44556',
-      fakeStatus: false,
-      feedback: 'Bad',
-      createdAt: subDays(new Date(), 10).toISOString()
-    },
-    {
-      id: '5',
-      predictionId: 'PRED78901',
-      fakeStatus: true,
-      feedback: 'Good',
-      createdAt: subDays(new Date(), 15).toISOString()
-    }
-  ];
+function RecentFeedbacks() {
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [metadata, setMetadata] = useState(null);
+
+  const [fetchFeedbacks, { isLoading, error }] = useGetfeedbacksMutation();
+
+  useEffect(() => {
+    const fetchRecentFeedbacks = async () => {
+      const formData = {
+        sort: {
+          field: 'createdAt',
+          direction: 'desc'
+        },
+        filter: {
+          status: { operator: 'NOT_EQUAL', value: 'FAILED' }
+        }
+      };
+
+      try {
+        const response = await fetchFeedbacks(formData).unwrap();
+        setFeedbacks(response.content);
+        setMetadata(response.metadata);
+      } catch (err) {
+        console.error('Error fetching Feedbacks:', err);
+      }
+    };
+
+    fetchRecentFeedbacks();
+  }, [fetchFeedbacks]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <p>Error loading Feedbacks...</p>;
+  }
 
   return (
     <Card>
-      <RecentFeedbackTable feedbacks={feedbacks} />
+      <FeedbacksTable feedbacks={feedbacks} />
     </Card>
   );
 }
 
-export default RecentFeedback;
+export default RecentFeedbacks;

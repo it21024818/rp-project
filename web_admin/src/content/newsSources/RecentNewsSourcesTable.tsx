@@ -30,14 +30,15 @@ import BulkActions from './BulkActions';
 import { Link } from 'react-router-dom';
 
 export interface NewsSource {
-  id: string;
-  name: string;
-  domain: string;
+  _id: string;
   createdAt: string;
+  name: string;
+  identifications: string[];
+  domain: string;
+  __v: number;
 }
 
 interface RecentSourcesTableProps {
-  className?: string;
   newsSources: NewsSource[];
 }
 
@@ -64,7 +65,9 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
     event: ChangeEvent<HTMLInputElement>
   ): void => {
     setSelectedNewsSources(
-      event.target.checked ? newsSources.map((newsSource) => newsSource.id) : []
+      event.target.checked
+        ? newsSources.map((newsSource) => newsSource._id)
+        : []
     );
   };
 
@@ -132,12 +135,12 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
           <TableBody>
             {paginatedNewsSources.map((newsSource) => {
               const isNewsSourceSelected = selectedNewsSources.includes(
-                newsSource.id
+                newsSource._id
               );
               return (
                 <TableRow
                   hover
-                  key={newsSource.id}
+                  key={newsSource._id}
                   selected={isNewsSourceSelected}
                 >
                   <TableCell padding="checkbox">
@@ -145,7 +148,7 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
                       color="primary"
                       checked={isNewsSourceSelected}
                       onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneNewsSource(event, newsSource.id)
+                        handleSelectOneNewsSource(event, newsSource._id)
                       }
                       value={isNewsSourceSelected}
                     />
@@ -188,7 +191,7 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to="/sources/details"
+                        to={`/sources/details/${newsSource._id}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />

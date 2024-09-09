@@ -1,70 +1,45 @@
-import { Card } from '@mui/material';
-import { User } from 'src/models/models';
+import { Card, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
 import RecentUsersTable from './RecentUsersTable';
+import { useGetAllUsersListMutation } from 'src/store/apiquery/usersApiSlice';
 
 function RecentUsers() {
-  const users: User[] = [
-    {
-      id: '1',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com'
-    },
-    {
-      id: '2',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      email: 'jane.smith@example.com'
-    },
-    {
-      id: '3',
-      firstName: 'Alice',
-      lastName: 'Johnson',
-      email: 'alice.johnson@example.com'
-    },
-    {
-      id: '4',
-      firstName: 'Bob',
-      lastName: 'Brown',
-      email: 'bob.brown@example.com'
-    },
-    {
-      id: '5',
-      firstName: 'Charlie',
-      lastName: 'Williams',
-      email: 'charlie.williams@example.com'
-    },
-    {
-      id: '6',
-      firstName: 'Emily',
-      lastName: 'Davis',
-      email: 'emily.davis@example.com'
-    },
-    {
-      id: '7',
-      firstName: 'Frank',
-      lastName: 'Miller',
-      email: 'frank.miller@example.com'
-    },
-    {
-      id: '8',
-      firstName: 'Grace',
-      lastName: 'Wilson',
-      email: 'grace.wilson@example.com'
-    },
-    {
-      id: '9',
-      firstName: 'Henry',
-      lastName: 'Moore',
-      email: 'henry.moore@example.com'
-    },
-    {
-      id: '10',
-      firstName: 'Ivy',
-      lastName: 'Taylor',
-      email: 'ivy.taylor@example.com'
-    }
-  ];
+  const [users, setUsers] = useState([]);
+  const [metadata, setMetadata] = useState(null);
+
+  const [fetchUsers, { isLoading, error }] = useGetAllUsersListMutation();
+
+  useEffect(() => {
+    const fetchRecentUsers = async () => {
+      const formData = {
+        sort: {
+          field: 'createdAt',
+          direction: 'desc'
+        },
+        filter: {
+          status: { operator: 'NOT_EQUAL', value: 'FAILED' }
+        }
+      };
+
+      try {
+        const response = await fetchUsers(formData).unwrap();
+        setUsers(response.content);
+        setMetadata(response.metadata);
+      } catch (err) {
+        console.error('Error fetching Users:', err);
+      }
+    };
+
+    fetchRecentUsers();
+  }, [fetchUsers]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <p>Error loading Users...</p>;
+  }
 
   return (
     <Card>

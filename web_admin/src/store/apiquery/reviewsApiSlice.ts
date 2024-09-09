@@ -1,8 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { BASE_URL } from '../../Utils/Generals';
+const BASE_URL = process.env.REACT_APP_EXTERNAL_URL;
 const accessToken = localStorage.getItem('accessToken');
 
+// import { token } from '../../Utils/Generals';
 const token = accessToken;
+
 export const reviewsApiSlice = createApi({
   reducerPath: 'api/reviews',
   baseQuery: fetchBaseQuery({

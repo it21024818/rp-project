@@ -22,7 +22,7 @@ const AvatarPrimary = styled(Avatar)(
 `
 );
 
-function RecentActivity() {
+function RecentActivity({ analytics }) {
   const theme = useTheme();
 
   return (
@@ -45,7 +45,7 @@ function RecentActivity() {
               >
                 Total Users
               </Typography>
-              <Typography variant="h3">485</Typography>
+              <Typography variant="h3">{analytics?.sum?.mobile}</Typography>
             </Box>
             <Box>
               <Typography
@@ -55,7 +55,7 @@ function RecentActivity() {
               >
                 Paid Users
               </Typography>
-              <Typography variant="h3">8</Typography>
+              <Typography variant="h3">0</Typography>
             </Box>
           </Box>
         </Box>
@@ -77,7 +77,7 @@ function RecentActivity() {
               >
                 Total Users
               </Typography>
-              <Typography variant="h3">64</Typography>
+              <Typography variant="h3">{analytics?.sum?.web}</Typography>
             </Box>
             <Box>
               <Typography
@@ -87,7 +87,7 @@ function RecentActivity() {
               >
                 Paid Users
               </Typography>
-              <Typography variant="h3">15</Typography>
+              <Typography variant="h3">0</Typography>
             </Box>
           </Box>
         </Box>
@@ -109,7 +109,7 @@ function RecentActivity() {
               >
                 Total Users
               </Typography>
-              <Typography variant="h3">654</Typography>
+              <Typography variant="h3">{analytics?.sum?.extension}</Typography>
             </Box>
             <Box>
               <Typography
@@ -119,7 +119,7 @@ function RecentActivity() {
               >
                 Paid Users
               </Typography>
-              <Typography variant="h3">21</Typography>
+              <Typography variant="h3">0</Typography>
             </Box>
           </Box>
         </Box>

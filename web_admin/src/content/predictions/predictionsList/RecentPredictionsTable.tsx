@@ -120,8 +120,8 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
 
   const statusOptions = [
     { id: 'all', name: 'All' },
-    { id: 'completed', name: 'Completed' },
-    { id: 'pending', name: 'Pending' }
+    { id: 'COMPLETED', name: 'COMPLETED' },
+    { id: 'PENDING', name: 'PENDING' }
   ];
 
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {

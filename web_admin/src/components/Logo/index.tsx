@@ -114,7 +114,7 @@ function Logo() {
           <Tooltip title="Version 2.0" arrow placement="right">
             <VersionBadge>3.1</VersionBadge>
           </Tooltip>
-          <LogoText>Tokyo Free White</LogoText>
+          <LogoText>LightHouse Admin Dashboard</LogoText>
         </LogoTextWrapper>
       </Box>
     </LogoWrapper>

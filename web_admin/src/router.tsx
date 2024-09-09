@@ -86,6 +86,10 @@ const Avatars = Loader(
 const Cards = Loader(lazy(() => import('src/content/pages/Components/Cards')));
 const Forms = Loader(lazy(() => import('src/content/pages/Components/Forms')));
 
+// Reports
+
+const ReportsIndex = Loader(lazy(() => import('src/content/roports')));
+
 // Status
 
 const Status404 = Loader(
@@ -169,7 +173,7 @@ const routes: RouteObject[] = [
         element: <UsersLists />
       },
       {
-        path: 'details',
+        path: 'details/:id',
         element: <UsersInside />
       }
     ]
@@ -201,8 +205,22 @@ const routes: RouteObject[] = [
         element: <NewsSourceLists />
       },
       {
-        path: 'details',
+        path: 'details/:id',
         element: <NewsSourceInside />
+      }
+    ]
+  },
+  {
+    path: 'reports',
+    element: <SidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <Navigate to="details" replace />
+      },
+      {
+        path: 'details',
+        element: <ReportsIndex />
       }
     ]
   },

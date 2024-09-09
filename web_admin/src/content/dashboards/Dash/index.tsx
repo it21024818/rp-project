@@ -1,3 +1,4 @@
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import PageHeader from '../../common/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
@@ -8,7 +9,30 @@ import RecentActivity from './RecentActivity';
 import Analytics from './AnalyticsDash';
 import UsageGrowth from './UsageGrowth';
 
+import { useGetusageAnalyticsQuery } from 'src/store/apiquery/predictionsApiSlice';
+
 function DashboardLight() {
+  const today = new Date();
+  const startDate1 = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+  const [dateRange, setDateRange] = React.useState({
+    startDate: startDate1,
+    endDate: today,
+    frequency: 'DAILY'
+  });
+
+  const { startDate, endDate, frequency } = dateRange;
+
+  const {
+    data: analytics,
+    error,
+    isLoading
+  } = useGetusageAnalyticsQuery({
+    frequency,
+    startDate: startDate ? startDate.toISOString().split('T')[0] : null,
+    endDate: endDate ? endDate.toISOString().split('T')[0] : null
+  });
+
   return (
     <>
       <Helmet>
@@ -26,13 +50,13 @@ function DashboardLight() {
           spacing={4}
         >
           <Grid item lg={8} xs={12}>
-            <Analytics />
+            <Analytics analytics={analytics} />
             <Grid item xs={12}>
-              <UsageGrowth />
+              <UsageGrowth analytics={analytics} />
             </Grid>
           </Grid>
           <Grid item lg={4} xs={12}>
-            <RecentActivity />
+            <RecentActivity analytics={analytics} />
           </Grid>
         </Grid>
       </Container>

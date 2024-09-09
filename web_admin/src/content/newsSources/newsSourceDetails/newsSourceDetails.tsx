@@ -7,11 +7,16 @@ import {
   Divider,
   Button
 } from '@mui/material';
-
-import { NewsSource } from 'src/models/models';
-import DoneTwoToneIcon from '@mui/icons-material/DoneTwoTone';
 import Text from 'src/components/Text';
-import Label from 'src/components/Label';
+
+export interface NewsSource {
+  _id: string;
+  createdAt: string;
+  name: string;
+  identifications: string[];
+  domain: string;
+  __v: number;
+}
 
 function NewsSourceDetails({ news }: { news: NewsSource }) {
   return (
@@ -26,7 +31,7 @@ function NewsSourceDetails({ news }: { news: NewsSource }) {
           >
             <Box>
               <Typography variant="h4" gutterBottom>
-                Prediction Details
+                News Source Details
               </Typography>
               <Typography variant="subtitle2">
                 Review the detailed information of the prediction
@@ -44,7 +49,7 @@ function NewsSourceDetails({ news }: { news: NewsSource }) {
                 </Grid>
                 <Grid item xs={12} sm={8} md={9}>
                   <Text color="black">
-                    <b>{news.id}</b>
+                    <b>{news._id}</b>
                   </Text>
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} textAlign={{ sm: 'right' }}>

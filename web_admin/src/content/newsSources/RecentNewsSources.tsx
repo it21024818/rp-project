@@ -1,83 +1,60 @@
-import { Card } from '@mui/material';
+import { Card, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
 import RecentNewsSourcesTable from './RecentNewsSourcesTable';
-import { subDays } from 'date-fns';
+import { useGetnewsMutation } from 'src/store/apiquery/newsApiSlice';
 
-export interface NewsSource {
-  id: string;
-  name: string;
-  domain: string;
+export type News = {
+  _id: string;
   createdAt: string;
-}
+  name: string;
+  identifications: string[];
+  domain: string;
+  __v: number;
+};
 
-function RecentNewsSources() {
-  const newsSources: NewsSource[] = [
-    {
-      id: '1',
-      name: 'BBC News',
-      domain: 'bbc.com',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '2',
-      name: 'CNN',
-      domain: 'cnn.com',
-      createdAt: subDays(new Date(), 1).toISOString()
-    },
-    {
-      id: '3',
-      name: 'The New York Times',
-      domain: 'nytimes.com',
-      createdAt: subDays(new Date(), 5).toISOString()
-    },
-    {
-      id: '4',
-      name: 'The Guardian',
-      domain: 'theguardian.com',
-      createdAt: subDays(new Date(), 55).toISOString()
-    },
-    {
-      id: '5',
-      name: 'Al Jazeera',
-      domain: 'aljazeera.com',
-      createdAt: subDays(new Date(), 56).toISOString()
-    },
-    {
-      id: '6',
-      name: 'Reuters',
-      domain: 'reuters.com',
-      createdAt: subDays(new Date(), 33).toISOString()
-    },
-    {
-      id: '7',
-      name: 'Fox News',
-      domain: 'foxnews.com',
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '8',
-      name: 'NBC News',
-      domain: 'nbcnews.com',
-      createdAt: subDays(new Date(), 22).toISOString()
-    },
-    {
-      id: '9',
-      name: 'CBS News',
-      domain: 'cbsnews.com',
-      createdAt: subDays(new Date(), 11).toISOString()
-    },
-    {
-      id: '10',
-      name: 'ABC News',
-      domain: 'abcnews.go.com',
-      createdAt: subDays(new Date(), 123).toISOString()
-    }
-  ];
+function RecentNews() {
+  const [news, setNews] = useState([]);
+  const [metadata, setMetadata] = useState(null);
+
+  const [fetchNews, { isLoading, error }] = useGetnewsMutation();
+
+  useEffect(() => {
+    const fetchRecentNews = async () => {
+      const formData = {
+        sort: {
+          field: 'createdAt',
+          direction: 'desc'
+        },
+        filter: {
+          status: { operator: 'NOT_EQUAL', value: 'FAILED' }
+        }
+      };
+
+      try {
+        const response = await fetchNews(formData).unwrap();
+        setNews(response.content);
+        setMetadata(response.metadata);
+      } catch (err) {
+        console.error('Error fetching News:', err);
+      }
+    };
+
+    fetchRecentNews();
+  }, [fetchNews]);
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <p>Error loading News...</p>;
+  }
 
   return (
     <Card>
-      <RecentNewsSourcesTable newsSources={newsSources} />
+      <RecentNewsSourcesTable newsSources={news} />
     </Card>
   );
 }
 
-export default RecentNewsSources;
+export default RecentNews;

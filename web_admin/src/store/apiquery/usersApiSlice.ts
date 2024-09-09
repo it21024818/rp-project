@@ -1,69 +1,71 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "../../Utils/Generals";
-const accessToken = localStorage.getItem("accessToken");
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+const BASE_URL = process.env.REACT_APP_EXTERNAL_URL;
+const accessToken = localStorage.getItem('accessToken');
 
+// import { token } from '../../Utils/Generals';
 const token = accessToken;
 
 export const usersApiSlice = createApi({
-  reducerPath: "api/users",
+  reducerPath: 'api/users',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders(headers) {
       if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+        headers.set('Authorization', `Bearer ${token}`);
       }
       return headers;
-    },
+    }
   }),
-  tagTypes: ["Users"],
+  tagTypes: ['Users'],
 
   endpoints: (builder) => ({
-    getAllUsers: builder.query({
-      query: () => ({
-        url: "/users/search",
-        method: "POST",
-      }),
-      providesTags: ["Users"],
-    }),
-
     getUser: builder.query({
-      query: (id) => `/users/${id}`,
-      providesTags: ["Users"],
+      query: (id) => `/v1/users/${id}`,
+      providesTags: ['Users']
     }),
 
     deleteUser: builder.mutation({
       // eslint-disable-next-line @typescript-eslint/ban-types
       query: (id: String) => ({
         url: `/users/${id}`,
-        method: "DELETE",
+        method: 'DELETE'
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ['Users']
+    }),
+
+    getAllUsersList: builder.mutation({
+      query: (formData) => ({
+        url: `/v1/users/search`,
+        method: 'POST',
+        body: formData
+      }),
+      invalidatesTags: ['Users']
     }),
 
     assignToSite: builder.mutation({
       query: ({ userId, siteId }) => ({
         url: `/users/${userId}/assign`,
-        method: "PUT",
-        params: { "site-id": siteId },
+        method: 'PUT',
+        params: { 'site-id': siteId }
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ['Users']
     }),
 
     unassignFromSite: builder.mutation({
       query: ({ userId, siteId }) => ({
         url: `/users/${userId}/unassign`,
-        method: "PUT",
-        params: { "site-id": siteId },
+        method: 'PUT',
+        params: { 'site-id': siteId }
       }),
-      invalidatesTags: ["Users"],
-    }),
-  }),
+      invalidatesTags: ['Users']
+    })
+  })
 });
 
 export const {
-  useGetAllUsersQuery,
+  useGetAllUsersListMutation,
   useGetUserQuery,
   useDeleteUserMutation,
   useAssignToSiteMutation,
-  useUnassignFromSiteMutation,
+  useUnassignFromSiteMutation
 } = usersApiSlice;
