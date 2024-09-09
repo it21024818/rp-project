@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from experts.sentiment_expert import CustomBertModel
 from experts.sarcasm_expert import load_sarcasm_model, detect_sarcasm
 from experts.quality_expert import load_quality_model, detect_quality
 from experts.bias_expert import load_bias_model, predict_bias_and_fake_news
