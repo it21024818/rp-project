@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
-import { isArray, isString, isUndefined } from 'lodash';
+import dayjs from 'dayjs';
+import { isArray, isString, isUndefined, set } from 'lodash';
 import { FilterQuery, SortOrder } from 'mongoose';
 import { Model } from 'mongoose';
 import { PageMetadata } from 'src/common/dtos/page-metadata.dto';
@@ -118,8 +119,139 @@ export class CoreService {
       },
     ];
 
-    const result = (await model.aggregate(pipeline)).at(0);
+    const result = (await model.aggregate(pipeline)).at(0) as TimeBasedAnalytics<T>;
+
+    // Format dates correctly
+    result.bins.forEach(bin => {
+      bin.endDate = this.convertToDate(frequency, bin.endDate) as any;
+      bin.startDate = this.convertToDate(frequency, bin.startDate) as any;
+    });
+
+    // Find missing bins and add them to the result
+    const existingBins = result.bins.map(bin => bin.startDate);
+    const missingBins = this.findMissingBins(startDate.toISOString(), endDate.toISOString(), frequency, existingBins);
+    missingBins.forEach(date => {
+      result.bins.push({
+        startDate: date,
+        endDate: date,
+        ...Object.fromEntries(Object.keys(fields).map(fieldKey => [fieldKey, 0])),
+      } as any);
+    });
+
+    // Sort the bins according to dates
+    result.bins.sort((a, b) => {
+      const dateA = new Date(a.startDate);
+      const dateB = new Date(b.startDate);
+      return dateA.getTime() - dateB.getTime();
+    });
+
     return result as TimeBasedAnalytics<T>;
+  }
+
+  private findMissingBins(startDate: string, endDate: string, frequency: Frequency, existingBins: string[]): string[] {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const existingSet = new Set(existingBins); // Using a Set for efficient lookup
+    const missingBins = [];
+
+    const formatDate = (date: Date) => date.toISOString().split('T')[0]; // Formats date to 'YYYY-MM-DD'
+
+    // Align start date to the appropriate boundary
+    const alignedStart = new Date(start);
+
+    switch (frequency) {
+      case 'DAILY':
+        // No alignment needed for daily frequency
+        break;
+
+      case 'WEEKLY':
+        // Align to the start of the week (Monday)
+        const dayOfWeek = alignedStart.getUTCDay(); // 0 is Sunday, 1 is Monday, etc.
+        const daysToMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek; // Calculate days to the next Monday
+        alignedStart.setUTCDate(alignedStart.getUTCDate() + daysToMonday - 7); // Align to the previous Monday
+        break;
+
+      case 'MONTHLY':
+        // Align to the first day of the current month
+        alignedStart.setUTCDate(1);
+        break;
+
+      case 'YEARLY':
+        // Align to the first day of the current year
+        alignedStart.setUTCMonth(0); // January
+        alignedStart.setUTCDate(1);
+        break;
+    }
+
+    let current = new Date(alignedStart);
+
+    while (current <= end) {
+      const formattedDate = formatDate(current);
+
+      // Check if the current bin is missing
+      if (!existingSet.has(formattedDate)) {
+        missingBins.push(formattedDate);
+      }
+
+      // Increment based on the frequency
+      switch (frequency) {
+        case 'DAILY':
+          current.setUTCDate(current.getUTCDate() + 1); // Increment by one day
+          break;
+        case 'WEEKLY':
+          current.setUTCDate(current.getUTCDate() + 7); // Increment by one week
+          break;
+        case 'MONTHLY':
+          current.setUTCMonth(current.getUTCMonth() + 1); // Increment by one month
+          break;
+        case 'YEARLY':
+          current.setUTCFullYear(current.getUTCFullYear() + 1); // Increment by one year
+          break;
+      }
+    }
+
+    return missingBins;
+  }
+
+  private convertToDate(frequency: Frequency, dateString: string) {
+    const [year, rest] = dateString.split('-');
+    let date;
+
+    switch (frequency) {
+      case 'DAILY':
+        // Format is already '%Y-%m-%d'
+        date = new Date(dateString);
+        break;
+
+      case 'WEEKLY':
+        // Format is '%Y-%U', where %U is the week number of the year
+        const weekNumber = parseInt(rest, 10);
+        date = new Date(year);
+        date.setMonth(0); // January
+        date.setDate(1 + (weekNumber - 1) * 7); // Set to the first day of the given week
+        break;
+
+      case 'MONTHLY':
+        // Format is '%Y-%m'
+        const month = parseInt(rest, 10) - 1; // Months in JS are zero-based
+        date = new Date(year);
+        date.setMonth(month);
+        date.setDate(0);
+        break;
+
+      case 'YEARLY':
+        // Format is '%Y'
+        date = new Date(year); // January 1st of that year
+        break;
+
+      default:
+        // Default to daily if frequency is unknown
+        date = new Date(dateString);
+    }
+
+    // Convert back to the format '%Y-%m-%d'
+    const formattedDate = date.toISOString().split('T')[0];
+    return formattedDate;
   }
 
   async getDocumentPage<T>(model: Model<T>, { pageNum = 1, pageSize = 10, filter, sort }: PageRequest) {
