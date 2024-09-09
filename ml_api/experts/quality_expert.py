@@ -1,5 +1,4 @@
 import torch
-import numpy
 import numpy as np
 from transformers import RobertaTokenizerFast, RobertaModel
 import torch.nn as nn
@@ -73,12 +72,14 @@ def detect_quality(text, quality_model):
 
     # Get predicted labels and confidence scores
     preds_quality_labels = np.argmax(quality_probs, axis=1)
+    preds_fake_labels = np.argmax(fake_probs, axis=1)
     quality_confidences = np.max(quality_probs, axis=1)
-
-    # Get the confidence of the fake news
     fake_confidence = np.max(fake_probs, axis=1)
+    
+    # Convert to expected output values and cast to native Python types
+    quality_pred = int(preds_quality_labels[0])  # 1 for Good Quality, 0 for Bad Quality
+    quality_confidence = float(quality_confidences[0])  # Confidence for Quality Prediction
+    quality_news_pred = int(preds_fake_labels[0])  # 1 for Not Fake, 0 for Fake
+    quality_news_confidence = float(fake_confidence[0])  # Confidence for Fake/Not Fake
 
-    # Boolean values for text quality
-    text_quality_boolean = (preds_quality_labels == 0).astype(int)  # 1 for "Bad Quality", 0 for "Good Quality"
-
-    return text_quality_boolean, quality_confidences, preds_fake, fake_confidence
+    return quality_pred, quality_confidence, quality_news_pred, quality_news_confidence
