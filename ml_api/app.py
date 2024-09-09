@@ -3,12 +3,8 @@ from flask_cors import CORS
 from experts.sarcasm_expert import load_sarcasm_model, detect_sarcasm
 from experts.quality_expert import load_quality_model, detect_quality
 from experts.bias_expert import load_bias_model, predict_bias_and_fake_news
-# from experts.sentiment_expert import load_sentiment_model, analyze_sentiment
-# from google.colab import drive
-# import gdown
-# from tensorflow.keras.models import load_model
-# from keybert import KeyBERT
-# import numpy 
+from experts.sentiment_expert import load_sentiment_model, analyze_sentiment
+# from keybert import KeyBERT 
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -28,7 +24,7 @@ CORS(app)
 sarcasm_model = load_sarcasm_model()
 quality_model = load_quality_model()
 bias_model = load_bias_model()
-# sentiment_model = load_sentiment_model()
+news_model, tweet_model, sent_model, classifier_model = load_sentiment_model()
 
 # Function to calculate the weighted prediction
 def weighted_prediction(expert_predictions):
@@ -45,12 +41,12 @@ def weighted_prediction(expert_predictions):
 
 def combine_expert_outputs(text):
     sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence = detect_sarcasm(text, sarcasm_model)
-    # sentiment_prediction, sentiment_news_pred, sentiment_news_confidence = detect_sentiment(text)
+    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = detect_sentiment(text, news_model, tweet_model, sent_model, classifier_model)
     quality_pred, quality_confidence, quality_news_pred, quality_news_confidence = detect_quality(text, quality_model)
     bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = predict_bias_and_fake_news(text, bias_model)
 
     # sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence = 1, 0.76, 1, 0.76, 1, 0.76
-    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.6, 0, 0.6, 0, 0.6
+    # sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.6, 0, 0.6, 0, 0.6
     # quality_pred, quality_confidence, quality_news_pred, quality_news_confidence = 1, 0.78, 1, 0.78
     # bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = 1, 0.8, 1, 0.8
 

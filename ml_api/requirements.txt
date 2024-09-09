@@ -7,3 +7,5 @@ nltk
 # joblib
 # keybert
 numpy
+pickle
+captum
