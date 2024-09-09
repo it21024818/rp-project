@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
-import dayjs from 'dayjs';
 import { isArray, isEmpty, isString, isUndefined, set } from 'lodash';
 import { FilterQuery, SortOrder } from 'mongoose';
 import { Model } from 'mongoose';
