@@ -91,6 +91,7 @@ export class NewsSourceService {
     frequency: Frequency,
     newsSourceId: string,
   ): Promise<TimeBasedAnalytics<'positive' | 'negative' | 'fake' | 'notFake' | 'tweet' | 'news'>> {
+    await this.getNewsSource(newsSourceId);
     return await this.predictionService.getSentimentAnalytics(startDate, endDate, frequency, newsSourceId);
   }
 
@@ -100,6 +101,7 @@ export class NewsSourceService {
     frequency: Frequency,
     newsSourceId: string,
   ): Promise<TimeBasedAnalytics<'center' | 'left' | 'right' | 'fake' | 'notFake'>> {
+    await this.getNewsSource(newsSourceId);
     return await this.predictionService.getBiasAnalytics(startDate, endDate, frequency, newsSourceId);
   }
 
@@ -109,6 +111,7 @@ export class NewsSourceService {
     frequency: Frequency,
     newsSourceId: string,
   ): Promise<TimeBasedAnalytics<'low' | 'high' | 'fake' | 'notFake'>> {
+    await this.getNewsSource(newsSourceId);
     return await this.predictionService.getTextAnalytics(startDate, endDate, frequency, newsSourceId);
   }
 
@@ -118,6 +121,7 @@ export class NewsSourceService {
     frequency: Frequency,
     newsSourceId: string,
   ): Promise<TimeBasedAnalytics<'sarc' | 'notSarc' | 'gen' | 'hyperbole' | 'rhet' | 'fake' | 'notFake'>> {
+    await this.getNewsSource(newsSourceId);
     return await this.predictionService.getSarcAnalytics(startDate, endDate, frequency, newsSourceId);
   }
 
@@ -127,6 +131,7 @@ export class NewsSourceService {
     frequency: Frequency,
     newsSourceId: string,
   ): Promise<TimeBasedAnalytics<'fake' | 'notFake'>> {
+    await this.getNewsSource(newsSourceId);
     return await this.predictionService.getFinalAnalytics(startDate, endDate, frequency, newsSourceId);
   }
 }

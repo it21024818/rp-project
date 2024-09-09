@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 import dayjs from 'dayjs';
-import { isArray, isString, isUndefined, set } from 'lodash';
+import { isArray, isEmpty, isString, isUndefined, set } from 'lodash';
 import { FilterQuery, SortOrder } from 'mongoose';
 import { Model } from 'mongoose';
 import { PageMetadata } from 'src/common/dtos/page-metadata.dto';
@@ -16,17 +16,14 @@ import { Audit } from 'src/core/audit.schema';
 export class CoreService {
   private readonly logger = new Logger(CoreService.name);
 
-  public async getOptimizedTimeBasedAnalytics<T extends string, V extends Audit>({
-    model,
-    options,
-    fields,
-    filters,
-  }: {
+  public async getOptimizedTimeBasedAnalytics<T extends string, V extends Audit>(params: {
     model: Model<V>;
     options: { startDate: Date; endDate: Date; frequency: Frequency };
     fields: Record<string, { path: string; value: any }>;
     filters?: Record<string, string | undefined>;
   }): Promise<TimeBasedAnalytics<T>> {
+    this.logger.log(`Getting optimized time-based analytics based on params ${JSON.stringify(params)}`);
+    const { model, options, fields, filters } = params;
     const { startDate, endDate, frequency } = options;
 
     // Sanitize filters by removing undefined values
@@ -118,8 +115,17 @@ export class CoreService {
         },
       },
     ];
-
-    const result = (await model.aggregate(pipeline)).at(0) as TimeBasedAnalytics<T>;
+    let result: TimeBasedAnalytics<T> | undefined = (await model.aggregate(pipeline)).at(0);
+    if (isEmpty(result)) {
+      this.logger.warn('No analytics data found for the given parameters. Building empty result.');
+      result = {
+        sum: {
+          total: 0,
+          ...Object.fromEntries(Object.keys(fields).map(fieldKey => [fieldKey, 0])),
+        },
+        bins: [],
+      } as TimeBasedAnalytics<T>;
+    }
 
     // Format dates correctly
     result.bins.forEach(bin => {
@@ -145,6 +151,7 @@ export class CoreService {
       return dateA.getTime() - dateB.getTime();
     });
 
+    this.logger.log('Successfully retrieved optimized time-based analytics');
     return result as TimeBasedAnalytics<T>;
   }
 
