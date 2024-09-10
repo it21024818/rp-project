@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { SyntheticEvent, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -12,9 +11,16 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { useLoginMutation } from "../../store/apiquery/AuthApiSlice";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { useLoginMutation } from "../../store/apiquery/AuthApiSlice";
+// import { useNavigate } from "react-router-dom";
+import { BASE_LOGIN_URL } from "../../Utils/Generals";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
@@ -42,9 +48,13 @@ export default function SignInSide() {
     audience: "WEB_APP",
   });
 
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false); // For toggling password visibility
+  const [alertMessage, setAlertMessage] = useState(""); // Alert message state
+  const [alertSeverity, setAlertSeverity] = useState<"success" | "error">(
+    "error"
+  ); // Alert severity state
 
-  const [sendUserInfo, { isLoading, isError }] = useLoginMutation();
+  const [sendUserInfo, { isLoading }] = useLoginMutation();
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
@@ -53,6 +63,14 @@ export default function SignInSide() {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+
+    // Check if email or password is empty
+    if (!data.email || !data.password) {
+      setAlertMessage("Email and password cannot be empty.");
+      setAlertSeverity("error");
+      return;
+    }
+
     try {
       const response = await sendUserInfo(data).unwrap();
       if (response.tokens && response.user) {
@@ -60,11 +78,25 @@ export default function SignInSide() {
         localStorage.setItem("accessToken", response.tokens.accessToken);
         localStorage.setItem("refreshToken", response.tokens.refreshToken);
         localStorage.setItem("user", JSON.stringify(response.user));
-        navigate("/");
+
+        // Show success alert
+        setAlertMessage("Login successful! Redirecting...");
+        setAlertSeverity("success");
+
+        // Redirect after a delay
+        setTimeout(() => {
+          window.location.href = BASE_LOGIN_URL;
+        }, 2000);
       }
     } catch (error) {
-      console.error("Login error:", error);
+      // Show error alert if login fails
+      setAlertMessage("Username or password is incorrect.");
+      setAlertSeverity("error");
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -125,21 +157,29 @@ export default function SignInSide() {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={data.password}
               onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={togglePasswordVisibility}
+                      edge="end"
+                      aria-label="toggle password visibility"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            {isError && (
-              <Typography color="error" variant="body2">
-                {"Something went wrong!"}
-              </Typography>
-            )}
             {isLoading ? (
               <Box
                 sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 2 }}
@@ -172,6 +212,21 @@ export default function SignInSide() {
           </Box>
         </Box>
       </Grid>
+
+      {/* Snackbar for displaying alerts */}
+      <Snackbar
+        open={!!alertMessage}
+        autoHideDuration={6000}
+        onClose={() => setAlertMessage("")}
+      >
+        <Alert
+          onClose={() => setAlertMessage("")}
+          severity={alertSeverity}
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }

@@ -46,3 +46,5 @@ const inactive = "d-block p-3 text-black"; // WHERE MENU IS NOT ACTIVE CLASS
 export const cartKeyName = "fd_shoppingcart"; // CART KEY NAME FOR LOCAL STORAGE
 
 export const wishlistKeyName = "fd_wishlist"; // WISHLIST KEY NAME FOR LOCAL STORAGE
+
+export const BASE_LOGIN_URL = "http://localhost:5173/";
