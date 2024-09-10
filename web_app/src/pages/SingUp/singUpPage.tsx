@@ -5,7 +5,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/Login";
@@ -18,14 +17,17 @@ import {
   DialogContentText,
   DialogActions,
   Snackbar,
+  Alert,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import {
   useRegisterMutation,
   useResendRegistrationMailMutation,
   useAuthorizeUserMutation,
 } from "../../store/apiquery/AuthApiSlice";
-import { Copyright } from "@mui/icons-material";
 
 export default function SignUp() {
   const [data, setData] = useState({
@@ -34,13 +36,25 @@ export default function SignUp() {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    firstName: false,
+    lastName: false,
+    email: false,
+    password: false,
+  });
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
 
   const [open, setOpen] = useState(false); // State to control success modal
-  const [resendOpen, setResendOpen] = useState(false); // Snackbar state
+  const [alertMessage, setAlertMessage] = useState(""); // State for alert messages
+  const [alertSeverity, setAlertSeverity] = useState<"success" | "error">(
+    "success"
+  ); // State for alert severity
   const [authToken, setAuthToken] = useState(""); // State for the authorization token
+  const [authErrorMessage, setAuthErrorMessage] = useState(""); // Error message for auth token
   const navigate = useNavigate();
-  const [sendUserInfo, { isLoading, isError }] = useRegisterMutation();
-  const [resendEmail, { isLoading: isResending, isError: resendError }] =
+  const [sendUserInfo, { isLoading }] = useRegisterMutation();
+  const [resendEmail, { isLoading: isResending }] =
     useResendRegistrationMailMutation();
   const [authorizeUser, { isLoading: isAuthorizing }] =
     useAuthorizeUserMutation();
@@ -50,46 +64,82 @@ export default function SignUp() {
     setData({ ...data, [target.name]: target.value });
   };
 
+  const validateFields = () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errors = {
+      firstName: data.firstName.trim() === "",
+      lastName: data.lastName.trim() === "",
+      email: !emailPattern.test(data.email),
+      password: data.password.length < 8,
+    };
+
+    setPasswordErrorMessage(
+      errors.password ? "Password should be at least 8 characters." : ""
+    );
+
+    setValidationErrors(errors);
+    return !Object.values(errors).some((error) => error);
+  };
+
   const handleAuthTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAuthToken(e.target.value);
+    setAuthErrorMessage(""); // Reset error message when the user types
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!validateFields()) {
+      setAlertMessage("Please fill all the required fields correctly.");
+      setAlertSeverity("error");
+      return;
+    }
+
     try {
-      const result = await sendUserInfo(data).unwrap();
-      if (result) {
-        setOpen(true); // Open success modal
-        console.log("User registered successfully:", result);
-        setTimeout(() => {
-          setOpen(false);
-        }, 5000); // Close modal after 5 seconds
-      }
+      await sendUserInfo(data).unwrap();
+      setAlertMessage("Account created successfully! Redirecting to login...");
+      setAlertSeverity("success");
+      setOpen(true); // Open success modal
+      // setTimeout(() => {
+      // }, 5000); // 5-second delay before redirecting
     } catch (error) {
-      setOpen(true);
-      console.error("Error registering user:", error);
+      console.log(error);
+      setAlertMessage("Error registering user. Please try again.");
+      setAlertSeverity("error");
+      setOpen(false); // Show alert on error
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleAuthorize = async () => {
+    if (!authToken.trim()) {
+      setAuthErrorMessage("Auth token is required");
+      return;
+    }
+
+    try {
+      const result = await authorizeUser(authToken).unwrap();
+      setAlertMessage("Authorization successful! Redirecting to login...");
+      setAlertSeverity("success");
+      setOpen(false); // Close the dialog on success
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000); // Delay for better UX
+    } catch (error) {
+      setAuthErrorMessage("Authorization failed. Please try again.");
     }
   };
 
   const handleResendEmail = async () => {
     try {
       await resendEmail(data.email);
-      setResendOpen(true); // Open success snackbar
+      setAlertMessage("Verification email resent successfully!");
+      setAlertSeverity("success");
     } catch (error) {
-      console.error("Error resending email:", error);
-    }
-  };
-
-  const handleAuthorize = async () => {
-    try {
-      const result = await authorizeUser(authToken).unwrap();
-      if (result) {
-        console.log("User authorized successfully:", result);
-        setOpen(false);
-        navigate("/login"); // Redirect to login on success
-      }
-    } catch (error) {
-      console.error("Error authorizing user:", error);
+      setAlertMessage("Error resending email. Try again.");
+      setAlertSeverity("error");
     }
   };
 
@@ -114,7 +164,6 @@ export default function SignUp() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                autoComplete="given-name"
                 name="firstName"
                 required
                 fullWidth
@@ -123,6 +172,7 @@ export default function SignUp() {
                 autoFocus
                 value={data.firstName}
                 onChange={handleChange}
+                error={validationErrors.firstName}
               />
             </Grid>
             <Grid item xs={12}>
@@ -132,9 +182,9 @@ export default function SignUp() {
                 id="lastName"
                 label="Last Name"
                 name="lastName"
-                autoComplete="family-name"
                 value={data.lastName}
                 onChange={handleChange}
+                error={validationErrors.lastName}
               />
             </Grid>
             <Grid item xs={12}>
@@ -144,9 +194,9 @@ export default function SignUp() {
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
                 value={data.email}
                 onChange={handleChange}
+                error={validationErrors.email}
               />
             </Grid>
             <Grid item xs={12}>
@@ -155,11 +205,21 @@ export default function SignUp() {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
-                autoComplete="new-password"
                 value={data.password}
                 onChange={handleChange}
+                error={validationErrors.password}
+                helperText={passwordErrorMessage} // Show the password error message
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -178,21 +238,21 @@ export default function SignUp() {
           >
             {isLoading ? <CircularProgress size={24} /> : "Sign Up"}
           </Button>
-          {isError && (
-            <Typography color="error" variant="body2" align="center">
-              Error registering user. Please try again.
-            </Typography>
-          )}
-          <Grid container justifyContent="center">
-            <Grid item>
-              <Link href="/login" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
+
+      {/* Alerts */}
+      {alertMessage && (
+        <Snackbar
+          open={!!alertMessage}
+          autoHideDuration={6000}
+          onClose={() => setAlertMessage("")}
+        >
+          <Alert onClose={() => setAlertMessage("")} severity={alertSeverity}>
+            {alertMessage}
+          </Alert>
+        </Snackbar>
+      )}
 
       {/* Success Modal */}
       <Dialog
@@ -202,20 +262,10 @@ export default function SignUp() {
         aria-describedby="alert-dialog-description"
       >
         <DialogContent sx={{ textAlign: "center" }}>
-          <div>
-            <iframe
-              src="https://giphy.com/embed/J3iOpJrNCZGOS0M0QX"
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              allowFullScreen
-            ></iframe>
-          </div>
           <DialogContentText id="alert-dialog-description">
             Account created successfully! You will be redirected shortly...
           </DialogContentText>
         </DialogContent>
-        <br />
         <DialogActions sx={{ flexDirection: "column" }}>
           <Typography color="error" variant="body2" align="center">
             Authorize Your Account.
@@ -228,6 +278,8 @@ export default function SignUp() {
             fullWidth
             value={authToken}
             onChange={handleAuthTokenChange}
+            error={!!authErrorMessage} // Display error if present
+            helperText={authErrorMessage} // Show auth error message
           />
           <Box>
             <Button
@@ -248,18 +300,6 @@ export default function SignUp() {
           </Box>
         </DialogActions>
       </Dialog>
-
-      {/* Resend Email Snackbar */}
-      <Snackbar
-        open={resendOpen}
-        autoHideDuration={6000}
-        onClose={() => setResendOpen(false)}
-        message={
-          resendError
-            ? "Failed to resend email. Try again."
-            : "Verification email resent successfully!"
-        }
-      />
     </Container>
   );
 }

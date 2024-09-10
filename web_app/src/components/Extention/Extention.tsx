@@ -163,7 +163,7 @@ export default function Hero() {
                     : "primary.light",
               }}
             >
-              Extention
+              Extension
             </Typography>
           </Typography>
           <Typography
@@ -466,35 +466,220 @@ export default function Hero() {
                         ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
                         : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
                     textAlign: "center",
+                    padding: "20px", // Add padding to ensure content is not touching the edges
                   })}
                   display="flex"
                   flexDirection="column"
                 >
+                  {/* Text Analysis Section */}
                   <Typography
                     textAlign="left"
-                    marginLeft="40px"
+                    marginLeft="0"
                     color="text.secondary"
                     variant="h6"
-                    fontWeight="100px"
+                    fontWeight="bold"
                     sx={{
-                      alignSelf: "center",
-                      width: { sm: "100%", md: "100%" },
+                      alignSelf: "flex-start",
+                      width: "auto",
                       marginTop: "20px",
+                      marginBottom: "10px",
                     }}
                   >
-                    Fake news detection Factors Weights
+                    Analysis Report
                   </Typography>
+
+                  <Typography
+                    textAlign="left"
+                    marginLeft="0"
+                    color="GrayText"
+                    variant="body1"
+                    sx={{
+                      alignSelf: "flex-start",
+                      width: "auto",
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {/* Checking if the finalFakeResult is true */}
+                    {result.data?.result?.finalFakeResult ? (
+                      <>
+                        <b>
+                          Based on the analysis, the given text is unlikely to
+                          be fake news.
+                        </b>
+                        {/* Displaying sarcasm type and confidence */}
+                        The sarcasm detection model shows that sarcasm is either
+                        not present or has a confidence of{" "}
+                        {(
+                          result.data?.result?.sarcasmTypeResult?.confidence *
+                          100
+                        ).toFixed(2)}
+                        %, with a prediction of{" "}
+                        {result.data?.result?.sarcasmTypeResult?.prediction}.
+                        {/* Displaying sarcasm's contribution to fake likelihood */}
+                        The sarcasm fake result suggests that sarcasm does not
+                        significantly contribute to the likelihood of the news
+                        being fake.
+                        {/* Displaying sentiment analysis and its confidence */}
+                        Sentiment analysis shows a{" "}
+                        {result.data?.result?.sentimentTypeResult?.prediction.toLowerCase()}{" "}
+                        sentiment (with a confidence of{" "}
+                        {result.data?.result?.sentimentTypeResult?.confidence *
+                          100}
+                        %), and the sentiment does not reflect a biased
+                        perspective.
+                        {/* Displaying text quality analysis */}
+                        The text quality analysis indicates that the text is of
+                        good quality, which is less commonly associated with
+                        fake news, and the text fake result supports this with a
+                        confidence of{" "}
+                        {(
+                          result.data?.result?.textFakeResult?.confidence * 100
+                        ).toFixed(2)}
+                        %.
+                        {/* Displaying political bias analysis */}
+                        The bias detection model identifies a "
+                        {result.data?.result?.biasResult?.prediction}" political
+                        bias, which does not significantly influence the
+                        potential fabrication of the news, as the bias fake
+                        result indicates a high confidence of
+                        {(
+                          result.data?.result?.biasFakeResult?.confidence * 100
+                        ).toFixed(2)}
+                        % that bias contributes to the news being fake.
+                        {/* Final statement */}
+                        Based on the combined predictions from sarcasm, text
+                        quality, and bias analysis, this text is unlikely to be
+                        fake news.
+                      </>
+                    ) : (
+                      <>
+                        <b>
+                          Based on the analysis, it is highly likely that the
+                          given text is fake news.
+                        </b>
+                        {/* Displaying sarcasm type and confidence */}
+                        The sarcasm detection model indicates the presence of
+                        sarcasm with a confidence of{" "}
+                        {(
+                          result.data?.result?.sarcasmTypeResult?.confidence *
+                          100
+                        ).toFixed(2)}
+                        %, classifying it as{" "}
+                        {result.data?.result?.sarcasmTypeResult?.prediction}.
+                        {/* Displaying sarcasm's contribution to fake likelihood */}
+                        The sarcasm fake result confirms that sarcasm
+                        contributes to the likelihood of the news being fake.
+                        {/* Displaying sentiment analysis and its confidence */}
+                        Sentiment analysis shows a{" "}
+                        {result.data?.result?.sentimentTypeResult?.prediction.toLowerCase()}{" "}
+                        sentiment (with a confidence of{" "}
+                        {result.data?.result?.sentimentTypeResult?.confidence *
+                          100}
+                        %), indicating a potentially sentiment perspective.
+                        {/* Displaying text quality analysis */}
+                        The text quality analysis suggests that the text is of
+                        low quality, which is often associated with fake news,
+                        and the text fake result supports this with a confidence
+                        of{" "}
+                        {(
+                          result.data?.result?.textFakeResult?.confidence * 100
+                        ).toFixed(2)}
+                        %.
+                        {/* Displaying political bias analysis */}
+                        Additionally, the bias detection model identifies a "
+                        {result.data?.result?.biasResult?.prediction}" political
+                        bias, which could further influence the potential
+                        fabrication of the news, as the bias fake result
+                        indicates a confidence of{" "}
+                        {(
+                          result.data?.result?.biasFakeResult?.confidence * 100
+                        ).toFixed(2)}{" "}
+                        % that bias contributes to the news being fake.
+                        {/* Final statement */}
+                        Overall, based on the combined predictions from sarcasm,
+                        text quality, and bias analysis, this text is highly
+                        likely to be fake news. Based on the analysis, the given
+                        text is unlikely to be fake news.
+                        {/* Displaying sarcasm type and confidence */}
+                        The sarcasm detection model shows that sarcasm is either
+                        not present or has a low confidence of{" "}
+                        {(
+                          result.data?.result?.sarcasmTypeResult?.confidence *
+                          100
+                        ).toFixed(2)}
+                        %, with a prediction of{" "}
+                        {result.data?.result?.sarcasmTypeResult?.prediction}.
+                        {/* Displaying sarcasm's contribution to fake likelihood */}
+                        The sarcasm fake result suggests that sarcasm does not
+                        significantly contribute to the likelihood of the news
+                        being fake.
+                        {/* Displaying sentiment analysis and its confidence */}
+                        Sentiment analysis shows a{" "}
+                        {result.data?.result?.sentimentTypeResult?.prediction.toLowerCase()}{" "}
+                        sentiment (with a confidence of{" "}
+                        {result.data?.result?.sentimentTypeResult?.confidence *
+                          100}
+                        %), and the sentiment does not reflect a biased
+                        perspective.
+                        {/* Displaying text quality analysis */}
+                        The text quality analysis indicates that the text is of
+                        good quality, which is less commonly associated with
+                        fake news, and the text fake result supports this with a
+                        confidence of{" "}
+                        {(
+                          result.data?.result?.textFakeResult?.confidence * 100
+                        ).toFixed(2)}
+                        %.
+                        {/* Displaying political bias analysis */}
+                        The bias detection model identifies a "
+                        {result.data?.result?.biasResult?.prediction}" political
+                        bias, which does not significantly influence the
+                        potential fabrication of the news, as the bias fake
+                        result indicates a lower confidence of
+                        {(
+                          result.data?.result?.biasFakeResult?.confidence * 100
+                        ).toFixed(2)}{" "}
+                        % that bias contributes to the news being fake.
+                        {/* Final statement */}
+                        Based on the combined predictions from sarcasm, text
+                        quality, and bias analysis, this text is unlikely to be
+                        fake news.
+                      </>
+                    )}
+                  </Typography>
+
+                  {/* Displaying the Factors Weights */}
+                  <Typography
+                    textAlign="left"
+                    marginLeft="0"
+                    color="text.secondary"
+                    variant="h6"
+                    fontWeight="bold"
+                    sx={{
+                      alignSelf: "flex-start",
+                      width: "auto",
+                      marginTop: "40px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Fake News Detection Factors Weights
+                  </Typography>
+
+                  {/* Sentiment Fake Confidence */}
                   <Grid container spacing={2}>
                     <Grid item xs={10}>
                       <Typography
                         textAlign="left"
-                        marginLeft="40px"
+                        marginLeft="0"
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
+                          marginBottom: "10px",
                         }}
                       >
                         Tone of text segments
@@ -506,8 +691,8 @@ export default function Hero() {
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
                         }}
                       >
@@ -523,24 +708,27 @@ export default function Hero() {
                       result.data?.result?.sentimentFakeResult?.confidence * 100
                     }
                     sx={{
-                      marginLeft: "40px",
-                      marginRight: "40px",
+                      marginLeft: "0",
+                      marginRight: "0",
                       marginTop: "20px",
                     }}
                     cl1={"#4A90E2"}
                     cl2={"#1A237E"}
                   />
+
+                  {/* Sarcasm Fake Confidence */}
                   <Grid container spacing={2}>
                     <Grid item xs={10}>
                       <Typography
                         textAlign="left"
-                        marginLeft="40px"
+                        marginLeft="0"
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
+                          marginBottom: "10px",
                         }}
                       >
                         Sarcastic nature
@@ -552,8 +740,8 @@ export default function Hero() {
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
                         }}
                       >
@@ -569,24 +757,27 @@ export default function Hero() {
                       result.data?.result?.sarcasmFakeResult?.confidence * 100
                     }
                     sx={{
-                      marginLeft: "40px",
-                      marginRight: "40px",
+                      marginLeft: "0",
+                      marginRight: "0",
                       marginTop: "20px",
                     }}
                     cl1={"#FFB74D"}
                     cl2={"#E65100"}
                   />
+
+                  {/* Political Bias Confidence */}
                   <Grid container spacing={2}>
                     <Grid item xs={10}>
                       <Typography
                         textAlign="left"
-                        marginLeft="40px"
+                        marginLeft="0"
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
+                          marginBottom: "10px",
                         }}
                       >
                         Political bias
@@ -598,8 +789,8 @@ export default function Hero() {
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
                         }}
                       >
@@ -614,24 +805,27 @@ export default function Hero() {
                       result.data?.result?.biasFakeResult?.confidence * 100
                     }
                     sx={{
-                      marginLeft: "40px",
-                      marginRight: "40px",
+                      marginLeft: "0",
+                      marginRight: "0",
                       marginTop: "20px",
                     }}
                     cl1={"#81C784"}
                     cl2={"#2E7D32"}
                   />
+
+                  {/* Text Quality Confidence */}
                   <Grid container spacing={2}>
                     <Grid item xs={10}>
                       <Typography
                         textAlign="left"
-                        marginLeft="40px"
+                        marginLeft="0"
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
+                          marginBottom: "10px",
                         }}
                       >
                         Quality of the text
@@ -643,8 +837,8 @@ export default function Hero() {
                         color="GrayText"
                         variant="subtitle2"
                         sx={{
-                          alignSelf: "center",
-                          width: { sm: "100%", md: "100%" },
+                          alignSelf: "flex-start",
+                          width: "auto",
                           marginTop: "40px",
                         }}
                       >
@@ -659,23 +853,26 @@ export default function Hero() {
                       result.data?.result?.textFakeResult?.confidence * 100
                     }
                     sx={{
-                      marginLeft: "40px",
-                      marginRight: "40px",
+                      marginLeft: "0",
+                      marginRight: "0",
                       marginTop: "20px",
                     }}
                     cl1={"#BA68C8"}
                     cl2={"#6A1B9A"}
                   />
+
+                  {/* Analytics Section */}
                   <Typography
                     textAlign="left"
-                    marginLeft="40px"
+                    marginLeft="0"
                     color="text.secondary"
                     variant="h6"
-                    fontWeight="100px"
+                    fontWeight="bold"
                     sx={{
-                      alignSelf: "center",
-                      width: { sm: "100%", md: "100%" },
+                      alignSelf: "flex-start",
+                      width: "auto",
                       marginTop: "40px",
+                      marginBottom: "20px",
                     }}
                   >
                     Analytics
