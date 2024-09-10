@@ -48,4 +48,4 @@ export const cartKeyName = "fd_shoppingcart"; // CART KEY NAME FOR LOCAL STORAGE
 
 export const wishlistKeyName = "fd_wishlist"; // WISHLIST KEY NAME FOR LOCAL STORAGE
 
-export const BASE_LOGIN_URL = "http://localhost:5173/";
+export const BASE_LOGIN_URL = "http://34.69.102.142:5173/";
