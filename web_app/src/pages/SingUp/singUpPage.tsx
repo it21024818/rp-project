@@ -120,7 +120,7 @@ export default function SignUp() {
     }
 
     try {
-      const result = await authorizeUser(authToken).unwrap();
+      await authorizeUser(authToken).unwrap();
       setAlertMessage("Authorization successful! Redirecting to login...");
       setAlertSeverity("success");
       setOpen(false); // Close the dialog on success
