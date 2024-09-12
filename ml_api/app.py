@@ -5,7 +5,6 @@ from experts.sarcasm_expert import load_sarcasm_model, detect_sarcasm
 from experts.quality_expert import load_quality_model, detect_quality
 from experts.bias_expert import load_bias_model, predict_bias_and_fake_news
 # from experts.sentiment_expert import load_sentiment_model, detect_sentiment
-# from keybert import KeyBERT 
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
@@ -106,22 +105,6 @@ def extract_keywords():
       
     # Return the extracted keywords as a list of strings
     return jsonify({'keywords': [word for word, freq in top_words]})
-
-# @app.route('/extract-keywords', methods=['POST'])
-# def extract_keywords():
-#     data = request.get_json(force=True)
-#     text = data.get('text', '')
-    
-#     try:
-#         import numpy as np
-#         # Extract keywords using KeyBERT
-#         keywords = kw_model.extract_keywords(text)
-        
-#         # Return the extracted keywords as a list of strings
-#         return jsonify({'keywords': [x for x, y in keywords]})
-#     except Exception as e:
-#         # Handle the exception here
-#         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
