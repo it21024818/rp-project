@@ -63,6 +63,15 @@ pipeline {
         //     }
         // }
         
+        stage('Run Services') {
+            steps {
+                script {
+                    // Start the services using the images from the registry
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 script {
@@ -73,15 +82,6 @@ pipeline {
             }
         }
         
-        stage('Run Services') {
-            steps {
-                script {
-                    // Start the services using the images from the registry
-                    sh 'docker-compose up -d'
-                }
-            }
-        }
-
         // stage('Tear Down') {
         //     steps {
         //         script {
