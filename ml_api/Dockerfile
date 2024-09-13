@@ -1,13 +1,24 @@
-FROM python:3.10-slim
+# FROM python:3.10-slim
 
+# WORKDIR /app
+
+# COPY requirements.txt .
+
+# RUN pip install --progress-bar on -r requirements.txt
+
+# COPY . .
+
+# EXPOSE 5000
+
+# CMD ["flask", "run", "--host=0.0.0.0"]
+# Stage 1: Build
+FROM python:3.10-slim AS build
 WORKDIR /app
-
 COPY requirements.txt .
+RUN pip install --no-deps -r requirements.txt
 
-RUN pip install --progress-bar on -r requirements.txt
-
-COPY . .
-
-EXPOSE 5000
-
+# Stage 2: Runtime
+FROM python:3.10-slim
+WORKDIR /app
+COPY --from=build /app .
 CMD ["flask", "run", "--host=0.0.0.0"]
