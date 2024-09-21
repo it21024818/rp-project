@@ -4,17 +4,20 @@ const accessToken = localStorage.getItem('accessToken');
 // import { token } from '../../Utils/Generals';
 const token = accessToken;
 
+import { customBaseQuery } from '../customBaseQuery';
+
 export const newsApiSlice = createApi({
   reducerPath: 'api/news',
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders(headers) {
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
-      return headers;
-    }
-  }),
+  // baseQuery: fetchBaseQuery({
+  //   baseUrl: BASE_URL,
+  //   prepareHeaders(headers) {
+  //     if (token) {
+  //       headers.set('Authorization', `Bearer ${token}`);
+  //     }
+  //     return headers;
+  //   }
+  // }),
+  baseQuery: customBaseQuery,
   tagTypes: ['news'],
 
   endpoints: (builder) => ({
