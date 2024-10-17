@@ -60,6 +60,7 @@ export class PredictionController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Roles(...Object.values(UserRole))
   async createPrediction(@User('_id') userId: string, @Body() { text, url }: CreatePredictionDto) {
     return await this.predictionService.createPrediction(text, url, userId);
   }
