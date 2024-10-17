@@ -21,6 +21,8 @@ import Alert from "@mui/material/Alert";
 import { useLoginMutation } from "../../store/apiquery/AuthApiSlice";
 // import { useNavigate } from "react-router-dom";
 import { BASE_LOGIN_URL } from "../../Utils/Generals";
+import { useGoogleAuthMutation } from "../../store/apiquery/AuthApiSlice";
+import GoogleButton from "react-google-button";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Copyright(props: any) {
@@ -47,6 +49,19 @@ export default function SignInSide() {
     password: "",
     audience: "WEB_APP",
   });
+
+  const [googleAuth] = useGoogleAuthMutation();
+
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await googleAuth(data).unwrap();
+      if (response.authorizeUrl) {
+        window.location.href = response.authorizeUrl;
+      }
+    } catch (err) {
+      console.error("Google login failed:", err);
+    }
+  };
 
   const [showPassword, setShowPassword] = useState(false); // For toggling password visibility
   const [alertMessage, setAlertMessage] = useState(""); // Alert message state
@@ -196,6 +211,18 @@ export default function SignInSide() {
                 Sign In
               </Button>
             )}
+            <Typography variant="body2" align="center">
+              Or
+            </Typography>
+            <GoogleButton
+              style={{
+                marginLeft: "100px",
+                marginRight: "100px",
+                marginBottom: "30px",
+                marginTop: "30px",
+              }}
+              onClick={handleGoogleLogin}
+            />
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -208,6 +235,7 @@ export default function SignInSide() {
                 </Link>
               </Grid>
             </Grid>
+
             <Copyright sx={{ mt: 5 }} />
           </Box>
         </Box>

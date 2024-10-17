@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/landingPage/LandingPage";
 import LoginPage from "./pages/Loging/loginPage";
 import SingUpPage from "./pages/SingUp/singUpPage";
+import GoogleRedirectHandler from "./pages/Loging/GoogleRedirectHandler";
 
 import * as React from "react";
 import { PaletteMode } from "@mui/material";
@@ -32,6 +33,10 @@ function App() {
       <CssBaseline />
       <Routes>
         <Route path={"/"} element={<LandingPage />} />
+        <Route
+          path="/v1/auth/oauth/google/redirect"
+          element={<GoogleRedirectHandler />}
+        />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SingUpPage />} />
       </Routes>

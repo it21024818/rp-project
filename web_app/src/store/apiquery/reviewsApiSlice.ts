@@ -1,19 +1,19 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "../../Utils/Generals";
-const accessToken = localStorage.getItem("accessToken");
+import { createApi } from "@reduxjs/toolkit/query/react";
 
-const token = accessToken;
+import { customBaseQuery } from "../customBaseQuery";
+
 export const reviewsApiSlice = createApi({
   reducerPath: "api/reviews",
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders(headers) {
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  // baseQuery: fetchBaseQuery({
+  //   baseUrl: BASE_URL,
+  //   prepareHeaders(headers) {
+  //     if (token) {
+  //       headers.set('Authorization', `Bearer ${token}`);
+  //     }
+  //     return headers;
+  //   }
+  // }),
+  baseQuery: customBaseQuery,
   tagTypes: ["reviews"],
 
   endpoints: (builder) => ({

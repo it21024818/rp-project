@@ -28,6 +28,22 @@ export const authApiSlice = createApi({
       invalidatesTags: ["Auth"],
     }),
 
+    googleAuth: builder.mutation({
+      query: () => ({
+        url: `/v1/auth/oauth/google`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
+    handleGoogleRedirect: builder.mutation({
+      query: (code: string) => ({
+        url: `/oauth/google/redirect?code=${code}`,
+        method: "GET",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
     resendRegistrationMail: builder.mutation({
       query: (email) => ({
         url: `/v1/auth/register/resend?email=${email}`,
@@ -76,6 +92,8 @@ export const authApiSlice = createApi({
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useGoogleAuthMutation,
+  useHandleGoogleRedirectMutation,
   useAuthorizeUserMutation,
   useChangeUserPasswordMutation,
   useForgotUserPasswordMutation,

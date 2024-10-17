@@ -1,20 +1,18 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "../../Utils/Generals";
-const accessToken = localStorage.getItem("accessToken");
-
-const token = accessToken;
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { customBaseQuery } from "../customBaseQuery";
 
 export const predictionApiSlice = createApi({
   reducerPath: "api/prediction",
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders(headers) {
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  // baseQuery: fetchBaseQuery({
+  //   baseUrl: BASE_URL,
+  //   prepareHeaders(headers) {
+  //     if (token) {
+  //       headers.set('Authorization', `Bearer ${token}`);
+  //     }
+  //     return headers;
+  //   }
+  // }),
+  baseQuery: customBaseQuery,
   tagTypes: ["Prediction"],
 
   endpoints: (builder) => ({
