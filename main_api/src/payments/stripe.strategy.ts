@@ -76,6 +76,7 @@ export class StripeStrategy implements PaymentStrategy {
           userId: userId,
         },
       });
+      console.log(customer);
       if (!user.subscription) {
         user.subscription = {};
       }
@@ -84,6 +85,7 @@ export class StripeStrategy implements PaymentStrategy {
         status: SubscriptionStatus.ACTIVE,
       };
       await user.save();
+      console.log(user);
     }
     return customer;
   }

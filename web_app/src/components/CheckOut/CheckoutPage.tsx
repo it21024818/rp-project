@@ -25,7 +25,7 @@ const CheckoutPage: React.FC = () => {
         requestBody, // Pass the request body here
         {
           params: {
-            "plan-id": "66cb732ca8a0ab8ddc62b4a9", // Passing the plan ID in the query parameters
+            "plan-id": "67153697ca6bb825f16486e6", // Passing the plan ID in the query parameters
           },
           headers: {
             Authorization: `Bearer ${accessToken}`, // Add Authorization header with the Bearer token

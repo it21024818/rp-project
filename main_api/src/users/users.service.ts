@@ -53,7 +53,7 @@ export class UsersService {
 
   async getUserByStripeCustomerId(id: string): Promise<UserDocument> {
     this.logger.log(`Attempting to find user with stripe customer id '${id}'`);
-    const existingUser = await this.userModel.findOne({ stripeCustomerId: id });
+    const existingUser = await this.userModel.findOne({ 'subscription.STRIPE.customerId': id });
 
     if (existingUser === null) {
       this.logger.warn(`Could not find an existing user with stripe customere id '${id}'`);
