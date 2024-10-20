@@ -38,13 +38,13 @@ export function Header() {
             Timeline
           </NavHashLink>
           <NavHashLink smooth to="#project" onClick={closeMenu}>
-            Project
+            Documents
           </NavHashLink>
           <NavHashLink smooth to="#contact" onClick={closeMenu}>
             Contact
           </NavHashLink>
           <a href={Resume} download className="button">
-            Resume
+            Downloads
           </a>
         </nav>
         <div

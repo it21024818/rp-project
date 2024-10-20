@@ -15,7 +15,7 @@ import nodeIcon from "../../assets/node-icon.svg";
 import reactIcon from "../../assets/react-icon.svg";
 import typescriptIcon from "../../assets/typescript-icon.svg";
 import vueIcon from "../../assets/vue-icon.svg";
-import boostrapIcon from "../../assets/bootstrap-icon.svg";
+import fakeNewsIcon from "../../assets/fakeNewsIcon.png";
 
 export function Main() {
   return (
@@ -150,70 +150,70 @@ export function Main() {
               },
               image: [
                 {
-                  src: boostrapIcon,
+                  src: fakeNewsIcon,
                   width: 20,
                   height: 20,
                 },
-                {
-                  src: cssIcon,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: wordpress,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: shopify,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: htmlIcon,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: jsIcon,
-                  width: 20,
-                  height: 20,
-                },
+                // {
+                //   src: cssIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: wordpress,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: shopify,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: htmlIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: jsIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
                 // {
                 //   "src": mysqlIcon,
                 //   "width": 20,
                 //   "height": 20
                 // },
-                {
-                  src: nodeIcon,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: reactIcon,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: sassIcon,
-                  width: 20,
-                  height: 20,
-                },
-                {
-                  src: typescriptIcon,
-                  width: 20,
-                  height: 20,
-                },
+                // {
+                //   src: nodeIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: reactIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: sassIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
+                // {
+                //   src: typescriptIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
                 // {
                 //   "src": vscodeIcon,
                 //   "width": 20,
                 //   "height": 20
                 // },
-                {
-                  src: vueIcon,
-                  width: 20,
-                  height: 20,
-                },
+                // {
+                //   src: vueIcon,
+                //   width: 20,
+                //   height: 20,
+                // },
               ],
               polygon: {
                 sides: 5,

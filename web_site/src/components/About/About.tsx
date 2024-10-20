@@ -87,11 +87,11 @@ export function About() {
               <img src={jsIcon} alt="JavaScript" />
             </ScrollAnimation>
           </div>
-          <div className="hability">
+          {/* <div className="hability">
             <ScrollAnimation animateIn="fadeInUp" delay={0.18 * 1000}>
               <img src={vueIcon} alt="Vue.js" />
             </ScrollAnimation>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="about-image">
