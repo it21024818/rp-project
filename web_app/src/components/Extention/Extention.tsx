@@ -11,14 +11,10 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
-import LinearProgress, {
-  linearProgressClasses,
-} from "@mui/material/LinearProgress";
 import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import RadialBarChart from "./RadialBarChart";
 import Reviews from "../Reviews/Reviews";
 import { checkLogin } from "../../Utils/Generals";
 import { useNavigate } from "react-router-dom";
@@ -28,26 +24,13 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import { usePredictionMutation } from "../../store/apiquery/predictionsApiSlice";
+import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 
 import { SearchResult } from "../../../types";
 
-const BorderLinearProgress = styled(LinearProgress)<{
-  cl1: string;
-  cl2: string;
-}>(({ theme, cl1, cl2 }) => ({
-  height: 10,
-  borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: theme.palette.mode === "light" ? cl1 : cl2,
-  },
-}));
+import { useEffect, useRef } from "react";
 
 const StyledTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -57,6 +40,7 @@ const StyledTextField = styled(TextField)({
 });
 
 export default function Hero() {
+  const resultRef = useRef<HTMLElement | null>(null);
   const [makePrediction, result] = usePredictionMutation();
 
   const [formData, setFormData] = useState({
@@ -104,6 +88,12 @@ export default function Hero() {
       return;
     }
   };
+
+  useEffect(() => {
+    if (result?.isSuccess && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [result?.isSuccess]);
 
   // Handle closing the modal
   const handleClose = () => {
@@ -287,15 +277,18 @@ export default function Hero() {
             }}
             startIcon={<CheckCircleIcon />}
             onClick={handleSubmit}
+            disabled={result.isLoading}
           >
             Check
           </Button>
         </Box>
+
         {/* New Box for the results */}
 
         {result?.isSuccess ? (
           <Box
             id="image"
+            ref={resultRef}
             sx={(theme) => ({
               mt: { xs: 8, sm: 10 },
               alignSelf: "center",
@@ -322,7 +315,7 @@ export default function Hero() {
             flexDirection="column"
           >
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Box
                   id="image"
                   sx={(theme) => ({
@@ -345,6 +338,7 @@ export default function Hero() {
                         ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
                         : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
                     textAlign: "center",
+                    padding: 2,
                   })}
                   display="flex"
                   flexDirection="column"
@@ -401,48 +395,469 @@ export default function Hero() {
                       This news a false news.
                     </Alert>
                   )}
-                  {result?.data?.searchResults?.map(
-                    (searchResult: SearchResult, index: number) => (
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box
+                  id="image"
+                  sx={(theme) => ({
+                    mt: { xs: 8, sm: 10 },
+                    alignSelf: "center",
+                    width: "100%",
+                    backgroundImage:
+                      theme.palette.mode === "light"
+                        ? 'url("/static/images/templates/templates-images/hero-light.png")'
+                        : 'url("/static/images/templates/templates-images/hero-dark.png")',
+                    backgroundSize: "cover",
+                    borderRadius: "10px",
+                    outline: "1px solid",
+                    outlineColor:
+                      theme.palette.mode === "light"
+                        ? alpha("#BFCCD9", 0.5)
+                        : alpha("#9CCCFC", 0.1),
+                    boxShadow:
+                      theme.palette.mode === "light"
+                        ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
+                        : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
+                    textAlign: "center",
+                    padding: 2,
+                  })}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: 1,
+                      mt: 4, // Margin at the top
+                    }}
+                  >
+                    <CheckCircleIcon
+                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
+                    />{" "}
+                    {/* Icon */}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="#2e7d32"
+                      sx={{
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
+                      }}
+                    >
+                      Sarcasm Based Results
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
                       <Card
-                        key={index}
                         sx={{
-                          marginLeft: "20px",
-                          marginRight: "20px",
-                          marginTop: "10px",
-                          backgroundColor: "#F5F5F5",
+                          maxWidth: 600,
+                          margin: "auto",
+                          marginTop: 4,
+                          padding: 3,
+                          backgroundColor:
+                            "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient for background
+                          borderRadius: 4, // Rounded corners
+                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                          transition: "transform 0.3s ease-in-out", // Smooth hover effect
+                          "&:hover": {
+                            transform: "scale(1.05)", // Slight zoom on hover
+                          },
                         }}
                       >
-                        <CardMedia
-                          sx={{ height: 140 }}
-                          image={
-                            searchResult?.thumbnail?.[0]?.src ||
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAD4C_d3004nh_n_-dTCPbsPtI7c0kyEWBmg3uMZvtXU7xbmElTMASozE&s"
-                          }
-                          title="Thumbnail"
-                        />
                         <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
-                            Title: {searchResult?.title}
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <InsertEmoticonIcon
+                              sx={{ fontSize: 40, color: "#00ACC1", mr: 2 }}
+                            />{" "}
+                            {/* Icon */}
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              fontWeight="bold"
+                              color="#00796B"
+                              gutterBottom
+                            >
+                              Sarcasm Detection
+                            </Typography>
+                          </Box>
+
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>Prediction:</strong>{" "}
+                            {result?.data?.result?.sarcasmPresentResult
+                              ?.prediction == "true"
+                              ? "Sarcasm Present"
+                              : "No Sarcasm"}
                           </Typography>
+
+                          {/* Add additional styling for results */}
                           <Typography
-                            variant="body2"
-                            sx={{ color: "text.secondary" }}
+                            variant="caption"
+                            color="textSecondary"
+                            mt={1}
                           >
-                            {searchResult?.description}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ color: "text.secondary" }}
-                          >
-                            {searchResult?.link}
+                            This result is based on the analysis of sarcasm
+                            presence in the content.
                           </Typography>
                         </CardContent>
                       </Card>
-                    )
-                  )}
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Card
+                        sx={{
+                          maxWidth: 600,
+                          margin: "auto",
+                          marginTop: 4,
+                          padding: 3,
+                          backgroundColor:
+                            "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient background
+                          borderRadius: 4,
+                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                          transition: "transform 0.3s ease-in-out",
+                          "&:hover": {
+                            transform: "scale(1.05)", // Slight zoom on hover
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <InsertEmoticonIcon
+                              sx={{ fontSize: 40, color: "#00ACC1", mr: 2 }}
+                            />{" "}
+                            {/* Icon */}
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              fontWeight="bold"
+                              color="#00796B"
+                              gutterBottom
+                            >
+                              Type of Sarcasm
+                            </Typography>
+                          </Box>
+
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>
+                              Prediction:{" "}
+                              {
+                                result?.data?.result?.sarcasmTypeResult
+                                  ?.prediction
+                              }
+                            </strong>
+                          </Typography>
+
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            mt={1}
+                          >
+                            This result indicates the type of sarcasm detected
+                            in the text.
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: 1,
+                      mt: 4, // Margin at the top
+                    }}
+                  >
+                    <CheckCircleIcon
+                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
+                    />{" "}
+                    {/* Icon */}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="#2e7d32"
+                      sx={{
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
+                      }}
+                    >
+                      Sentiment Based Results
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <Card
+                        sx={{
+                          maxWidth: 600,
+                          margin: "auto",
+                          marginTop: 4,
+                          padding: 3,
+                          backgroundColor:
+                            "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient for background
+                          borderRadius: 4, // Rounded corners
+                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                          transition: "transform 0.3s ease-in-out", // Smooth hover effect
+                          "&:hover": {
+                            transform: "scale(1.05)", // Slight zoom on hover
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <InsertEmoticonIcon
+                              sx={{ fontSize: 40, color: "#F95454", mr: 2 }}
+                            />{" "}
+                            {/* Icon */}
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              fontWeight="bold"
+                              color="#C62E2E"
+                              gutterBottom
+                            >
+                              Sentiment Detection
+                            </Typography>
+                          </Box>
+
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>Prediction:</strong>{" "}
+                            {
+                              result?.data?.result?.sentimentTypeResult
+                                ?.prediction
+                            }
+                          </Typography>
+
+                          {/* Add additional styling for results */}
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            mt={1}
+                          >
+                            This result is based on the analysis of sentiment
+                            presence in the content.
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Card
+                        sx={{
+                          maxWidth: 600,
+                          margin: "auto",
+                          marginTop: 4,
+                          padding: 3,
+                          backgroundColor:
+                            "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient background
+                          borderRadius: 4,
+                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                          transition: "transform 0.3s ease-in-out",
+                          "&:hover": {
+                            transform: "scale(1.05)", // Slight zoom on hover
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <InsertEmoticonIcon
+                              sx={{ fontSize: 40, color: "#F95454", mr: 2 }}
+                            />{" "}
+                            {/* Icon */}
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              fontWeight="bold"
+                              color="#C62E2E"
+                              gutterBottom
+                            >
+                              Text type of Sentiment
+                            </Typography>
+                          </Box>
+
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>Prediction:</strong>{" "}
+                            {
+                              result?.data?.result?.sentimentTextTypeResult
+                                ?.prediction
+                            }
+                          </Typography>
+
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            mt={1}
+                          >
+                            This result indicates the type of sentiment detected
+                            in the text.
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: 1,
+                      mt: 4, // Margin at the top
+                    }}
+                  >
+                    <CheckCircleIcon
+                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
+                    />{" "}
+                    {/* Icon */}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="#2e7d32"
+                      sx={{
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
+                      }}
+                    >
+                      Text Quality Based Results
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Card
+                        sx={{
+                          maxWidth: 1500,
+                          margin: "auto",
+                          marginTop: 4,
+                          padding: 3,
+                          backgroundColor:
+                            "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient for background
+                          borderRadius: 4, // Rounded corners
+                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                          transition: "transform 0.3s ease-in-out", // Smooth hover effect
+                          "&:hover": {
+                            transform: "scale(1.05)", // Slight zoom on hover
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <InsertEmoticonIcon
+                              sx={{ fontSize: 40, color: "#7E60BF", mr: 2 }}
+                            />{" "}
+                            {/* Icon */}
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              fontWeight="bold"
+                              color="#433878"
+                              gutterBottom
+                            >
+                              Text Quality Detection
+                            </Typography>
+                          </Box>
+
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>Prediction:</strong>{" "}
+                            {result?.data?.result?.textQualityResult
+                              ?.prediction == "true"
+                              ? "Good Text Quality"
+                              : "Bad Text Quality"}
+                          </Typography>
+
+                          {/* Add additional styling for results */}
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            mt={1}
+                          >
+                            This result is based on the analysis of Text quality
+                            presence in the content.
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </Grid>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: 1,
+                      mt: 4, // Margin at the top
+                    }}
+                  >
+                    <CheckCircleIcon
+                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
+                    />{" "}
+                    {/* Icon */}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="#2e7d32"
+                      sx={{
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
+                      }}
+                    >
+                      Bias Based Results
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Card
+                        sx={{
+                          maxWidth: 1500,
+                          margin: "auto",
+                          marginTop: 4,
+                          padding: 3,
+                          backgroundColor:
+                            "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient for background
+                          borderRadius: 4, // Rounded corners
+                          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                          transition: "transform 0.3s ease-in-out", // Smooth hover effect
+                          "&:hover": {
+                            transform: "scale(1.05)", // Slight zoom on hover
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Box display="flex" alignItems="center" mb={2}>
+                            <InsertEmoticonIcon
+                              sx={{ fontSize: 40, color: "#FF9100", mr: 2 }}
+                            />{" "}
+                            {/* Icon */}
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              fontWeight="bold"
+                              color="#E85C0D"
+                              gutterBottom
+                            >
+                              Bias Detection
+                            </Typography>
+                          </Box>
+
+                          <Typography variant="body1" color="textPrimary">
+                            <strong>Prediction:</strong>{" "}
+                            {result?.data?.result?.biasResult?.prediction ===
+                            "LEFT"
+                              ? "Left-Leaning Bias Detected"
+                              : result?.data?.result?.biasResult?.prediction ===
+                                "CENTER"
+                              ? "Neutral/Center Bias Detected"
+                              : result?.data?.result?.biasResult?.prediction ===
+                                "RIGHT"
+                              ? "Right-Leaning Bias Detected"
+                              : "Unknown Bias"}
+                          </Typography>
+
+                          {/* Add additional styling for results */}
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            mt={1}
+                          >
+                            This result is based on the analysis of Bias
+                            presence in the content.
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </Grid>
                 </Box>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Box
                   id="image"
                   sx={(theme) => ({
@@ -470,414 +885,110 @@ export default function Hero() {
                   display="flex"
                   flexDirection="column"
                 >
-                  {/* Text Analysis Section */}
-                  <Typography
-                    textAlign="left"
-                    marginLeft="0"
-                    color="text.secondary"
-                    variant="h6"
-                    fontWeight="bold"
+                  <Box
                     sx={{
-                      alignSelf: "flex-start",
-                      width: "auto",
-                      marginTop: "20px",
-                      marginBottom: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      mt: 1, // Margin at the top
                     }}
                   >
-                    Analysis Report
-                  </Typography>
-
-                  <Typography
-                    textAlign="left"
-                    marginLeft="0"
-                    color="GrayText"
-                    variant="body1"
-                    sx={{
-                      alignSelf: "flex-start",
-                      width: "auto",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      overflowWrap: "break-word",
-                    }}
-                  >
-                    {/* Checking if the finalFakeResult is true */}
-                    {result.data?.result?.finalFakeResult ? (
-                      <>
-                        <b>
-                          Based on the analysis, the given text is unlikely to
-                          be fake news.
-                        </b>
-                        {/* Displaying sarcasm type and confidence */}
-                        The sarcasm detection model shows that sarcasm is either
-                        not present or has a confidence of{" "}
-                        {(
-                          result.data?.result?.sarcasmTypeResult?.confidence *
-                          100
-                        ).toFixed(2)}
-                        %, with a prediction of{" "}
-                        {result.data?.result?.sarcasmTypeResult?.prediction}.
-                        {/* Displaying sarcasm's contribution to fake likelihood */}
-                        The sarcasm fake result suggests that sarcasm does not
-                        significantly contribute to the likelihood of the news
-                        being fake.
-                        {/* Displaying sentiment analysis and its confidence */}
-                        Sentiment analysis shows a{" "}
-                        {result.data?.result?.sentimentTypeResult?.prediction.toLowerCase()}{" "}
-                        sentiment (with a confidence of{" "}
-                        {result.data?.result?.sentimentTypeResult?.confidence *
-                          100}
-                        %), and the sentiment does not reflect a biased
-                        perspective.
-                        {/* Displaying text quality analysis */}
-                        The text quality analysis indicates that the text is of
-                        good quality, which is less commonly associated with
-                        fake news, and the text fake result supports this with a
-                        confidence of{" "}
-                        {(
-                          result.data?.result?.textFakeResult?.confidence * 100
-                        ).toFixed(2)}
-                        %.
-                        {/* Displaying political bias analysis */}
-                        The bias detection model identifies a "
-                        {result.data?.result?.biasResult?.prediction}" political
-                        bias, which does not significantly influence the
-                        potential fabrication of the news, as the bias fake
-                        result indicates a high confidence of
-                        {(
-                          result.data?.result?.biasFakeResult?.confidence * 100
-                        ).toFixed(2)}
-                        % that bias contributes to the news being fake.
-                        {/* Final statement */}
-                        Based on the combined predictions from sarcasm, text
-                        quality, and bias analysis, this text is unlikely to be
-                        fake news.
-                      </>
-                    ) : (
-                      <>
-                        <b>
-                          Based on the analysis, it is highly likely that the
-                          given text is fake news.
-                        </b>
-                        {/* Displaying sarcasm type and confidence */}
-                        The sarcasm detection model indicates the presence of
-                        sarcasm with a confidence of{" "}
-                        {(
-                          result.data?.result?.sarcasmTypeResult?.confidence *
-                          100
-                        ).toFixed(2)}
-                        %, classifying it as{" "}
-                        {result.data?.result?.sarcasmTypeResult?.prediction}.
-                        {/* Displaying sarcasm's contribution to fake likelihood */}
-                        The sarcasm fake result confirms that sarcasm
-                        contributes to the likelihood of the news being fake.
-                        {/* Displaying sentiment analysis and its confidence */}
-                        Sentiment analysis shows a{" "}
-                        {result.data?.result?.sentimentTypeResult?.prediction.toLowerCase()}{" "}
-                        sentiment (with a confidence of{" "}
-                        {result.data?.result?.sentimentTypeResult?.confidence *
-                          100}
-                        %), indicating a potentially sentiment perspective.
-                        {/* Displaying text quality analysis */}
-                        The text quality analysis suggests that the text is of
-                        low quality, which is often associated with fake news,
-                        and the text fake result supports this with a confidence
-                        of{" "}
-                        {(
-                          result.data?.result?.textFakeResult?.confidence * 100
-                        ).toFixed(2)}
-                        %.
-                        {/* Displaying political bias analysis */}
-                        Additionally, the bias detection model identifies a "
-                        {result.data?.result?.biasResult?.prediction}" political
-                        bias, which could further influence the potential
-                        fabrication of the news, as the bias fake result
-                        indicates a confidence of{" "}
-                        {(
-                          result.data?.result?.biasFakeResult?.confidence * 100
-                        ).toFixed(2)}{" "}
-                        % that bias contributes to the news being fake.
-                        {/* Final statement */}
-                        Overall, based on the combined predictions from sarcasm,
-                        text quality, and bias analysis, this text is highly
-                        likely to be fake news. Based on the analysis, the given
-                        text is unlikely to be fake news.
-                        {/* Displaying sarcasm type and confidence */}
-                        The sarcasm detection model shows that sarcasm is either
-                        not present or has a low confidence of{" "}
-                        {(
-                          result.data?.result?.sarcasmTypeResult?.confidence *
-                          100
-                        ).toFixed(2)}
-                        %, with a prediction of{" "}
-                        {result.data?.result?.sarcasmTypeResult?.prediction}.
-                        {/* Displaying sarcasm's contribution to fake likelihood */}
-                        The sarcasm fake result suggests that sarcasm does not
-                        significantly contribute to the likelihood of the news
-                        being fake.
-                        {/* Displaying sentiment analysis and its confidence */}
-                        Sentiment analysis shows a{" "}
-                        {result.data?.result?.sentimentTypeResult?.prediction.toLowerCase()}{" "}
-                        sentiment (with a confidence of{" "}
-                        {result.data?.result?.sentimentTypeResult?.confidence *
-                          100}
-                        %), and the sentiment does not reflect a biased
-                        perspective.
-                        {/* Displaying text quality analysis */}
-                        The text quality analysis indicates that the text is of
-                        good quality, which is less commonly associated with
-                        fake news, and the text fake result supports this with a
-                        confidence of{" "}
-                        {(
-                          result.data?.result?.textFakeResult?.confidence * 100
-                        ).toFixed(2)}
-                        %.
-                        {/* Displaying political bias analysis */}
-                        The bias detection model identifies a "
-                        {result.data?.result?.biasResult?.prediction}" political
-                        bias, which does not significantly influence the
-                        potential fabrication of the news, as the bias fake
-                        result indicates a lower confidence of
-                        {(
-                          result.data?.result?.biasFakeResult?.confidence * 100
-                        ).toFixed(2)}{" "}
-                        % that bias contributes to the news being fake.
-                        {/* Final statement */}
-                        Based on the combined predictions from sarcasm, text
-                        quality, and bias analysis, this text is unlikely to be
-                        fake news.
-                      </>
+                    <CheckCircleIcon
+                      sx={{ color: "#EB5B00", fontSize: 28, mr: 2 }}
+                    />{" "}
+                    {/* Icon */}
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="#EB5B00"
+                      sx={{
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
+                      }}
+                    >
+                      News Sources
+                    </Typography>
+                  </Box>
+                  <Grid container spacing={2} sx={{ marginTop: "20px" }}>
+                    {result?.data?.searchResults?.map(
+                      (searchResult: SearchResult, index: number) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                          <Card
+                            sx={{
+                              maxWidth: 1500,
+                              margin: "auto",
+                              marginTop: 2,
+                              padding: 3,
+                              backgroundColor:
+                                "linear-gradient(135deg, #E0F7FA 30%, #F5F5F5 90%)", // Gradient for background
+                              borderRadius: 4, // Rounded corners
+                              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+                              transition: "transform 0.3s ease-in-out", // Smooth hover effect
+                              cursor: "pointer",
+                              "&:hover": {
+                                transform: "scale(1.05)", // Slight zoom on hover
+                              },
+                            }}
+                            onClick={() =>
+                              window.open(searchResult?.link, "_blank")
+                            }
+                          >
+                            <CardMedia
+                              sx={{ height: 140 }}
+                              image={
+                                searchResult?.thumbnail?.[0]?.src ||
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAD4C_d3004nh_n_-dTCPbsPtI7c0kyEWBmg3uMZvtXU7xbmElTMASozE&s"
+                              }
+                              title="Thumbnail"
+                            />
+                            <CardContent>
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div"
+                              >
+                                Title: {searchResult?.title}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ color: "text.secondary" }}
+                              >
+                                {searchResult?.description}
+                              </Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      )
                     )}
-                  </Typography>
-
-                  {/* Displaying the Factors Weights */}
-                  <Typography
-                    textAlign="left"
-                    marginLeft="0"
-                    color="text.secondary"
-                    variant="h6"
-                    fontWeight="bold"
-                    sx={{
-                      alignSelf: "flex-start",
-                      width: "auto",
-                      marginTop: "40px",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    Fake News Detection Factors Weights
-                  </Typography>
-
-                  {/* Sentiment Fake Confidence */}
-                  <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                      <Typography
-                        textAlign="left"
-                        marginLeft="0"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        Tone of text segments
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Typography
-                        textAlign="left"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                        }}
-                      >
-                        {result.data?.result?.sentimentFakeResult?.confidence *
-                          100}{" "}
-                        %
-                      </Typography>
-                    </Grid>
                   </Grid>
-                  <BorderLinearProgress
-                    variant="determinate"
-                    value={
-                      result.data?.result?.sentimentFakeResult?.confidence * 100
-                    }
-                    sx={{
-                      marginLeft: "0",
-                      marginRight: "0",
-                      marginTop: "20px",
-                    }}
-                    cl1={"#4A90E2"}
-                    cl2={"#1A237E"}
-                  />
-
-                  {/* Sarcasm Fake Confidence */}
-                  <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                      <Typography
-                        textAlign="left"
-                        marginLeft="0"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        Sarcastic nature
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Typography
-                        textAlign="left"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                        }}
-                      >
-                        {result.data?.result?.sarcasmFakeResult?.confidence *
-                          100}{" "}
-                        %
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <BorderLinearProgress
-                    variant="determinate"
-                    value={
-                      result.data?.result?.sarcasmFakeResult?.confidence * 100
-                    }
-                    sx={{
-                      marginLeft: "0",
-                      marginRight: "0",
-                      marginTop: "20px",
-                    }}
-                    cl1={"#FFB74D"}
-                    cl2={"#E65100"}
-                  />
-
-                  {/* Political Bias Confidence */}
-                  <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                      <Typography
-                        textAlign="left"
-                        marginLeft="0"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        Political bias
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Typography
-                        textAlign="left"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                        }}
-                      >
-                        {result.data?.result?.biasFakeResult?.confidence * 100}{" "}
-                        %
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <BorderLinearProgress
-                    variant="determinate"
-                    value={
-                      result.data?.result?.biasFakeResult?.confidence * 100
-                    }
-                    sx={{
-                      marginLeft: "0",
-                      marginRight: "0",
-                      marginTop: "20px",
-                    }}
-                    cl1={"#81C784"}
-                    cl2={"#2E7D32"}
-                  />
-
-                  {/* Text Quality Confidence */}
-                  <Grid container spacing={2}>
-                    <Grid item xs={10}>
-                      <Typography
-                        textAlign="left"
-                        marginLeft="0"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        Quality of the text
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Typography
-                        textAlign="left"
-                        color="GrayText"
-                        variant="subtitle2"
-                        sx={{
-                          alignSelf: "flex-start",
-                          width: "auto",
-                          marginTop: "40px",
-                        }}
-                      >
-                        {result.data?.result?.textFakeResult?.confidence * 100}{" "}
-                        %
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <BorderLinearProgress
-                    variant="determinate"
-                    value={
-                      result.data?.result?.textFakeResult?.confidence * 100
-                    }
-                    sx={{
-                      marginLeft: "0",
-                      marginRight: "0",
-                      marginTop: "20px",
-                    }}
-                    cl1={"#BA68C8"}
-                    cl2={"#6A1B9A"}
-                  />
-
-                  {/* Analytics Section */}
-                  <Typography
-                    textAlign="left"
-                    marginLeft="0"
-                    color="text.secondary"
-                    variant="h6"
-                    fontWeight="bold"
-                    sx={{
-                      alignSelf: "flex-start",
-                      width: "auto",
-                      marginTop: "40px",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Analytics
-                  </Typography>
-
-                  <RadialBarChart result={result.data} />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box
+                  id="image"
+                  sx={(theme) => ({
+                    mt: { xs: 8, sm: 4 },
+                    alignSelf: "center",
+                    width: "100%",
+                    backgroundImage:
+                      theme.palette.mode === "light"
+                        ? 'url("/static/images/templates/templates-images/hero-light.png")'
+                        : 'url("/static/images/templates/templates-images/hero-dark.png")',
+                    backgroundSize: "cover",
+                    borderRadius: "10px",
+                    outline: "1px solid",
+                    outlineColor:
+                      theme.palette.mode === "light"
+                        ? alpha("#BFCCD9", 0.5)
+                        : alpha("#9CCCFC", 0.1),
+                    boxShadow:
+                      theme.palette.mode === "light"
+                        ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
+                        : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
+                    textAlign: "center",
+                    padding: "20px", // Add padding to ensure content is not touching the edges
+                  })}
+                  display="flex"
+                  flexDirection="column"
+                >
                   <Reviews id={result?.data?._id} />
                 </Box>
               </Grid>
@@ -901,6 +1012,27 @@ export default function Hero() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Full-screen Circular Progress with blur background */}
+      {result.isLoading && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: alpha("#000", 0.5), // Add a dark transparent background
+            backdropFilter: "blur(10px)", // Blur effect for the background
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000, // Ensure the progress is above other content
+          }}
+        >
+          <CircularProgress size={80} color="primary" />
+        </Box>
+      )}
     </Box>
   );
 }

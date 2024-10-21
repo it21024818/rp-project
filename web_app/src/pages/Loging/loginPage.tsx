@@ -19,8 +19,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useLoginMutation } from "../../store/apiquery/AuthApiSlice";
-// import { useNavigate } from "react-router-dom";
-import { BASE_LOGIN_URL } from "../../Utils/Generals";
+import { useNavigate } from "react-router-dom";
 import { useGoogleAuthMutation } from "../../store/apiquery/AuthApiSlice";
 import GoogleButton from "react-google-button";
 
@@ -49,6 +48,8 @@ export default function SignInSide() {
     password: "",
     audience: "WEB_APP",
   });
+
+  const navigate = useNavigate();
 
   const [googleAuth] = useGoogleAuthMutation();
 
@@ -100,7 +101,7 @@ export default function SignInSide() {
 
         // Redirect after a delay
         setTimeout(() => {
-          window.location.href = BASE_LOGIN_URL;
+          navigate("/");
         }, 2000);
       }
     } catch (error) {

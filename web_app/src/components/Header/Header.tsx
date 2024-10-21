@@ -18,6 +18,8 @@ import { useDispatch } from "react-redux";
 import { logoutCurrentUser } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import { LoginOutlined } from "@mui/icons-material";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
 
 const logoStyle = {
   width: "40px",
@@ -80,6 +82,15 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
       setUser(JSON.parse(storedUser)); // Parse user since it's stored as a stringified JSON
     }
   }, []);
+
+  const getFormattedDate = () => {
+    const today = new Date();
+    return today.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <div>
@@ -256,30 +267,61 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                     FAQ
                   </MenuItem>
                   <Divider />
-                  <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      component="a"
-                      href="/"
-                      target="_blank"
-                      sx={{ width: "100%" }}
-                    >
-                      Sign up
-                    </Button>
-                  </MenuItem>
-                  <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      component="a"
-                      href="/"
-                      target="_blank"
-                      sx={{ width: "100%" }}
-                    >
-                      Sign in
-                    </Button>
-                  </MenuItem>
+                  {checkLogin() ? (
+                    <>
+                      <Card>
+                        <CardHeader
+                          avatar={
+                            <Avatar
+                              sx={{ bgcolor: "#4B3BFF" }}
+                              aria-label="recipe"
+                            >
+                              {user?.firstName[0]}
+                            </Avatar>
+                          }
+                          title={user?.firstName + " " + user?.lastName}
+                          subheader={getFormattedDate()}
+                        />
+                      </Card>
+                      <MenuItem>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          component="a"
+                          onClick={handleLogout}
+                          startIcon={<LoginOutlined />}
+                          sx={{ width: "100%" }}
+                        >
+                          Log Out
+                        </Button>
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          component="a"
+                          href="/signup"
+                          sx={{ width: "100%" }}
+                        >
+                          Sign up
+                        </Button>
+                      </MenuItem>
+                      <MenuItem>
+                        <Button
+                          color="primary"
+                          variant="outlined"
+                          component="a"
+                          href="/login"
+                          sx={{ width: "100%" }}
+                        >
+                          Sign in
+                        </Button>
+                      </MenuItem>
+                    </>
+                  )}
                 </Box>
               </Drawer>
             </Box>

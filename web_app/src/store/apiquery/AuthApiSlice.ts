@@ -38,7 +38,7 @@ export const authApiSlice = createApi({
 
     handleGoogleRedirect: builder.mutation({
       query: (code: string) => ({
-        url: `/oauth/google/redirect?code=${code}`,
+        url: `/v1/auth/oauth/google/redirect?code=${code}`,
         method: "GET",
       }),
       invalidatesTags: ["Auth"],

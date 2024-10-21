@@ -1,5 +1,5 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom"; // Ensure useLocation is imported
 import LandingPage from "./pages/landingPage/LandingPage";
 import LoginPage from "./pages/Loging/loginPage";
 import SingUpPage from "./pages/SingUp/singUpPage";
@@ -20,19 +20,20 @@ function App() {
     setMode((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const shouldShowAppBar = !["/login", "/signup"].includes(location.pathname);
-  const shouldShowBottomBar = !["/login", "/signup"].includes(
-    location.pathname
-  );
+  const location = useLocation(); // Get the current location
+
+  // Adjust conditions to ensure AppBar and Footer are only hidden on /login and /signup
+  const isAuthPage = ["/login", "/signup"].includes(location.pathname);
 
   return (
     <ThemeProvider theme={LPtheme}>
-      {shouldShowAppBar && (
+      <CssBaseline />
+      {/* Show AppBar only if not on login or signup pages */}
+      {!isAuthPage && (
         <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
       )}
-      <CssBaseline />
       <Routes>
-        <Route path={"/"} element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route
           path="/v1/auth/oauth/google/redirect"
           element={<GoogleRedirectHandler />}
@@ -40,7 +41,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SingUpPage />} />
       </Routes>
-      {shouldShowBottomBar && <Footer />}
+      {/* Show Footer only if not on login or signup pages */}
+      {!isAuthPage && <Footer />}
     </ThemeProvider>
   );
 }
