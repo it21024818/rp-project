@@ -285,7 +285,7 @@ export class CoreService {
   }
 
   buildSort = (sort: PageRequest['sort']) => {
-    const sortArr: [string, SortOrder][] = [Object.values(sort ?? {}) as [string, SortOrder]];
+    const sortArr: [string, SortOrder][] = [[sort?.field, sort?.direction]] as [string, SortOrder][];
     return sortArr;
   };
 
