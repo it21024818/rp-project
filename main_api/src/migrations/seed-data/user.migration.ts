@@ -27,7 +27,7 @@ export class UserMigration implements OnModuleInit {
       {
         createdAt: new Date(),
         createdBy: 'MIGRATION',
-        email: 'it21070358 @my.sliit.lk',
+        email: 'it21070358@my.sliit.lk',
         firstName: 'Disira',
         lastName: 'Thihan',
         // isAuthorized: true,
