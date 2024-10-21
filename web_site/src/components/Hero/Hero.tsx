@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { Container } from "./styles";
 import ScrollAnimation from "react-animate-on-scroll";
-import Illustration from "../../assets/illustration.svg";
+import LightHouseImage from "../../assets/lighthouse.png";
 import { NavHashLink } from "react-router-hash-link";
 import linkedin from "../../assets/linkedin.svg";
 import githubIcon from "../../assets/github.svg";
@@ -45,7 +45,7 @@ export function Hero() {
             >
               <img src={linkedin} alt="LinkedIn" />
             </a>
-            <a href="https://github.com/" target="_blank" rel="noreferrer">
+            <a href="https://github.com/it21024818/rp-project/tree/main" target="_blank" rel="noreferrer">
               <img src={githubIcon} alt="GitHub" />
             </a>
             <a
@@ -67,7 +67,7 @@ export function Hero() {
       </div>
       <div className="hero-image">
         <ScrollAnimation animateIn="fadeInRight" delay={1 * 1000}>
-          <img src={Illustration} alt="Illustration" />
+          <img src={LightHouseImage} alt="Illustration" />
         </ScrollAnimation>
       </div>
     </Container>
