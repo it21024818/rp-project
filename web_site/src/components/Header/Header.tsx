@@ -16,8 +16,8 @@ export function Header() {
     <Container className="header-fixed">
       <Router>
         <HashLink smooth to="#home" className="logo">
-          <span>{"The Light "}</span>
-          <span>{" House"}</span>
+          <span>{"The LightHouse "}</span>
+          {/* <span>{" House"}</span> */}
         </HashLink>
         <input
           onChange={toggleTheme}
@@ -26,7 +26,7 @@ export function Header() {
           id="switch"
           name="mode"
         />
-        <label htmlFor="switch">Toggle</label>
+        {/* <label htmlFor="switch">Toggle</label> */}
         <nav className={isActive ? "active" : ""}>
           <NavHashLink smooth to="#home" onClick={closeMenu}>
             Home
@@ -34,18 +34,21 @@ export function Header() {
           <NavHashLink smooth to="#about" onClick={closeMenu}>
             About Us
           </NavHashLink>
+          <NavHashLink smooth to="#scope" onClick={closeMenu}>
+            Project Scope
+          </NavHashLink>
           <NavHashLink smooth to="#timeline" onClick={closeMenu}>
             Timeline
           </NavHashLink>
           <NavHashLink smooth to="#project" onClick={closeMenu}>
-            Documents
+            Downloads
           </NavHashLink>
           <NavHashLink smooth to="#contact" onClick={closeMenu}>
             Contact
           </NavHashLink>
-          <a href={Resume} download className="button">
+          {/* <a href={Resume} download className="button">
             Downloads
-          </a>
+          </a> */}
         </nav>
         <div
           aria-expanded={isActive ? "true" : "false"}

@@ -14,7 +14,7 @@ import jsIcon from "../../assets/js-icon.svg";
 import nodeIcon from "../../assets/node-icon.svg";
 import reactIcon from "../../assets/react-icon.svg";
 import typescriptIcon from "../../assets/typescript-icon.svg";
-import vueIcon from "../../assets/vue-icon.svg";
+import lighthouse from "../../assets/lighthouse.png";
 import fakeNewsIcon from "../../assets/fakeNewsIcon.png";
 
 export function Main() {
@@ -154,11 +154,11 @@ export function Main() {
                   width: 20,
                   height: 20,
                 },
-                // {
-                //   src: cssIcon,
-                //   width: 20,
-                //   height: 20,
-                // },
+                {
+                  src: lighthouse,
+                  width: 20,
+                  height: 20,
+                },
                 // {
                 //   src: wordpress,
                 //   width: 20,

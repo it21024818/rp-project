@@ -10,8 +10,8 @@ export function Contact(){
     <Container id="contact">
       <header>
         <h2>Contact</h2>
-        <p>Ready to get started on your project? </p>
-        <p>Contact me now for a Free consultation.</p>
+        <p>Need any information regarding our research? </p>
+        <p>Contact us now for any support </p>
       </header>
       <div className="contacts">
         <div>
@@ -20,7 +20,7 @@ export function Contact(){
         </div>
         <div>
         <a href="tel:+919630576848"><img src={phoneIcon} alt="Phone No" /></a>
-          <a href="tel:+919630576848">(+94) 7777777</a>
+          <a href="tel:+919630576848">(+94) 771196888</a>
         </div>  
       </div>
       <Form></Form>
