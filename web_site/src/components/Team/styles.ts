@@ -30,6 +30,10 @@ export const Container = styled.section`
         transform: translateY(-5px);
         background-color: var(--orange);
       }
+      
+      social-media{
+        gap: 1rem;
+      }
 
       header{
         display: flex;

@@ -13,12 +13,11 @@ export function Footer() {
       <a href="https://detect-lighthouse.me" className="logo">
         <span>www.detect-lighthouse.me</span>
       </a>
-      <div>
+      {/* <div>
         <p>
           This Website was made with <img src={reactIcon} alt="React" />
-          {/* <span>❤️</span> */}
         </p>
-      </div>
+      </div> */}
       <div className="social-media">
         <a
           href="https://www.linkedin.com/in/codevinayak"

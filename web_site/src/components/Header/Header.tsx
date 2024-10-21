@@ -31,10 +31,10 @@ export function Header() {
           <NavHashLink smooth to="#home" onClick={closeMenu}>
             Home
           </NavHashLink>
-          <NavHashLink smooth to="#about" onClick={closeMenu}>
+          {/* <NavHashLink smooth to="#about" onClick={closeMenu}>
             About Us
-          </NavHashLink>
-          <NavHashLink smooth to="#scope" onClick={closeMenu}>
+          </NavHashLink> */}
+          <NavHashLink smooth to="#about" onClick={closeMenu}>
             Project Scope
           </NavHashLink>
           <NavHashLink smooth to="#timeline" onClick={closeMenu}>
@@ -42,6 +42,9 @@ export function Header() {
           </NavHashLink>
           <NavHashLink smooth to="#project" onClick={closeMenu}>
             Downloads
+          </NavHashLink>
+          <NavHashLink smooth to="#team" onClick={closeMenu}>
+            Team
           </NavHashLink>
           <NavHashLink smooth to="#contact" onClick={closeMenu}>
             Contact

@@ -5,6 +5,7 @@ import { About } from "../About/About";
 import Timeline from "../TimeLine/TimeLine";
 import { Contact } from "../Contact/Contact";
 import { Project } from "../Project/Project";
+import { Team } from "../Team/Team";
 import wordpress from "../../assets/wordpress.svg";
 import shopify from "../../assets/shopify.svg";
 import htmlIcon from "../../assets/html-icon.svg";
@@ -259,6 +260,7 @@ export function Main() {
       <About></About>
       <Timeline></Timeline>
       <Project></Project>
+      <Team></Team>
       <Contact></Contact>
     </Container>
   );
