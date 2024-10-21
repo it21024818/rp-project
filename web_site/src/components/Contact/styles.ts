@@ -28,7 +28,7 @@ export const Container = styled.section`
       align-items: center;
       justify-content: center;
       width: 50%;
-      max-width: 30rem;
+      max-width: 40rem;
       gap: 2rem;
       background-color: var(--green);
       border-radius: 1.4rem;

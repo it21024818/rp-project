@@ -139,11 +139,35 @@ export function About() {
           </div> */}
         </div>
       </div>
-      <div className="about-image">
+      <div className="about-text">
+        <ScrollAnimation animateIn="fadeInLeft">
+          <h3>Literature Review</h3><br></br>
+        </ScrollAnimation>
+        <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
+          <p>       
+            The digital age has introduced significant challenges in the spread of information, with misinformation becoming a prominent issue, particularly in political events and the COVID-19 pandemic. Misinformation, which involves the spread of false or misleading information presented as news, has undermined public confidence in institutions, distorted communication, and influenced societal processes. Traditional media, central to maintaining social stability, has been weakened by the surge of fake news on social media platforms, leading to polarization and eroding cultural memory.
+          </p>
+        </ScrollAnimation>
+        <ScrollAnimation
+          animateIn="fadeInLeft"
+          delay={0.2 * 1000}
+          style={{ marginTop: "2rem", marginBottom: "2rem" }}
+        >
+          <p>
+          A key example of misinformation's impact was during the 2016 U.S. Presidential Election, where fake news heavily influenced public opinion. Facebook CEO Mark Zuckerberg acknowledged underestimating the role of fake news, highlighting the responsibility of social media platforms in shaping political discourse and preventing the spread of misinformation. The election showcased how easily social media can be used to manipulate political outcomes.
+          </p>
+        </ScrollAnimation>
+        <ScrollAnimation animateIn="fadeInLeft" delay={0.3 * 1000}>
+          <p>
+          The spread of fake news during the COVID-19 pandemic further demonstrated its harmful effects, as it hampered global health efforts. Many people disregarded public health advice due to a lack of trust in credible sources, largely driven by misinformation circulating online. This erosion of trust significantly undermined efforts to contain the virus and exposed the broader dangers of fake news during crises.
+          </p>
+        </ScrollAnimation>
+      </div>
+      {/* <div className="about-image">
         <ScrollAnimation animateIn="fadeInRight" delay={0.2 * 1000}>
           <img src={LightHouseImage} alt="LightHouse System" />
         </ScrollAnimation>
-      </div>
+      </div> */}
     </Container>
   );
 }

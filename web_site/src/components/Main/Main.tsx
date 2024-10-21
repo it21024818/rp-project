@@ -6,6 +6,8 @@ import Timeline from "../TimeLine/TimeLine";
 import { Contact } from "../Contact/Contact";
 import { Project } from "../Project/Project";
 import { Team } from "../Team/Team";
+import { Gap } from "../Gap/Gap";
+import { Problem } from "../Problem/Problem";
 import wordpress from "../../assets/wordpress.svg";
 import shopify from "../../assets/shopify.svg";
 import htmlIcon from "../../assets/html-icon.svg";
@@ -17,6 +19,8 @@ import reactIcon from "../../assets/react-icon.svg";
 import typescriptIcon from "../../assets/typescript-icon.svg";
 import lighthouse from "../../assets/lighthouse.png";
 import fakeNewsIcon from "../../assets/fakeNewsIcon.png";
+import { Objectives } from "../Objectives/Objectives";
+import { Methodology } from "../Methodology/Methodology";
 
 export function Main() {
   return (
@@ -258,6 +262,10 @@ export function Main() {
       />
       <Hero></Hero>
       <About></About>
+      <Gap></Gap>
+      <Problem></Problem>
+      <Objectives></Objectives>
+      <Methodology></Methodology>
       <Timeline></Timeline>
       <Project></Project>
       <Team></Team>
