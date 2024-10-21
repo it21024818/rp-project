@@ -8,6 +8,7 @@ export class MockUtils {
       findByIdAndDelete: jest.fn(),
       find: jest.fn(),
       findOne: jest.fn(),
+      deleteMany: jest.fn(),
       create: jest.fn(),
       exec: jest.fn(),
     };
