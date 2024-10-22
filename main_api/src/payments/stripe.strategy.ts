@@ -81,9 +81,9 @@ export class StripeStrategy implements PaymentStrategy {
       }
       user.subscription[PaymentStrategyKey.STRIPE] = {
         customerId: customer.id,
-        status: SubscriptionStatus.ACTIVE,
+        status: SubscriptionStatus.PAUSED,
       };
-      await user.save();
+      await this.usersService.updateUserDocument(user);
     }
     return customer;
   }
@@ -177,7 +177,7 @@ export class StripeStrategy implements PaymentStrategy {
       endingTs: new Date(subscription.current_period_end),
       customerId: subscription.customer as string,
     };
-    await user.save();
+    await this.usersService.updateUserDocument(user);
     this.logger.log(`Subscription updated for user ${user._id}.`);
   }
 

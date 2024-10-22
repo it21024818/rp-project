@@ -1,7 +1,11 @@
 import { createMock } from '@golevelup/ts-jest';
+import { BadRequestException } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import { Model } from 'mongoose';
+import ErrorMessage from 'src/common/enums/error-message.enum';
+import { TokenPurpose } from 'src/common/enums/token-purpose.enum';
+import { TokenStatus } from 'src/common/enums/token-status.enum';
 import { Token } from './token.schema';
 import { TokenService } from './token.service';
 

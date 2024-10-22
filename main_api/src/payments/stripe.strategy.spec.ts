@@ -1,3 +1,4 @@
+import { createMock } from '@golevelup/ts-jest';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
@@ -6,7 +7,6 @@ import { Request } from 'express';
 import { when } from 'jest-when';
 import { Model } from 'mongoose';
 import { SubscriptionStatus } from 'src/common/enums/subscriptions-status.enum';
-import { MockUtils } from 'src/common/utils/mock.utils';
 import { UsersService } from 'src/users/users.service';
 import Stripe from 'stripe';
 import { PaymentsService } from './payments.service';
@@ -51,10 +51,10 @@ describe('StripeStrategy Test suite', () => {
     const module = await Test.createTestingModule({
       providers: [
         StripeStrategy,
-        { provide: PaymentsService, useValue: { register: jest.fn() } },
+        { provide: PaymentsService, useValue: createMock<PaymentsService>() },
         { provide: ConfigService, useValue: { get: () => apiKey } },
-        { provide: UsersService, useValue: { getUser: jest.fn(), getUserByStripeCustomerId: jest.fn() } },
-        { provide: getModelToken(Plan.name), useValue: MockUtils.mockModel({}) },
+        { provide: UsersService, useValue: createMock<UsersService>() },
+        { provide: getModelToken(Plan.name), useValue: createMock<Model<Plan>>() },
       ],
     }).compile();
 
@@ -87,9 +87,10 @@ describe('StripeStrategy Test suite', () => {
       const mockSession = { url: 'checkout_url' };
 
       // 2nd part: spies and expected behavior
+      const createCustomerSpy = jest.spyOn(stripe.customers, 'create').mockResolvedValue(mockCustomer as any);
       const getUserSpy = jest.spyOn(usersService, 'getUser');
       const getPlanSpy = jest.spyOn(planModel, 'findById');
-      const createCustomerSpy = jest.spyOn(stripe.customers, 'create').mockResolvedValue(mockCustomer as any);
+      const updateUserDocumentSpy = jest.spyOn(usersService, 'updateUserDocument');
       const createSessionSpy = jest.spyOn(stripe.checkout.sessions, 'create').mockResolvedValue(mockSession as any);
 
       when(getUserSpy)
@@ -98,6 +99,9 @@ describe('StripeStrategy Test suite', () => {
       when(getPlanSpy)
         .calledWith(planId)
         .mockResolvedValue(mockPlan as never);
+      when(updateUserDocumentSpy)
+        .calledWith(mockUser as any)
+        .mockResolvedValue(mockUser as never);
 
       // Call the function being tested
       const result = await strategy.createCheckoutSession(planId, userId);
@@ -108,10 +112,11 @@ describe('StripeStrategy Test suite', () => {
       expect(mockUser.subscription).toEqual({
         STRIPE: {
           customerId: mockCustomer.id,
-          status: SubscriptionStatus.ACTIVE,
+          status: SubscriptionStatus.PAUSED,
         },
       });
-      expect(mockUser.save).toHaveBeenCalledTimes(1);
+      expect(updateUserDocumentSpy).toHaveBeenCalledTimes(1);
+      expect(createCustomerSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error if session URL is invalid', async () => {

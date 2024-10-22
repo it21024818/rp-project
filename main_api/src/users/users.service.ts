@@ -65,6 +65,12 @@ export class UsersService {
     return existingUser;
   }
 
+  async updateUserDocument(user: UserDocument): Promise<UserDocument> {
+    this.logger.log(`Attempting to update user with id '${user._id}'`);
+    const updatedUser = await this.userModel.findByIdAndUpdate(user._id, user);
+    return updatedUser!;
+  }
+
   async getUserByEmail(email: string): Promise<UserDocument> {
     this.logger.log(`Attempting to find user with email '${email}'`);
     const existingUser = (await this.userModel.find({ email })).pop() ?? null;
