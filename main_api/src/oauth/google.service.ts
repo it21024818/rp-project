@@ -8,8 +8,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { AuthType } from 'src/common/enums/auth-type.enum';
 import { ConfigKey } from 'src/common/enums/config-key.enum';
 import { GoogleScope } from 'src/common/enums/google-scopes.enum';
-import { nestApp } from 'src/main';
-import { User, UserDocument } from 'src/users/user.schema';
+import { UserDocument } from 'src/users/user.schema';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()

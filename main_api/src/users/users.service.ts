@@ -17,11 +17,11 @@ export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
   constructor(
+    private feedbackService: FeedbackService,
     private readonly coreService: CoreService,
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @Inject(forwardRef(() => PredictionService))
     private readonly predictionsService: PredictionService,
-    private readonly feedbackService: FeedbackService,
   ) {}
 
   async updateUser(id: string, userDto: EditUserRequestDto): Promise<UserDocument> {
