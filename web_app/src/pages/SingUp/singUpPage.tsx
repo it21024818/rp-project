@@ -32,7 +32,7 @@ import { styled } from "@mui/material/styles";
 import backgroundImage from "../../assets/back.jpeg";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const GradientButton = styled(Button)(({ theme }) => ({
+const GradientButton = styled(Button)(() => ({
   background: "linear-gradient(45deg, #3f51b5, #2196f3)",
   color: "#fff",
   textTransform: "none",

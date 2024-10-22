@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useHandleGoogleRedirectMutation } from "../../store/apiquery/AuthApiSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
@@ -6,7 +6,7 @@ import { alpha } from "@mui/material/styles";
 
 const GoogleRedirectHandler = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [handleGoogleRedirect, { isLoading }] =
+  const [handleGoogleRedirect] =
     useHandleGoogleRedirectMutation();
   const location = useLocation();
   const navigate = useNavigate();

@@ -46,7 +46,7 @@ function Copyright(props: any) {
 
 // Styled Components
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const GradientButton = styled(Button)(({ theme }) => ({
+const GradientButton = styled(Button)(() => ({
   background: "linear-gradient(90deg, #1976d2 30%, #42a5f5 90%)",
   color: "#fff",
   fontWeight: "bold",

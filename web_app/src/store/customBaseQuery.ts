@@ -17,7 +17,7 @@ interface RefreshTokenResponse {
 const baseQueryWithReauth = fetchBaseQuery({
   baseUrl: BASE_URL,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  prepareHeaders: (headers, { getState }) => {
+  prepareHeaders: (headers) => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       headers.set("Authorization", `Bearer ${accessToken}`);
