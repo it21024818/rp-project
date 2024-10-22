@@ -6,7 +6,6 @@ import Highlights from "../../components/Highlight/Highlights";
 import Pricing from "../../components/Pricing/Pricing";
 import Features from "../../components/Features/Features";
 import FAQ from "../../components/FAQ/FAQ";
-import CheckoutPage from "../../components/CheckOut/CheckoutPage";
 
 export default function LandingPage() {
   return (
@@ -20,7 +19,6 @@ export default function LandingPage() {
         <Highlights />
         <Divider />
         <Pricing />
-        <CheckoutPage />
         <Divider />
         <FAQ />
         <Divider />

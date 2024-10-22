@@ -599,6 +599,7 @@ export default function getLPTheme(mode: PaletteMode): ThemeOptions {
                 borderColor: brand[300],
               },
               "&.Mui-focused": {
+                border: "none",
                 borderColor: brand[400],
                 outline: "4px solid",
                 outlineColor: brand[200],

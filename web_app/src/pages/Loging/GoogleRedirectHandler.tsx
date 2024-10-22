@@ -57,7 +57,7 @@ const GoogleRedirectHandler = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 1000,
+            zIndex: 3000,
           }}
         >
           <CircularProgress size={80} color="primary" />

@@ -26,7 +26,10 @@ import {
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { usePredictionMutation } from "../../store/apiquery/predictionsApiSlice";
-import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
+import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
+import HandshakeIcon from "@mui/icons-material/Handshake";
 
 import { SearchResult } from "../../../types";
 
@@ -214,7 +217,7 @@ export default function Hero() {
           sx={(theme) => ({
             mt: { xs: 8, sm: 10 },
             alignSelf: "center",
-            height: { xs: 200, sm: 700 },
+            height: { xs: 400, sm: 400 },
             width: "100%",
             backgroundImage:
               theme.palette.mode === "light"
@@ -259,7 +262,7 @@ export default function Hero() {
             value={formData.text}
             onChange={handleValue}
             multiline
-            rows={20}
+            rows={7}
             defaultValue="Default Value"
             sx={{
               alignSelf: "center",
@@ -449,7 +452,7 @@ export default function Hero() {
                     </Typography>
                   </Box>
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                       <Card
                         sx={{
                           maxWidth: 600,
@@ -468,7 +471,7 @@ export default function Hero() {
                       >
                         <CardContent>
                           <Box display="flex" alignItems="center" mb={2}>
-                            <InsertEmoticonIcon
+                            <CrisisAlertIcon
                               sx={{ fontSize: 40, color: "#00ACC1", mr: 2 }}
                             />{" "}
                             {/* Icon */}
@@ -503,7 +506,7 @@ export default function Hero() {
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                       <Card
                         sx={{
                           maxWidth: 600,
@@ -522,7 +525,7 @@ export default function Hero() {
                       >
                         <CardContent>
                           <Box display="flex" alignItems="center" mb={2}>
-                            <InsertEmoticonIcon
+                            <CrisisAlertIcon
                               sx={{ fontSize: 40, color: "#00ACC1", mr: 2 }}
                             />{" "}
                             {/* Icon */}
@@ -538,13 +541,11 @@ export default function Hero() {
                           </Box>
 
                           <Typography variant="body1" color="textPrimary">
-                            <strong>
-                              Prediction:{" "}
-                              {
-                                result?.data?.result?.sarcasmTypeResult
-                                  ?.prediction
-                              }
-                            </strong>
+                            <strong>Prediction:</strong>{" "}
+                            {
+                              result?.data?.result?.sarcasmTypeResult
+                                ?.prediction
+                            }
                           </Typography>
 
                           <Typography
@@ -583,7 +584,7 @@ export default function Hero() {
                     </Typography>
                   </Box>
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                       <Card
                         sx={{
                           maxWidth: 600,
@@ -602,7 +603,7 @@ export default function Hero() {
                       >
                         <CardContent>
                           <Box display="flex" alignItems="center" mb={2}>
-                            <InsertEmoticonIcon
+                            <HistoryEduIcon
                               sx={{ fontSize: 40, color: "#F95454", mr: 2 }}
                             />{" "}
                             {/* Icon */}
@@ -637,7 +638,7 @@ export default function Hero() {
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                       <Card
                         sx={{
                           maxWidth: 600,
@@ -656,7 +657,7 @@ export default function Hero() {
                       >
                         <CardContent>
                           <Box display="flex" alignItems="center" mb={2}>
-                            <InsertEmoticonIcon
+                            <HistoryEduIcon
                               sx={{ fontSize: 40, color: "#F95454", mr: 2 }}
                             />{" "}
                             {/* Icon */}
@@ -734,7 +735,7 @@ export default function Hero() {
                       >
                         <CardContent>
                           <Box display="flex" alignItems="center" mb={2}>
-                            <InsertEmoticonIcon
+                            <FactCheckIcon
                               sx={{ fontSize: 40, color: "#7E60BF", mr: 2 }}
                             />{" "}
                             {/* Icon */}
@@ -813,7 +814,7 @@ export default function Hero() {
                       >
                         <CardContent>
                           <Box display="flex" alignItems="center" mb={2}>
-                            <InsertEmoticonIcon
+                            <HandshakeIcon
                               sx={{ fontSize: 40, color: "#FF9100", mr: 2 }}
                             />{" "}
                             {/* Icon */}
@@ -1027,7 +1028,7 @@ export default function Hero() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 1000, // Ensure the progress is above other content
+            zIndex: 3000, // Ensure the progress is above other content
           }}
         >
           <CircularProgress size={80} color="primary" />
