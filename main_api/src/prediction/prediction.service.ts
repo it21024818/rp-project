@@ -140,7 +140,7 @@ export class PredictionService {
     };
 
     // Save record
-    const savedPrediction = await new this.predictionModel(newPrediction).save();
+    const savedPrediction = await this.predictionModel.create(newPrediction);
 
     try {
       let sourcePredictionId: string | undefined;
@@ -300,7 +300,7 @@ export class PredictionService {
         null,
         null,
         prediction.result?.finalFakeResult,
-        prediction.result?.sarcasmPresentResult ? prediction.result.sarcasmTypeResult.prediction : null,
+        prediction.result?.sarcasmPresentResult ? prediction.result.sarcasmTypeResult?.prediction : null,
         prediction.result?.sentimentTypeResult.prediction,
         prediction.result?.biasResult.prediction,
         prediction.result?.textQualityResult.prediction,
