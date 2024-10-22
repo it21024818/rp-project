@@ -6,7 +6,7 @@ export const GlobalStyle = createGlobalStyle`
     --black: #212121;
     --green: #23ce6b;
     --blue: #016fb9;
-    --orange: #FF5349;
+    --orange: #854fde;
     --yellow: #FFD700;
     scroll-padding-top: 10rem;
 

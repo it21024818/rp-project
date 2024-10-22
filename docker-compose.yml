@@ -10,8 +10,6 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=development
       - PYTHONUNBUFFERED=1
-    # volumes:
-    #   - ml-api-data:/app/data
     networks:
       - private 
       - public
@@ -27,6 +25,7 @@ services:
     depends_on:
       - ml-api
       - redis
+      - stripe-cli
     networks:
       - private 
       - public
@@ -67,8 +66,14 @@ services:
       - private
       - public 
 
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    command: listen --api-key sk_test_51Prab0BpJtXyhw6k0pZgRNqylgf1dW8gso2Sw9AnR6FZOU3Q6FLqX4TpDjiLyoOuXsLLJI2zNC05ILPTg4jCtiko00xTKoviRx --forward-to http://34.69.102.142/:3000/v1/payments/stripe/webhook
+    networks:
+      - private 
+      - public
+
 volumes:
-  # ml-api-data:
   redis-data:
 
 networks:
