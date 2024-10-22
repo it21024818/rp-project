@@ -13,4 +13,16 @@ export class MockUtils {
       exec: jest.fn(),
     };
   }
+
+  static mockClass<T>(clazz: new (...args: any) => T): T {
+    const methods = Object.getOwnPropertyNames(clazz.prototype);
+    const object = methods.reduce(
+      (prev, crnt) => ({
+        ...prev,
+        [crnt]: jest.fn(),
+      }),
+      {} as T,
+    );
+    return object;
+  }
 }
