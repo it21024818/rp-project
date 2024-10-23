@@ -37,7 +37,7 @@ export const checkLogin = () => {
   return !!isLogged;
 };
 
-export const BASE_URL = import.meta.env.REACT_APP_BASE_URL; // BASE URL FOR API FETCHING
+export const BASE_URL = import.meta.env.REACT_APP_EXTERNAL_URL; // BASE URL FOR API FETCHING
 // export const BASE_URL = "http://localhost:3000/";
 
 const active = "d-block p-3 fd-nav-active"; // WHERE MENU IS ACTIVE CLASS
