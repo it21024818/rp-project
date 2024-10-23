@@ -37,8 +37,9 @@ export const checkLogin = () => {
   return !!isLogged;
 };
 
-export const BASE_URL = import.meta.env.REACT_APP_EXTERNAL_URL; // BASE URL FOR API FETCHING
+// export const BASE_URL = import.meta.env.REACT_APP_EXTERNAL_URL; // BASE URL FOR API FETCHING
 // export const BASE_URL = "http://localhost:3000/";
+export const BASE_URL = "https://detect-lighthouse.me/api"
 
 const active = "d-block p-3 fd-nav-active"; // WHERE MENU IS ACTIVE CLASS
 
