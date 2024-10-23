@@ -114,7 +114,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "<rootDir>/.*.module.ts$",
+      "<rootDir>/.*.decorator.ts$",
+      "<rootDir>/.*.dto.ts$",
+      "<rootDir>/.*.enum.ts$",
+      "<rootDir>/.*.migration.ts$"
+    ]
   },
   "engines": {
     "node": ">=20.10.0"
