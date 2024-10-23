@@ -8,7 +8,7 @@ To run the API, navigate to the `ml_api` directory and run the following command
 ```bash
 source venv/Scripts/activate
 pip install -r requirements.txt
-python main.py
+python app.py
 ```
 
 ## Running Unit Tests
