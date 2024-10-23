@@ -178,7 +178,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/"
+                  to="/admin/"
                   startIcon={<Dashboard />}
                 >
                   Dashboard
@@ -200,7 +200,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/predictions/analytics"
+                      to="/admin/predictions/analytics"
                       startIcon={<BatchPrediction />}
                     >
                       Prediction Analytics
@@ -211,7 +211,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/predictions/list"
+                      to="/admin/predictions/list"
                       startIcon={<BList />}
                     >
                       Predictions List
@@ -235,7 +235,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/feedback/analytics"
+                      to="/admin/feedback/analytics"
                       startIcon={<Feedback />}
                     >
                       Feedback Analytics
@@ -246,7 +246,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/feedback/list"
+                      to="/admin/feedback/list"
                       startIcon={<BList />}
                     >
                       Feedback List
@@ -270,7 +270,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/users/list"
+                      to="/admin/users/list"
                       startIcon={<BList />}
                     >
                       Users List
@@ -294,7 +294,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/sources/list"
+                      to="/admin/sources/list"
                       startIcon={<BList />}
                     >
                       News Sources List
@@ -318,7 +318,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/profile"
+                      to="/admin/profile"
                       startIcon={<Man />}
                     >
                       User Profile
@@ -342,7 +342,7 @@ function SidebarMenu() {
                       disableRipple
                       component={RouterLink}
                       onClick={closeSidebar}
-                      to="/reports"
+                      to="/admin/reports"
                       startIcon={<Repo />}
                     >
                       System Reports

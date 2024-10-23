@@ -191,7 +191,7 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to={`/sources/details/${newsSource._id}`}
+                        to={`/admin/sources/details/${newsSource._id}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />

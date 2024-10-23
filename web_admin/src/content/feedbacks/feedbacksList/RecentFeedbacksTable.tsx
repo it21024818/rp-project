@@ -297,7 +297,7 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to={`/predictions/details/${feedback.predictionId}`}
+                        to={`/admin/predictions/details/${feedback.predictionId}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />

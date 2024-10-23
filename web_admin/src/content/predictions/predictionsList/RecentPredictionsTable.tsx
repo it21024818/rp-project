@@ -302,7 +302,7 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to={`/predictions/details/${prediction._id}`}
+                        to={`/admin/predictions/details/${prediction._id}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />
