@@ -107,7 +107,7 @@ const StatusMaintenance = Loader(
 
 const routes: RouteObject[] = [
   {
-    path: '',
+    path: '/admin',
     element: <SidebarLayout />,
     children: [
       {
