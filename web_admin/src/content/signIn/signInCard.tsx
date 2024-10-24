@@ -106,7 +106,7 @@ export default function SignInSide() {
         setAlertSeverity('success');
 
         setTimeout(() => {
-          navigate('/');
+          navigate('/admin');
         }, 2000);
       }
     } catch (error) {

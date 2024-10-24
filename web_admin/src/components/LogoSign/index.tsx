@@ -9,7 +9,7 @@ import {
   Avatar
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import CompLogo from '../../images/logos/lighthouse.png'
+import CompLogo from '../../images/logos/lighthouse.png';
 
 const LogoWrapper = styled(Link)(
   ({ theme }) => `
@@ -100,18 +100,15 @@ function Logo() {
   const theme = useTheme();
 
   return (
-    <TooltipWrapper
-      title="Light House Dash Board"
-      arrow
-    >
-      <LogoWrapper to="/admin/overview">
+    <TooltipWrapper title="Light House Dash Board" arrow>
+      <LogoWrapper to="/admin">
         <Badge
           sx={{
             '.MuiBadge-badge': {
               fontSize: theme.typography.pxToRem(11),
               right: -20,
               top: 8,
-              width: 120,
+              width: 120
             }
           }}
           overlap="circular"
@@ -119,15 +116,15 @@ function Logo() {
           badgeContent="1.0 v LightHouse"
         >
           <Avatar
-          sx={{
-            mr: 2,
-            width: theme.spacing(8),
-            height: theme.spacing(8)
-          }}
-          variant="rounded"
-          alt={"Logo"}
-          src={"/static/images/overview/lighthouse.png"}
-        />
+            sx={{
+              mr: 2,
+              width: theme.spacing(8),
+              height: theme.spacing(8)
+            }}
+            variant="rounded"
+            alt={'Logo'}
+            src={'../static/images/overview/lighthouse.png'}
+          />
         </Badge>
       </LogoWrapper>
     </TooltipWrapper>
