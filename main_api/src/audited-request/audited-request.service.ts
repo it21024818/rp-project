@@ -43,12 +43,12 @@ export class AuditedRequestService {
         const token = authorization.split(' ')[1];
         const payload = await this.jwtTokenService.getPayload(token);
         const audience = payload.aud;
-        return await new this.auditedRequestModel({
+        return await this.auditedRequestModel.create({
           createdAt: new Date(),
           audience,
           endpoint: request.baseUrl + request.path,
           origin: detectionResult,
-        }).save();
+        });
       }
     } catch (error) {
       this.logger.error(`Could not save request details due to error`, error.stack);

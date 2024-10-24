@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class LogGuard implements CanActivate {
-  private readonly logger = new Logger(LogGuard.name);
+  private logger = new Logger(LogGuard.name);
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();

@@ -29,13 +29,13 @@ export class NewsSourceService {
       throw new BadRequestException(ErrorMessage.NEWS_SOURCE_ALREADY_EXISTS);
     }
 
-    const createdNewsSource = await new this.newsSourceModel({
+    const createdNewsSource = await this.newsSourceModel.create({
       createdAt: new Date(),
       createdBy: userId,
       domain,
       identifications: [domain],
-      name: domain, // This should be changed later by an admin
-    }).save();
+      name: domain,
+    });
     this.logger.log(`Created news source ${domain} with domain ${domain}`);
 
     return createdNewsSource;
