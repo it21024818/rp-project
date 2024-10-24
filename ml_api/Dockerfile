@@ -6,8 +6,6 @@ COPY requirements.txt .
 
 RUN pip install --progress-bar on -r requirements.txt
 
-RUN python -m nltk.downloader -d /usr/share/nltk_data punkt_tab
-
 COPY . .
 
 EXPOSE 5000
