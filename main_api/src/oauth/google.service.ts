@@ -23,7 +23,7 @@ export class GoogleService {
     private readonly userService: UsersService,
     private readonly authService: AuthService,
   ) {
-    const redirectURL = `${this.configService.get(ConfigKey.WEB_APP_BASE_URL)}/v1/auth/oauth/google/redirect`;
+    const redirectURL = `${this.configService.get(ConfigKey.MAIN_SERVER_BASE_URL)}/v1/auth/oauth/google/redirect`;
     this.client = new OAuth2Client(
       this.configService.get(ConfigKey.GOOGLE_OAUTH_CLIENT_ID),
       this.configService.get(ConfigKey.GOOGLE_OAUTH_CLIENT_SECRET),
