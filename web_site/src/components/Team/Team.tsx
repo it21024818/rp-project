@@ -58,7 +58,7 @@ export function Team() {
             <header>
               <div className="social-media" >
                 <a
-                  href="https://www.linkedin.com/in/dinuka-dissanayake/"
+                  href="https://www.linkedin.com/in/tharindu-gunasekera/"
                   target="_blank"
                   rel="noreferrer"
                 >

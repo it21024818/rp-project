@@ -19,41 +19,41 @@ export function Footer() {
         </p>
       </div> */}
       <div className="social-media">
-        <a
-          href="https://www.linkedin.com/in/codevinayak"
+        {/* <a
+          href="https://www.linkedin.com/"
           target="_blank"
           rel="noreferrer"
         >
           <img src={linkedin} alt="Linkedin" />
-        </a>
+        </a> */}
         <a
-          href="https://github.com/CodeVinayak/"
+          href="https://github.com/it21024818/rp-project/tree/main"
           target="_blank"
           rel="noreferrer"
         >
           <img src={githubIcon} alt="GitHub" />
         </a>
-        <a
-          href="https://api.whatsapp.com/send/?phone=%2B919630576848&text=Hello+Vinayak"
+        {/* <a
+          href=""
           target="_blank"
           rel="noreferrer"
         >
           <img src={whatsapp} alt="Whatsapp" />
-        </a>
-        <a
+        </a> */}
+        {/* <a
           href="https://t.me/CodeVinayak"
           target="_blank"
           rel="noreferrer"
         >
           <img src={telegram} alt="telegram" />
-        </a>
-        <a
-          href="https://www.instagram.com/vinayaksingh.in"
+        </a> */}
+        {/* <a
+          href="https://www.instagram.com/"
           target="_blank"
           rel="noreferrer"
         >
           <img src={instagramIcon} alt="Instagram" />
-        </a>
+        </a> */}
       </div>
     </Container>
   )

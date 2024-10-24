@@ -107,7 +107,7 @@ const StatusMaintenance = Loader(
 
 const routes: RouteObject[] = [
   {
-    path: '',
+    path: '/admin',
     element: <SidebarLayout />,
     children: [
       {
@@ -121,7 +121,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'predictions',
+    path: '/admin/predictions',
     element: <SidebarLayout />,
     children: [
       {
@@ -143,7 +143,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'feedback',
+    path: '/admin/feedback',
     element: <SidebarLayout />,
     children: [
       {
@@ -161,7 +161,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'users',
+    path: '/admin/users',
     element: <SidebarLayout />,
     children: [
       {
@@ -179,7 +179,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'profile',
+    path: '/admin/profile',
     element: <SidebarLayout />,
     children: [
       {
@@ -193,7 +193,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'sources',
+    path: '/admin/sources',
     element: <SidebarLayout />,
     children: [
       {
@@ -211,7 +211,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'reports',
+    path: '/admin/reports',
     element: <SidebarLayout />,
     children: [
       {
@@ -225,7 +225,7 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: '/components',
+    path: '/admin/components',
     element: <SidebarLayout />,
     children: [
       {

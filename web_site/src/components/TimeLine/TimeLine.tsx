@@ -23,7 +23,7 @@ const Timeline: React.FC = () => {
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           contentArrowStyle={{ borderRight: "7px solid  rgb(33, 150, 243)" }}
           date="March 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           icon={<AiOutlineProject />} // Icon for project proposal
         >
           <h3 className="vertical-timeline-element-title">Project Proposal</h3><br></br>
@@ -37,7 +37,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="June 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiOutlinePartition />} // Icon for progress presentation
         >
@@ -54,7 +54,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="July 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiOutlineFileText />} // Icon for research paper
         >
@@ -69,7 +69,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="September 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiOutlinePartition />} // Icon for progress presentation II
         >
@@ -86,7 +86,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="October 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiOutlineCheckCircle />} // Icon for website assessment
         >
@@ -101,7 +101,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="November 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiOutlineSchedule />} // Icon for logbook
         >
@@ -116,7 +116,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="November 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiOutlineFileText />} // Icon for final report
         >
@@ -131,7 +131,7 @@ const Timeline: React.FC = () => {
         <VerticalTimelineElement
           className="vertical-timeline-element--work"
           date="November 2024"
-          iconStyle={{ background: "#FF5349", color: "#fff" }}
+          iconStyle={{ background: "var(--orange)", color: "#fff" }}
           contentStyle={{ background: "#2b2b2b", color: "#fff" }}
           icon={<AiFillStar />} // Icon for final presentation & viva
         >

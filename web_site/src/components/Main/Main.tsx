@@ -159,11 +159,11 @@ export function Main() {
                   width: 20,
                   height: 20,
                 },
-                {
-                  src: lighthouse,
-                  width: 20,
-                  height: 20,
-                },
+                // {
+                //   src: lighthouse,
+                //   width: 20,
+                //   height: 20,
+                // },
                 // {
                 //   src: wordpress,
                 //   width: 20,

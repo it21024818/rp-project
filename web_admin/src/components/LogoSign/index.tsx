@@ -104,7 +104,7 @@ function Logo() {
       title="Light House Dash Board"
       arrow
     >
-      <LogoWrapper to="/overview">
+      <LogoWrapper to="/admin/overview">
         <Badge
           sx={{
             '.MuiBadge-badge': {

@@ -184,7 +184,7 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
                         }}
                         color="inherit"
                         component={Link}
-                        to={`/users/details/${user._id}`}
+                        to={`/admin/users/details/${user._id}`}
                         size="small"
                       >
                         <EditTwoToneIcon fontSize="small" />

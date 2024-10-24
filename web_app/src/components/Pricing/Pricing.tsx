@@ -17,6 +17,7 @@ import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import { alpha } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../Utils/Generals";
 
 const tiers = [
   {
@@ -137,7 +138,7 @@ export default function Pricing() {
       };
 
       const response = await axios.post(
-        "http://localhost:3000/v1/payments/stripe/checkout",
+        `${BASE_URL}/v1/payments/stripe/checkout`,
         requestBody,
         {
           params: {
