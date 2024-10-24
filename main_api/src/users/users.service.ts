@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
@@ -110,5 +111,16 @@ export class UsersService {
 
   async getUserPage(pageRequest: PageRequest) {
     return await this.coreService.getDocumentPage(this.userModel, pageRequest);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  public async handleUserPredictionCounts() {
+    this.logger.log('Running job to reset user daily limits');
+    const allUsers = await this.userModel.find({});
+    allUsers.forEach(user => {
+      user.predictionsCount = 0;
+    });
+    const result = await this.userModel.bulkSave(allUsers);
+    this.logger.log(`Succesfully reset ${result.modifiedCount} users`);
   }
 }
