@@ -52,12 +52,13 @@ export const customBaseQuery = async (args, api, extraOptions) => {
 
         // Retry the original request with the new access token
         result = await baseQueryWithReauth(args, api, extraOptions);
-      } else {
-        // If refresh fails, log out the user
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        api.dispatch(logoutCurrentUser());
       }
+      // else {
+      //   // If refresh fails, log out the user
+      //   localStorage.removeItem('accessToken');
+      //   localStorage.removeItem('refreshToken');
+      //   api.dispatch(logoutCurrentUser());
+      // }
     } else {
       // No refresh token, log out the user
       localStorage.removeItem('accessToken');

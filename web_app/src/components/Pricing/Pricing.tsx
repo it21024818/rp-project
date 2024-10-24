@@ -16,6 +16,7 @@ import { useGetUserQuery } from "../../store/apiquery/usersApiSlice";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import { alpha } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const tiers = [
   {
@@ -115,6 +116,12 @@ export default function Pricing() {
 
   console.log(hasActiveSubscription);
 
+  const navigate = useNavigate();
+
+  const handleNav = () => {
+    navigate("/login");
+  };
+
   const [loading, setLoading] = useState(false);
   const handleCheckout = async () => {
     setLoading(true);
@@ -179,8 +186,7 @@ export default function Pricing() {
         <Typography variant="body1" color="text.secondary">
           Explore our powerful Lighthouse Fake News Detection product, designed
           to help you distinguish between real and fake news effortlessly. Our
-          advanced algorithms and models ensure accurate and reliable results.{" "}
-          <br />
+          advanced algorithms and models ensure accurate and reliable results.
           Whether you're looking for a free plan with basic features or a
           premium plan with unlimited access and faster processing, we have a
           solution tailored to your needs.
@@ -199,6 +205,7 @@ export default function Pricing() {
             >
               <Card
                 sx={{
+                  minHeight: "500px",
                   p: 2,
                   display: "flex",
                   flexDirection: "column",
@@ -301,7 +308,7 @@ export default function Pricing() {
                     fullWidth
                     variant={tier.buttonVariant as "outlined" | "contained"}
                     component="a"
-                    href="/"
+                    onClick={handleNav}
                     target="_blank"
                   >
                     {tier.buttonText}
@@ -324,6 +331,7 @@ export default function Pricing() {
                 >
                   <Card
                     sx={{
+                      minHeight: "500px",
                       p: 2,
                       display: "flex",
                       flexDirection: "column",
@@ -450,6 +458,7 @@ export default function Pricing() {
                 >
                   <Card
                     sx={{
+                      minHeight: "500px",
                       p: 2,
                       display: "flex",
                       flexDirection: "column",

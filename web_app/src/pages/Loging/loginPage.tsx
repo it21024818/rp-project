@@ -104,29 +104,29 @@ export default function SignInSide() {
     setData({ ...data, [target.name]: target.value });
   };
 
-  const GradientBox = styled(Box)(({ theme }) => ({
-    background: "linear-gradient(135deg, #e3f2fd, #bbdefb)",
-    borderRadius: "20px",
-    padding: theme.spacing(4), // Default padding for all breakpoints
-    boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.4)",
+  // const GradientBox = styled(Box)(({ theme }) => ({
+  //   background: "linear-gradient(135deg, #e3f2fd, #bbdefb)",
+  //   borderRadius: "20px",
+  //   padding: theme.spacing(4), // Default padding for all breakpoints
+  //   boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.4)",
 
-    // Responsive padding based on screen size
-    [theme.breakpoints.up("xs")]: {
-      padding: theme.spacing(3),
-    },
-    [theme.breakpoints.up("sm")]: {
-      padding: theme.spacing(1),
-    },
-    [theme.breakpoints.up("md")]: {
-      padding: theme.spacing(2),
-    },
-    [theme.breakpoints.up("lg")]: {
-      padding: theme.spacing(3),
-    },
-    [theme.breakpoints.up("xl")]: {
-      padding: theme.spacing(4),
-    },
-  }));
+  //   // Responsive padding based on screen size
+  //   [theme.breakpoints.up("xs")]: {
+  //     padding: theme.spacing(3),
+  //   },
+  //   [theme.breakpoints.up("sm")]: {
+  //     padding: theme.spacing(1),
+  //   },
+  //   [theme.breakpoints.up("md")]: {
+  //     padding: theme.spacing(2),
+  //   },
+  //   [theme.breakpoints.up("lg")]: {
+  //     padding: theme.spacing(3),
+  //   },
+  //   [theme.breakpoints.up("xl")]: {
+  //     padding: theme.spacing(4),
+  //   },
+  // }));
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -165,7 +165,7 @@ export default function SignInSide() {
     <Grid
       container
       component="main"
-      sx={{ height: "100vh", position: "relative" }}
+      sx={{ height: "100vh", position: "fixed" }}
     >
       <CssBaseline />
       {/* Left Side with Background Image */}
@@ -240,13 +240,18 @@ export default function SignInSide() {
             "linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0))",
         }}
       >
-        <GradientBox
+        <Box
           sx={{
             mx: "auto",
             my: 6,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            background:
+              "linear-gradient(135deg, rgba(227, 242, 253, 0.9), rgba(187, 222, 251, 0.9))",
+            borderRadius: "20px",
+            padding: "30px",
+            boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.4)",
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -359,7 +364,7 @@ export default function SignInSide() {
             </Grid>
             <Copyright sx={{ mt: 5 }} />
           </Box>
-        </GradientBox>
+        </Box>
       </Grid>
 
       {/* Snackbar for displaying alerts */}

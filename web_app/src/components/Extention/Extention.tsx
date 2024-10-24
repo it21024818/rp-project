@@ -248,6 +248,8 @@ export default function Hero() {
               alignSelf: "center",
               width: { sm: "100%", md: "100%" },
               marginTop: "20px",
+              paddingLeft: "15px",
+              paddingRight: "15px",
             }}
           >
             Unveiling Truth in a Sea of Information: Your Guide to Fake News

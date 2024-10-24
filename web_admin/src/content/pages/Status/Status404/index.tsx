@@ -42,14 +42,14 @@ function Status404() {
   return (
     <>
       <Helmet>
-        <title>Status - 404</title>
+        <title>Status - 401</title>
       </Helmet>
       <MainContent>
         <Container maxWidth="md">
           <Box textAlign="center">
             <img alt="404" height={180} src="/static/images/status/404.svg" />
             <Typography variant="h2" sx={{ my: 2 }}>
-              The page you were looking for doesn't exist.
+              Data Cannot be Fetch.
             </Typography>
             <Typography
               variant="h4"
@@ -57,8 +57,7 @@ function Status404() {
               fontWeight="normal"
               sx={{ mb: 4 }}
             >
-              It's on us, we moved the content to a different page. The search
-              below should help!
+              Please re-log and try angain!..
             </Typography>
           </Box>
           <Container maxWidth="sm">
@@ -82,7 +81,7 @@ function Status404() {
                 />
               </FormControl>
               <Divider sx={{ my: 4 }}>OR</Divider>
-              <Button href="/overview" variant="outlined">
+              <Button href="/" variant="outlined">
                 Go to homepage
               </Button>
             </Card>

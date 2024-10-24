@@ -133,12 +133,15 @@ function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 alignItems: "center",
                 ml: "-18px",
                 px: 0,
+                paddingLeft: 2,
               }}
             >
               <img src={logo} style={logoStyle} alt="logo of sitemark" />
+              <h3 style={{ color: "#4b3bff", paddingLeft: "10px" }}>
+                LightHouse
+              </h3>
 
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <h3 style={{ color: "red" }}>LightHouse</h3>
                 <MenuItem
                   onClick={() => scrollToSection("features")}
                   sx={{ py: "6px", px: "12px" }}

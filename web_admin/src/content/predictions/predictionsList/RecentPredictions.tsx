@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import PredictionsTable from './RecentPredictionsTable';
 import { subDays } from 'date-fns';
 import { useGetPredictionsMutation } from 'src/store/apiquery/predictionsApiSlice';
+import Status404 from 'src/content/pages/Status/Status404';
 
 function RecentPredictions() {
   const [predictions, setPredictions] = useState([]);
@@ -39,7 +40,7 @@ function RecentPredictions() {
   }
 
   if (error) {
-    return <p>Error loading predictions...</p>;
+    return <Status404 />;
   }
 
   return (

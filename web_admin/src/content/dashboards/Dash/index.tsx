@@ -33,6 +33,11 @@ function DashboardLight() {
     endDate: endDate ? endDate.toISOString().split('T')[0] : null
   });
 
+  const accessToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+
+  console.log('Access Token:', accessToken);
+  console.log('Refresh Token:', refreshToken);
   return (
     <>
       <Helmet>

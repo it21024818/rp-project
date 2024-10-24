@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,14 +11,19 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { useLoginMutation } from '../../store/apiquery/AuthApiSlice';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { useLoginMutation } from '../../store/apiquery/AuthApiSlice';
 import { useNavigate } from 'react-router-dom';
-import loginSideImage from '../../assets/login_side.jpg';
-import sideImage from '../../assets/side_back.jpg';
-import { Card } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import loginBanerImage from '../../assets/loging_baner.png';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Copyright Component
 function Copyright(props: any) {
   return (
     <Typography
@@ -28,7 +33,7 @@ function Copyright(props: any) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href={process.env.REACT_APP_BASE_URL}>
+      <Link color="inherit" href="http://localhost:5173/">
         LightHouse.com
       </Link>{' '}
       {new Date().getFullYear()}
@@ -36,6 +41,22 @@ function Copyright(props: any) {
     </Typography>
   );
 }
+
+// Styled Components
+const GradientButton = styled(Button)(({ theme }) => ({
+  background: 'linear-gradient(90deg, #1976d2 30%, #42a5f5 90%)',
+  color: '#fff',
+  fontWeight: 'bold',
+  borderRadius: '8px',
+  padding: '10px 0',
+  textTransform: 'none',
+  boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
+  transition: 'transform 0.2s ease',
+  '&:hover': {
+    background: 'linear-gradient(90deg, #1565c0 30%, #1e88e5 90%)',
+    transform: 'scale(1.03)'
+  }
+}));
 
 export default function SignInSide() {
   const [data, setData] = useState({
@@ -46,95 +67,120 @@ export default function SignInSide() {
 
   const navigate = useNavigate();
 
-  const [sendUserInfo, { isLoading, isError }] = useLoginMutation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState<'success' | 'error'>(
+    'error'
+  );
 
-  const handleChange = (e: SyntheticEvent) => {
-    const target = e.target as HTMLInputElement;
-    setData({ ...data, [target.name]: target.value });
+  const [sendUserInfo, { isLoading }] = useLoginMutation();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value // Dynamically update the email or password field
+    }));
   };
 
-  const handleSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!data.email || !data.password) {
+      setAlertMessage('Email and password cannot be empty.');
+      setAlertSeverity('error');
+      return;
+    }
+
     try {
       const response = await sendUserInfo(data).unwrap();
       if (response.tokens && response.user) {
-        // Save tokens and user details to local storage
         localStorage.setItem('accessToken', response.tokens.accessToken);
         localStorage.setItem('refreshToken', response.tokens.refreshToken);
         localStorage.setItem('user', JSON.stringify(response.user));
-        window.location.href = process.env.REACT_APP_BASE_URL;
+
+        console.log('Access Token:', response.tokens.accessToken);
+        console.log('Refresh Token:', response.tokens.refreshToken);
+
+        setAlertMessage('Login successful! Redirecting...');
+        setAlertSeverity('success');
+
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       }
     } catch (error) {
-      console.error('Login error:', error);
+      setAlertMessage('Username or password is incorrect.');
+      setAlertSeverity('error');
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <Grid container component="main" sx={{ height: '100vh' }}>
+    <Grid
+      container
+      component="main"
+      sx={{
+        height: '100vh',
+        position: 'fixed',
+        backgroundImage: `url(${loginBanerImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
       <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: `url(${loginSideImage})`,
-          backgroundColor: (t) =>
-            t.palette.mode === 'light'
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
-          backgroundSize: 'cover',
-          backgroundPosition: 'left'
-        }}
-      />
+      <Grid item xs={false} sm={4} md={6}></Grid>
+
+      {/* Right Side (Form) */}
       <Grid
         item
         xs={12}
         sm={8}
-        md={5}
-        component={Card}
-        sx={{
-          position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url(${sideImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.2,
-            zIndex: -1
-          },
-          backgroundColor: 'rgba(255, 255, 255, 0.7)', // Semi-transparent background
-          backdropFilter: 'blur(10px)', // Glass effect (blur)
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.4)' // Subtle shadow for depth
-        }}
-        elevation={6}
+        md={6}
+        component={Paper}
+        elevation={0}
         square
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          backdropFilter: 'blur(0px)',
+          backgroundColor: 'rgba(255, 255, 255, 0)',
+          padding: '20px'
+        }}
       >
         <Box
           sx={{
-            my: 8,
-            mx: 4,
+            mx: 'auto',
+            my: 6,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            background:
+              'linear-gradient(135deg, rgba(227, 242, 253, 0.9), rgba(187, 222, 251, 0.9))',
+            borderRadius: '20px',
+            padding: '40px',
+            boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.4)'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          <Typography
+            component="h1"
+            variant="h5"
+            sx={{ fontWeight: 'bold', mb: 2 }}
+          >
+            Sign in to LightHouse-Admin
           </Typography>
           <Box
             component="form"
             noValidate
             onSubmit={handleSubmit}
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, width: '100%' }}
           >
             <TextField
               margin="normal"
@@ -144,9 +190,17 @@ export default function SignInSide() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              InputLabelProps={{
+                shrink: true
+              }}
               autoFocus
               value={data.email}
               onChange={handleChange}
+              InputProps={{
+                sx: {
+                  borderRadius: '8px'
+                }
+              }}
             />
             <TextField
               margin="normal"
@@ -154,21 +208,32 @@ export default function SignInSide() {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               id="password"
               autoComplete="current-password"
+              InputLabelProps={{
+                shrink: true
+              }}
               value={data.password}
               onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                sx: {
+                  borderRadius: '8px'
+                }
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
+              sx={{ mt: 1 }}
             />
-            {isError && (
-              <Typography color="error" variant="body2">
-                {'Something went wrong!'}
-              </Typography>
-            )}
             {isLoading ? (
               <Box
                 sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}
@@ -176,24 +241,19 @@ export default function SignInSide() {
                 <CircularProgress />
               </Box>
             ) : (
-              <Button
+              <GradientButton
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
-              </Button>
+              </GradientButton>
             )}
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" sx={{ color: '#1976d2' }}>
                   Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
@@ -201,6 +261,21 @@ export default function SignInSide() {
           </Box>
         </Box>
       </Grid>
+
+      {/* Snackbar for displaying alerts */}
+      <Snackbar
+        open={!!alertMessage}
+        autoHideDuration={6000}
+        onClose={() => setAlertMessage('')}
+      >
+        <Alert
+          onClose={() => setAlertMessage('')}
+          severity={alertSeverity}
+          sx={{ width: '100%' }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }

@@ -11,6 +11,7 @@ import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
 import logo from "../../assets/lighthouse.png";
+import Grid from "@mui/material/Grid";
 
 const logoStyle = {
   width: "40px",
@@ -56,9 +57,24 @@ export default function Footer() {
           }}
         >
           <Box sx={{ width: { xs: "100%", sm: "60%" } }}>
-            <Box sx={{ ml: "-15px", marginBottom: "10px", color: "red" }}>
-              <img src={logo} style={logoStyle} alt="logo of sitemark" />
-              LightHouse
+            <Box
+              sx={{
+                ml: "-15px",
+                marginBottom: "10px",
+                marginLeft: "5px",
+                color: "red",
+              }}
+            >
+              <Grid container spacing={4}>
+                <Grid item xs={1}>
+                  <img src={logo} style={logoStyle} alt="logo of sitemark" />
+                </Grid>
+                <Grid item xs={11}>
+                  <h3 style={{ color: "#4b3bff", paddingLeft: "10px" }}>
+                    LightHouse
+                  </h3>
+                </Grid>
+              </Grid>
             </Box>
             <Typography variant="body2" fontWeight={600} gutterBottom>
               Newsletter
@@ -191,10 +207,7 @@ export default function Footer() {
           <IconButton
             color="inherit"
             onClick={() =>
-              window.open(
-                "https://github.com/IT21058578/rp-project",
-                "_blank"
-              )
+              window.open("https://github.com/IT21058578/rp-project", "_blank")
             }
             aria-label="GitHub"
             sx={{ alignSelf: "center" }}
