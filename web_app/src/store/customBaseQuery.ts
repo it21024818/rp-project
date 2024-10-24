@@ -36,7 +36,7 @@ export const customBaseQuery = async (
   let result = await baseQueryWithReauth(args, api, extraOptions);
 
   // If the result is a 401 (unauthorized), try refreshing the token
-  if (result.error && result.error.status === 400) {
+  if (result.error && result.error.status === 401) {
     const refreshToken = localStorage.getItem("refreshToken");
     if (refreshToken) {
       // Try to refresh the token

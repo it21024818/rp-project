@@ -139,12 +139,12 @@ export class AuthService {
     }
 
     // Create user
-    const createdUser = new this.userModel(userDto);
+    const createdUser = await this.userModel.create(userDto);
     createdUser.roles = [UserRole.USER];
     const savedUser = await createdUser.save();
 
     // Create credentials
-    const createdCredentials = new this.credentialModel({
+    await this.credentialModel.create({
       createdAt: new Date(),
       userId: savedUser.id,
       strategies: [
@@ -160,7 +160,6 @@ export class AuthService {
       createdBy: savedUser.id,
       archived: false,
     });
-    await createdCredentials.save();
 
     this.sendRegistrationMail(userDto.email);
     return savedUser;
@@ -174,12 +173,12 @@ export class AuthService {
     }
 
     // Create user
-    const createdUser = new this.userModel(userDto);
+    const createdUser = await this.userModel.create(userDto);
     createdUser.roles = [UserRole.ADMIN];
     const savedUser = await createdUser.save();
 
     // Create credentials
-    const createdCredentials = new this.credentialModel({
+    await this.credentialModel.create({
       createdAt: new Date(),
       userId: savedUser.id,
       strategies: [
@@ -194,7 +193,6 @@ export class AuthService {
       createdBy: savedUser.id,
       archived: false,
     });
-    await createdCredentials.save();
 
     return savedUser;
   }

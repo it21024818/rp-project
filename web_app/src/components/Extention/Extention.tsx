@@ -406,7 +406,7 @@ export default function Hero() {
                 <Box
                   id="image"
                   sx={(theme) => ({
-                    mt: { xs: 8, sm: 10 },
+                    mt: { xs: 2, sm: 2 },
                     alignSelf: "center",
                     width: "100%",
                     backgroundImage:
@@ -435,7 +435,7 @@ export default function Hero() {
                       display: "flex",
                       alignItems: "center",
                       padding: 1,
-                      mt: 4, // Margin at the top
+                      mt: 1, // Margin at the top
                     }}
                   >
                     <CheckCircleIcon
@@ -450,7 +450,7 @@ export default function Hero() {
                         textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
                       }}
                     >
-                      Sarcasm Based Results
+                      Model Results
                     </Typography>
                   </Box>
                   <Grid container spacing={2}>
@@ -562,29 +562,6 @@ export default function Hero() {
                       </Card>
                     </Grid>
                   </Grid>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: 1,
-                      mt: 4, // Margin at the top
-                    }}
-                  >
-                    <CheckCircleIcon
-                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
-                    />{" "}
-                    {/* Icon */}
-                    <Typography
-                      variant="h6"
-                      fontWeight="bold"
-                      color="#2e7d32"
-                      sx={{
-                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
-                      }}
-                    >
-                      Sentiment Based Results
-                    </Typography>
-                  </Box>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <Card
@@ -694,31 +671,8 @@ export default function Hero() {
                       </Card>
                     </Grid>
                   </Grid>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: 1,
-                      mt: 4, // Margin at the top
-                    }}
-                  >
-                    <CheckCircleIcon
-                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
-                    />{" "}
-                    {/* Icon */}
-                    <Typography
-                      variant="h6"
-                      fontWeight="bold"
-                      color="#2e7d32"
-                      sx={{
-                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
-                      }}
-                    >
-                      Text Quality Based Results
-                    </Typography>
-                  </Box>
                   <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sm={6}>
                       <Card
                         sx={{
                           maxWidth: 1500,
@@ -772,32 +726,7 @@ export default function Hero() {
                         </CardContent>
                       </Card>
                     </Grid>
-                  </Grid>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: 1,
-                      mt: 4, // Margin at the top
-                    }}
-                  >
-                    <CheckCircleIcon
-                      sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
-                    />{" "}
-                    {/* Icon */}
-                    <Typography
-                      variant="h6"
-                      fontWeight="bold"
-                      color="#2e7d32"
-                      sx={{
-                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", // Subtle text shadow
-                      }}
-                    >
-                      Bias Based Results
-                    </Typography>
-                  </Box>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sm={6}>
                       <Card
                         sx={{
                           maxWidth: 1500,
@@ -864,7 +793,7 @@ export default function Hero() {
                 <Box
                   id="image"
                   sx={(theme) => ({
-                    mt: { xs: 8, sm: 4 },
+                    mt: { xs: 2, sm: 2 },
                     alignSelf: "center",
                     width: "100%",
                     backgroundImage:
@@ -910,13 +839,15 @@ export default function Hero() {
                       News Sources
                     </Typography>
                   </Box>
-                  <Grid container spacing={2} sx={{ marginTop: "20px" }}>
+                  <Grid container spacing={2} sx={{ marginTop: "10px" }}>
                     {result?.data?.searchResults?.map(
                       (searchResult: SearchResult, index: number) => (
                         <Grid item xs={12} sm={6} md={4} key={index}>
                           <Card
                             sx={{
                               maxWidth: 1500,
+                              maxHeight: 400,
+                              minHeight: 400,
                               margin: "auto",
                               marginTop: 2,
                               padding: 3,
@@ -968,7 +899,7 @@ export default function Hero() {
                 <Box
                   id="image"
                   sx={(theme) => ({
-                    mt: { xs: 8, sm: 4 },
+                    mt: { xs: 2, sm: 2 },
                     alignSelf: "center",
                     width: "100%",
                     backgroundImage:

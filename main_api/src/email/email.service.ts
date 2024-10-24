@@ -23,8 +23,7 @@ export class EmailService {
         this.logger.log(`Successfully sent '${purpose}' email to user with email ${to}`);
       })
       .catch(err => {
-        this.logger.warn(`Could not send '${purpose}' email to user with email '${to}'`);
-        console.log(err);
+        this.logger.error(`Could not send '${purpose}' email to user with email '${to}'`, err);
       });
   }
 }

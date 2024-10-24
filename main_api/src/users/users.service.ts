@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/common/dtos/create-user.dto';
 import { PageRequest } from 'src/common/dtos/page-request.dto';
@@ -17,11 +18,11 @@ export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
   constructor(
+    private feedbackService: FeedbackService,
     private readonly coreService: CoreService,
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @Inject(forwardRef(() => PredictionService))
     private readonly predictionsService: PredictionService,
-    private readonly feedbackService: FeedbackService,
   ) {}
 
   async updateUser(id: string, userDto: EditUserRequestDto): Promise<UserDocument> {
@@ -56,13 +57,19 @@ export class UsersService {
     const existingUser = await this.userModel.findOne({ 'subscription.STRIPE.customerId': id });
 
     if (existingUser === null) {
-      this.logger.warn(`Could not find an existing user with stripe customere id '${id}'`);
+      this.logger.warn(`Could not find an existing user with stripe customer id '${id}'`);
       throw new BadRequestException(ErrorMessage.USER_NOT_FOUND, {
         description: `User with stripe customer id '${id}' was not found`,
       });
     }
 
     return existingUser;
+  }
+
+  async updateUserDocument(user: UserDocument): Promise<UserDocument> {
+    this.logger.log(`Attempting to update user with id '${user._id}'`);
+    const updatedUser = await this.userModel.findByIdAndUpdate(user._id, user);
+    return updatedUser!;
   }
 
   async getUserByEmail(email: string): Promise<UserDocument> {
@@ -104,5 +111,16 @@ export class UsersService {
 
   async getUserPage(pageRequest: PageRequest) {
     return await this.coreService.getDocumentPage(this.userModel, pageRequest);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  public async handleUserPredictionCounts() {
+    this.logger.log('Running job to reset user daily limits');
+    const allUsers = await this.userModel.find({});
+    allUsers.forEach(user => {
+      user.predictionsCount = 0;
+    });
+    const result = await this.userModel.bulkSave(allUsers);
+    this.logger.log(`Succesfully reset ${result.modifiedCount} users`);
   }
 }

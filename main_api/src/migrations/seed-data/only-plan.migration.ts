@@ -17,7 +17,7 @@ export class PlanMigration implements OnModuleInit {
         amountPerBill: 1500,
         billingFrequency: Frequency.MONTHLY,
         name: 'Basic Paid',
-        stripeId: '',
+        stripeId: 'price_1Pvk9wBpJtXyhw6knVZM6vnP',
         features: ['Prioritized Feedback', 'No Request Throttling', 'No Request Threshold'],
       },
     ];

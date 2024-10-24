@@ -82,10 +82,9 @@ export class StripeStrategy implements PaymentStrategy {
       }
       user.subscription[PaymentStrategyKey.STRIPE] = {
         customerId: customer.id,
-        status: SubscriptionStatus.ACTIVE,
+        status: SubscriptionStatus.PAUSED,
       };
-      await user.save();
-      console.log(user);
+      await this.usersService.updateUserDocument(user);
     }
     return customer;
   }
@@ -107,7 +106,7 @@ export class StripeStrategy implements PaymentStrategy {
       mode: 'subscription',
       success_url: `${this.configService.get(
         ConfigKey.WEB_APP_BASE_URL,
-      )}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      )}?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${this.configService.get(ConfigKey.WEB_APP_BASE_URL)}?canceled=true`,
     });
     if (!session.url) {
@@ -179,7 +178,7 @@ export class StripeStrategy implements PaymentStrategy {
       endingTs: new Date(subscription.current_period_end),
       customerId: subscription.customer as string,
     };
-    await user.save();
+    await this.usersService.updateUserDocument(user);
     this.logger.log(`Subscription updated for user ${user._id}.`);
   }
 

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
-import dayjs from 'dayjs';
 import { isArray, isEmpty, isString, isUndefined, set } from 'lodash';
 import { FilterQuery, SortOrder } from 'mongoose';
 import { Model } from 'mongoose';
@@ -286,7 +285,7 @@ export class CoreService {
   }
 
   buildSort = (sort: PageRequest['sort']) => {
-    const sortArr: [string, SortOrder][] = [Object.values(sort ?? {}) as [string, SortOrder]];
+    const sortArr: [string, SortOrder][] = [[sort?.field, sort?.direction]] as [string, SortOrder][];
     return sortArr;
   };
 

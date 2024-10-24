@@ -115,7 +115,7 @@ export class FeedbackService {
       predictionId: predictionId,
     };
 
-    const savedFeedback = await new this.feedbackModel(newFeedback).save();
+    const savedFeedback = await this.feedbackModel.create(newFeedback);
     return savedFeedback;
   }
 
