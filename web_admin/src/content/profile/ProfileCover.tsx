@@ -73,8 +73,8 @@ const ProfileCover = ({ user }) => {
   const userStat = {
     savedCards: 7,
     name: 'Disira Thihan',
-    coverImg: '/static/images/placeholders/covers/lightHouseCover.png',
-    avatar: '/static/images/avatars/1.jpg',
+    coverImg: '../static/images/placeholders/covers/lightHouseCover.png',
+    avatar: '../static/images/avatars/1.jpg',
     description:
       "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage",
     jobtitle: 'Web Developer',
