@@ -3,7 +3,7 @@ from app import app, predict, weighted_prediction
 from flask import json
 import nltk
 
-nltk.download('punkt_tab')
+nltk.download('punkt_tab', download_dir='/usr/share/nltk_data')
 
 class TestMLAPI(unittest.TestCase):
     def setUp(self):
