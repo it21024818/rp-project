@@ -87,7 +87,7 @@ describe('Google Test suite', () => {
       expect(response.header).toHaveBeenCalledWith('Referrer-Policy', 'no-referrer-when-downgrade');
       expect(response.json).toHaveBeenCalledWith({
         authorizeUrl:
-          'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&prompt=consent&response_type=code&client_id=google-client-id&redirect_uri=http%3A%2F%2Flocalhost%3A3000v1%2Fauth%2Foauth%2Fgoogle%2Fredirect',
+          'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&prompt=consent&response_type=code&client_id=google-client-id&redirect_uri=http%3A%2F%2Flocalhost%2Fv1%2Fauth%2Foauth%2Fgoogle%2Fredirect',
       });
     });
   });

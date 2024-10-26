@@ -37,17 +37,17 @@ export class AuthService {
     try {
       const { sub: id, aud: aud } = await this.jwtTokenService.getPayload(oldRefreshToken);
 
-      // Get token family
-      const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
-      if (isUndefined(tokenFamily)) {
-        throw new ForbiddenException('Invalid refresh token');
-      }
+      // // Get token family
+      // const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
+      // if (isUndefined(tokenFamily)) {
+      //   throw new ForbiddenException('Invalid refresh token');
+      // }
 
-      // Check whether its the latest token
-      if (tokenFamily.activeRefreshToken !== oldRefreshToken) {
-        await this.cacheManager.del(id);
-        throw new ForbiddenException('Old refresh token used');
-      }
+      // // Check whether its the latest token
+      // if (tokenFamily.activeRefreshToken !== oldRefreshToken) {
+      //   await this.cacheManager.del(id);
+      //   throw new ForbiddenException('Old refresh token used');
+      // }
 
       // Generate new tokens
       const [accessToken, refreshToken] = await Promise.all([
@@ -55,12 +55,12 @@ export class AuthService {
         this.jwtTokenService.getRefreshToken(id, aud as Audience),
       ]);
 
-      // Update token family
-      tokenFamily.oldAccessTokens = [tokenFamily.activeAccessToken];
-      tokenFamily.oldRefreshTokens = [tokenFamily.activeRefreshToken];
-      tokenFamily.activeAccessToken = accessToken;
-      tokenFamily.activeRefreshToken = refreshToken;
-      await this.cacheManager.set(id, tokenFamily);
+      // // Update token family
+      // tokenFamily.oldAccessTokens = [tokenFamily.activeAccessToken];
+      // tokenFamily.oldRefreshTokens = [tokenFamily.activeRefreshToken];
+      // tokenFamily.activeAccessToken = accessToken;
+      // tokenFamily.activeRefreshToken = refreshToken;
+      // await this.cacheManager.set(id, tokenFamily);
 
       // Send back new updated token set
       return { tokens: { accessToken, refreshToken } };
