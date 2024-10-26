@@ -103,31 +103,6 @@ export default function SignInSide() {
     const target = e.target as HTMLInputElement;
     setData({ ...data, [target.name]: target.value });
   };
-
-  // const GradientBox = styled(Box)(({ theme }) => ({
-  //   background: "linear-gradient(135deg, #e3f2fd, #bbdefb)",
-  //   borderRadius: "20px",
-  //   padding: theme.spacing(4), // Default padding for all breakpoints
-  //   boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.4)",
-
-  //   // Responsive padding based on screen size
-  //   [theme.breakpoints.up("xs")]: {
-  //     padding: theme.spacing(3),
-  //   },
-  //   [theme.breakpoints.up("sm")]: {
-  //     padding: theme.spacing(1),
-  //   },
-  //   [theme.breakpoints.up("md")]: {
-  //     padding: theme.spacing(2),
-  //   },
-  //   [theme.breakpoints.up("lg")]: {
-  //     padding: theme.spacing(3),
-  //   },
-  //   [theme.breakpoints.up("xl")]: {
-  //     padding: theme.spacing(4),
-  //   },
-  // }));
-
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
 

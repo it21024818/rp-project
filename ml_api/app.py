@@ -12,6 +12,7 @@ from collections import Counter
 
 nltk.download('punkt')
 nltk.download('stopwords')
+nltk.download('punkt_tab')
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -46,7 +47,7 @@ def combine_expert_outputs(text):
     bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = predict_bias_and_fake_news(text, bias_model)
 
     # sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence = 1, 0.76, 1, 0.76, 1, 0.76
-    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.6, 0, 0.6, 0, 0.6
+    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.0, 0, 0.0, 0, 0.0
     # quality_pred, quality_confidence, quality_news_pred, quality_news_confidence = 1, 0.78, 1, 0.78
     # bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = 1, 0.8, 1, 0.8
 
@@ -107,4 +108,4 @@ def extract_keywords():
     return jsonify({'keywords': [word for word, freq in top_words]})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)

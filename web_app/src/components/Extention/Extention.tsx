@@ -18,6 +18,8 @@ import CardMedia from "@mui/material/CardMedia";
 import Reviews from "../Reviews/Reviews";
 import { checkLogin } from "../../Utils/Generals";
 import { useNavigate } from "react-router-dom";
+import SourceIcon from "@mui/icons-material/Source";
+import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import {
   Dialog,
   DialogActions,
@@ -37,10 +39,11 @@ import { useEffect, useRef } from "react";
 
 const StyledTextField = styled(TextField)({
   "& .MuiInputBase-root": {
-    maxHeight: "400px", // Adjust the height as needed
+    maxHeight: "400px",
     overflow: "auto",
   },
 });
+import Snackbar from "@mui/material/Snackbar";
 
 export default function Hero() {
   const resultRef = useRef<HTMLElement | null>(null);
@@ -52,6 +55,11 @@ export default function Hero() {
   });
 
   const navigate = useNavigate();
+
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState<"success" | "error">(
+    "error"
+  );
 
   const handleValue = (
     e: React.ChangeEvent<
@@ -74,6 +82,10 @@ export default function Hero() {
         const result = await makePrediction(formData);
 
         if ("data" in result && result.data) {
+          if (result.data?.status != "COMPLETED") {
+            setAlertMessage("An error occurred!..");
+            setAlertSeverity("error");
+          }
           console.log("Prediction done successfully");
           setFormData({
             text: "",
@@ -81,7 +93,24 @@ export default function Hero() {
           });
           console.log(result.data?.result?.biasFakeResult?.confidence);
         } else if ("error" in result && result.error) {
-          console.error("Prediction done failed", result.error);
+          console.error("Prediction failed", result.error);
+
+          let errorMessage = "An error occurred";
+
+          if ("data" in result.error) {
+            const errorData = result.error.data as {
+              message?: string;
+              error?: string;
+            };
+            if (errorData?.message && errorData?.error) {
+              errorMessage = `${errorData.message}: ${errorData.error}`;
+            }
+          } else if ("message" in result.error) {
+            errorMessage = result.error.message || "An error occurred";
+          }
+
+          setAlertMessage(errorMessage); // Display the error message in the alert
+          setAlertSeverity("error");
         }
       } catch (error) {
         console.error("Prediction done failed`", error);
@@ -174,18 +203,6 @@ export default function Hero() {
             useFlexGap
             sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
           >
-            {/* <TextField
-              id="outlined-basic"
-              hiddenLabel
-              size="small"
-              variant="outlined"
-              aria-label="Enter your email address"
-              placeholder="Your email address"
-              inputProps={{
-                autoComplete: "off",
-                "aria-label": "Enter your email address",
-              }}
-            /> */}
             <Button
               variant="contained"
               color="primary"
@@ -349,19 +366,22 @@ export default function Hero() {
                   flexDirection="column"
                 >
                   <Typography
-                    textAlign="left"
-                    marginLeft="40px"
+                    textAlign="center"
                     color="text.secondary"
                     variant="h6"
-                    fontWeight="100px"
+                    fontWeight="bold"
                     sx={{
                       alignSelf: "center",
                       width: { sm: "100%", md: "100%" },
                       marginTop: "20px",
+                      color: "#000000",
+                      letterSpacing: "0.5px",
+                      lineHeight: "1.5",
                     }}
                   >
-                    Inserted News article
+                    Inserted News Article
                   </Typography>
+
                   <StyledTextField
                     multiline
                     variant="outlined"
@@ -377,14 +397,25 @@ export default function Hero() {
                     <Alert
                       severity="success"
                       color="success"
-                      variant="outlined"
+                      variant="filled"
                       sx={{
                         marginLeft: "20px",
                         marginRight: "20px",
                         backgroundColor: "#DCF3EB",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                        padding: "15px",
+                        borderRadius: "8px",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        color: "#2e7d32",
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
                       }}
                     >
-                      This news a true news.
+                      This is true news.
                     </Alert>
                   ) : (
                     <Alert
@@ -394,7 +425,18 @@ export default function Hero() {
                       sx={{
                         marginLeft: "20px",
                         marginRight: "20px",
-                        backgroundColor: "#DCF3EB",
+                        backgroundColor: "#FFAD60",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                        padding: "15px",
+                        borderRadius: "8px",
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                        color: "#E4003A",
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
                       }}
                     >
                       This news a false news.
@@ -438,7 +480,7 @@ export default function Hero() {
                       mt: 1, // Margin at the top
                     }}
                   >
-                    <CheckCircleIcon
+                    <PlagiarismIcon
                       sx={{ color: "#4caf50", fontSize: 28, mr: 2 }}
                     />{" "}
                     {/* Icon */}
@@ -812,7 +854,7 @@ export default function Hero() {
                         ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
                         : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
                     textAlign: "center",
-                    padding: "20px", // Add padding to ensure content is not touching the edges
+                    padding: "20px",
                   })}
                   display="flex"
                   flexDirection="column"
@@ -824,7 +866,7 @@ export default function Hero() {
                       mt: 1, // Margin at the top
                     }}
                   >
-                    <CheckCircleIcon
+                    <SourceIcon
                       sx={{ color: "#EB5B00", fontSize: 28, mr: 2 }}
                     />{" "}
                     {/* Icon */}
@@ -918,7 +960,7 @@ export default function Hero() {
                         ? `0 0 12px 8px ${alpha("#9CCCFC", 0.2)}`
                         : `0 0 24px 12px ${alpha("#033363", 0.2)}`,
                     textAlign: "center",
-                    padding: "20px", // Add padding to ensure content is not touching the edges
+                    padding: "20px",
                   })}
                   display="flex"
                   flexDirection="column"
@@ -956,7 +998,7 @@ export default function Hero() {
             left: 0,
             width: "100vw",
             height: "100vh",
-            backgroundColor: alpha("#000", 0.5), // Add a dark transparent background
+            backgroundColor: alpha("#000", 0.5),
             backdropFilter: "blur(10px)", // Blur effect for the background
             display: "flex",
             justifyContent: "center",
@@ -967,6 +1009,22 @@ export default function Hero() {
           <CircularProgress size={80} color="primary" />
         </Box>
       )}
+      {/* Snackbar for displaying alerts */}
+      <Snackbar
+        open={!!alertMessage}
+        autoHideDuration={6000}
+        onClose={() => setAlertMessage("")}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setAlertMessage("")}
+          severity={alertSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
