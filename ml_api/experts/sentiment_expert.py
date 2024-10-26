@@ -4,6 +4,7 @@ import pickle as pkl
 import torch
 import numpy as np
 from captum.attr import LayerIntegratedGradients
+
 class CustomBertModel(nn.Module):
     def __init__(self):
         super(CustomBertModel, self).__init__()
@@ -48,11 +49,13 @@ class CustomBertModel(nn.Module):
 
 # Load all sub models
 def load_sentiment_model():
-    news_model_path = 'models/news_model.pt'
-    tweet_model_path = 'models/tweet_model.pt'
+    news_model_path = 'models/sentiment_fake_news_news_distilbert_model_weights.pt'
+    tweet_model_path = 'models/sentiment_fake_news_tweet_distilbert_model_weights.pt'
     classifier_model_path = 'models/classifier.pkl'
-    news_model = torch.load(news_model_path, map_location=torch.device('cpu'))
-    tweet_model = torch.load(tweet_model_path, map_location=torch.device('cpu'))
+    news_model = CustomBertModel();
+    tweet_model = CustomBertModel();
+    news_model.load_state_dict(torch.load(news_model_path, map_location=torch.device('cpu')))
+    tweet_model.load_state_dict(torch.load(tweet_model_path, map_location=torch.device('cpu')))
     classifier_model = pkl.load(open(classifier_model_path, 'rb'))
     sent_model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
     return news_model, tweet_model, sent_model, classifier_model
