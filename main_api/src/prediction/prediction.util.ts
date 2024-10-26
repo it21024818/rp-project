@@ -24,7 +24,8 @@ const SARCASM_BY_LABEL: Record<number, Sarcasm> = {
 
 const POLITICAL_LEANING_BY_LABEL: Record<number, PoliticalLeaning> = {
   0: PoliticalLeaning.LEFT,
-  1: PoliticalLeaning.RIGHT,
+  1: PoliticalLeaning.CENTER,
+  2: PoliticalLeaning.RIGHT,
 };
 
 export class PredictionUtil {
