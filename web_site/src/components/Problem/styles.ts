@@ -38,7 +38,6 @@ export const Container = styled.section`
   }
 
   p{
-    font-size: 1.8rem;
     letter-spacing: 0.1rem;
     font-weight: 500;
   }

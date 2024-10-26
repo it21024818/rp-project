@@ -33,7 +33,7 @@ export function Objectives() {
           </ScrollAnimation> */}
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Role of Tone in Fake News Spread:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold"  }}>Role of Tone in Fake News Spread</p><br></br>
           <p>       
           Assess the impact of different tones (aggressive, neutral, empathetic) on the dissemination of fake news by developing a model to enhance fake news detection systems.
           </p>
@@ -46,7 +46,7 @@ export function Objectives() {
           </ScrollAnimation> */}
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Sarcasm in Fake News Detection:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold"  }}>Sarcasm in Fake News Detection</p><br></br>
           <p>       
           Investigate sarcasm as an indicator of fake news by incorporating a sarcasm detection module using natural language processing to improve fake news identification.
           </p>
@@ -59,7 +59,7 @@ export function Objectives() {
           </ScrollAnimation> */}
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Political Bias and Fake News Sharing:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold"  }}>Political Bias and Fake News Sharing</p><br></br>
           <p>       
           Analyze the relationship between political bias and the spread of fake news by creating a model to assess bias in news articles and its role in fake news dissemination.
           </p>
@@ -72,7 +72,7 @@ export function Objectives() {
           </ScrollAnimation> */}
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Text Quality and Fake News Perception:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold"  }}>Text Quality and Fake News Perception</p><br></br>
           <p>       
           Examine how text quality (grammar, readability) influences the perception and sharing of fake news, identifying methods to assess how well-written articles affect their credibility and spread.
           </p>

@@ -33,7 +33,7 @@ export function Gap() {
           </ScrollAnimation>
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Tone and Fake News Spread:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold" }}>Tone and Fake News Spread</p><br></br>
           <p>       
           While significant work exists on fake news content, the role of tone aggressive, neutral, or empathetic in influencing audience reception and trust is underexplored. Current studies largely ignore how tone may impact fake news dissemination.
           </p>
@@ -46,7 +46,7 @@ export function Gap() {
           </ScrollAnimation>
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Sarcasm and Fake News Detection:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold" }}>Sarcasm and Fake News Detection</p><br></br>
           <p>       
           Sarcasm remains a challenge for fake news detection systems. Although it disrupts literal meaning, its role in manipulating readers is poorly studied. More research is needed to explore sarcasm as a potential indicator of fake news.
           </p>
@@ -59,7 +59,7 @@ export function Gap() {
           </ScrollAnimation>
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Political Bias and Fake News Correlation:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold" }}>Political Bias and Fake News Correlation</p><br></br>
           <p>       
           There is limited research on the relationship between political bias and the spread of fake news. Few studies investigate how increasing bias correlates with the credibility and sharing of fake news.
           </p>
@@ -72,7 +72,7 @@ export function Gap() {
           </ScrollAnimation>
         </div> 
         <ScrollAnimation animateIn="fadeInLeft" delay={0.1 * 1000}>
-          <p style={{ color: "var(--orange)" }}>Text Quality and Fake News Perception:</p>
+          <p style={{ color: "var(--orange)", fontWeight: "bold" }}>Text Quality and Fake News Perception</p><br></br>
           <p>       
           The connection between the quality of text grammar, structure, and cohesion and news credibility is underexplored. Research is needed on how well-written content influences the audience’s perception and spread of fake news.
           </p>

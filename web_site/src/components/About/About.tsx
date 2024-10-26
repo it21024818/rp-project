@@ -16,6 +16,8 @@ import docker from "../../assets/docker.png";
 import colab from "../../assets/colab.png";
 import gcp from "../../assets/gcp.png";
 import stripe from "../../assets/stripe.png";
+import nestjs from "../../assets/nestjs.svg";
+import expo from "../../assets/expo.svg";
 
 export function About() {
   return (
@@ -132,11 +134,16 @@ export function About() {
               <img src={jsIcon} alt="JavaScript" />
             </ScrollAnimation>
           </div>
-          {/* <div className="hability">
-            <ScrollAnimation animateIn="fadeInUp" delay={0.18 * 1000}>
-              <img src={vueIcon} alt="Vue.js" />
+          <div className="hability">
+            <ScrollAnimation animateIn="fadeInUp" delay={0.17 * 1000}>
+              <img src={expo} alt="expo" />
             </ScrollAnimation>
-          </div> */}
+          </div>
+          <div className="hability">
+            <ScrollAnimation animateIn="fadeInUp" delay={0.18 * 1000}>
+              <img src={nestjs} alt="nestjs" />
+            </ScrollAnimation>
+          </div>
         </div>
       </div>
       <div className="about-text">
