@@ -7,7 +7,7 @@ export const GlobalStyle = createGlobalStyle`
     --green: #23ce6b;
     --blue: #016fb9;
     --orange: #854fde;
-    --yellow: #FFD700;
+    --yellow: #23ce6b;
     scroll-padding-top: 10rem;
 
     &.light{
@@ -89,6 +89,14 @@ export const GlobalStyle = createGlobalStyle`
 
   a{
     text-decoration: none;
+  }
+
+  p{
+    font-size: 1.6rem;
+  }
+
+  h3 {
+    font-size: 2.4rem;
   }
 
   button, .button{
