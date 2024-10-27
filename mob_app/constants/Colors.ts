@@ -3,7 +3,7 @@ const black = "#000";
 const dark = "#626262";
 const green = "#1A5D1A";
 const blue = "#1F41BB";
-const midBlue = "#6579c2";
+const midBlue = "#9fb0ef";
 const gray = "#ECECEC";
 const colorDarkslateblue = "#10275a";
 const lightBlue = "#f1f4ff";
@@ -25,16 +25,20 @@ const colorLavender = "#e8e9f3";
 const colorLightslategray = "#8a8bb3";
 const colorGray_100 = "rgba(255, 255, 255, 0.5)";
 
+const purple = "#4B3BFF";
+const lightPurple = "#cfccff";
+const midPurple = "#A39FFF";
+
 export default {
   darkText: dark,
   text: black,
   background: white,
-  primary: blue,
+  primary: purple,
   onPrimary: white,
   active: blue,
   borderWithOpacity: "#1f41bb",
-  lightPrimary: lightBlue,
-  midPrimary: midBlue,
+  lightPrimary: lightPurple,
+  midPrimary: midPurple,
   gray: gray,
   darkblue: colorDarkslateblue,
   purpleLight: purpleLight,

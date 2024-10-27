@@ -1,14 +1,17 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from "dayjs";
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList { }
+    interface RootParamList extends RootStackParamList {}
   }
 }
 
 export type RootStackParamList = {
+  ForgotPassword: undefined;
   Welcome: undefined;
+  History: undefined;
+  Prediction: undefined;
   Login: undefined;
   Register: undefined;
   Home: undefined;
@@ -40,33 +43,30 @@ export type scheduleTypes = {
   endTime: String;
   date: String;
   room: String;
-}
+};
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
 
-
-
-//Bottom nav types 
+//Bottom nav types
 
 export enum TabElementDisplayOptions {
   ICON_ONLY = "icon-only",
-  LABEL_ONLY = 'label-only',
-  BOTH = 'both'
+  LABEL_ONLY = "label-only",
+  BOTH = "both",
 }
 
 export enum DotSize {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-  LARGE = 'large',
-  DEFAULT = 'default' // not in docs
+  SMALL = "small",
+  MEDIUM = "medium",
+  LARGE = "large",
+  DEFAULT = "default", // not in docs
 }
 
 export enum TabButtonLayout {
-  VERTICAL = 'vertical',
-  HORIZONTAL = 'horizontal'
+  VERTICAL = "vertical",
+  HORIZONTAL = "horizontal",
 }
-
 
 export interface IAppearanceOptions {
   topPadding: number;
@@ -81,7 +81,7 @@ export interface IAppearanceOptions {
   whenInactiveShow: TabElementDisplayOptions;
   dotSize: DotSize;
   shadow: boolean;
-  tabButtonLayout: TabButtonLayout
+  tabButtonLayout: TabButtonLayout;
 }
 
 //Soft Tab Two
@@ -94,7 +94,7 @@ export interface TabTwoAppearanceOptions {
   activeColors?: string | string[];
   activeTabColors?: string | string[];
   dotSize?: DotSize;
-  tabButtonLayout: TabButtonLayout
+  tabButtonLayout: TabButtonLayout;
 }
 
 // Room Types
@@ -130,8 +130,7 @@ export type popTypes = {
   text: undefined;
   iconName: undefined;
   value: undefined;
-}
-
+};
 
 // Types schdules
 
@@ -159,18 +158,18 @@ export interface Schedule {
 }
 
 enum RoomTag {
-  OFFICE = 'OFFICE',
-  HOME = 'HOME',
-  EDUCATION = 'EDUCATION',
-  BUSINESS = 'BUSINESS',
+  OFFICE = "OFFICE",
+  HOME = "HOME",
+  EDUCATION = "EDUCATION",
+  BUSINESS = "BUSINESS",
 }
 
 //tasks types
 
 enum TaskPriority {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH",
 }
 
 export interface Tasks {
@@ -186,7 +185,7 @@ export interface Tasks {
   roomTag: string;
 }
 
-//rooms 
+//rooms
 
 export interface IRoom {
   _id: string;

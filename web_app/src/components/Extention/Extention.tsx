@@ -395,30 +395,6 @@ export default function Hero() {
 
                   {result?.data?.result?.finalFakeResult == true ? (
                     <Alert
-                      severity="success"
-                      color="success"
-                      variant="filled"
-                      sx={{
-                        marginLeft: "20px",
-                        marginRight: "20px",
-                        backgroundColor: "#DCF3EB",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        textAlign: "center",
-                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                        padding: "15px",
-                        borderRadius: "8px",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                        color: "#2e7d32",
-                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
-                      }}
-                    >
-                      This is true news.
-                    </Alert>
-                  ) : (
-                    <Alert
                       severity="error"
                       color="error"
                       variant="outlined"
@@ -440,6 +416,30 @@ export default function Hero() {
                       }}
                     >
                       This news a false news.
+                    </Alert>
+                  ) : (
+                    <Alert
+                      severity="success"
+                      color="success"
+                      variant="filled"
+                      sx={{
+                        marginLeft: "20px",
+                        marginRight: "20px",
+                        backgroundColor: "#DCF3EB",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: "center",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                        padding: "15px",
+                        borderRadius: "8px",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        color: "#2e7d32",
+                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
+                      }}
+                    >
+                      This is true news.
                     </Alert>
                   )}
                 </Box>
@@ -586,10 +586,11 @@ export default function Hero() {
 
                           <Typography variant="body1" color="textPrimary">
                             <strong>Prediction:</strong>{" "}
-                            {
-                              result?.data?.result?.sarcasmTypeResult
-                                ?.prediction
-                            }
+                            {result?.data?.result?.sarcasmPresentResult
+                              ?.prediction === "false"
+                              ? "No Sarcasm Type"
+                              : result?.data?.result?.sarcasmTypeResult
+                                  ?.prediction}
                           </Typography>
 
                           <Typography

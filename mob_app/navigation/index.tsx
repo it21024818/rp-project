@@ -9,6 +9,10 @@ import Home from "../screens/HomeScreen";
 import BottomTab from "./BottomTab";
 import Settings from "../screens/Settings";
 import { RootStackParamList } from "../types";
+import HistoryScreen from "../screens/HistoryScreen";
+import WelcomeScreen from "../screens/WelcomeScreen";
+import PredictionScreen from "../screens/PredictionScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 
 const theme = {
   ...DefaultTheme,
@@ -27,7 +31,7 @@ export default function Navigation() {
 }
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
+``
 function RootNavigator() {
   return (
     <Stack.Navigator
@@ -35,12 +39,13 @@ function RootNavigator() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="BottomTab" component={BottomTab} />
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Prediction" component={PredictionScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>
   );
 }
