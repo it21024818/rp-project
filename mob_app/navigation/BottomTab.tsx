@@ -3,6 +3,9 @@ import BerlinTabBarNavigator from "../components/navBottom/Tabs";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Home from "../screens/HomeScreen";
 import Profile from "../screens/Profile";
+import HistoryScreen from "../screens/HistoryScreen";
+import Colors from "../constants/Colors";
+import { FontSize } from "../Styles/GlobalStyles";
 
 const Tabs = BerlinTabBarNavigator();
 
@@ -22,13 +25,16 @@ export default () => (
     screenOptions={{
       animation: "slide_from_right",
     }}
-    initialRouteName="Home"
+    initialRouteName="PREDICT"
     tabBarOptions={{
-      labelStyle: { fontSize: 12, marginTop: 5, fontWeight: "bold" },
-      activeTintColor: "#7A28CB",
+      labelStyle: {
+        marginTop: 5,
+        fontWeight: "bold",
+      },
+      activeTintColor: Colors.primary,
       inactiveTintColor: "#9e9e9e",
       activeBackgroundColor: "#e5cfff",
-      activeTabColor: "#7A28CB",
+      activeTabColor: Colors.primary,
     }}
     appearance={{
       topPadding: 10,
@@ -38,40 +44,20 @@ export default () => (
     }}
   >
     <Tabs.Screen
-      name="Home"
+      name="PREDICT"
       component={Home}
       options={{
         tabBarIcon: ({ focused, color }: any) => (
-          <TabBarIcon focused={focused} tintColor={color} name="home-sharp" />
+          <TabBarIcon focused={focused} tintColor={color} name="newspaper" />
         ),
       }}
     />
-    {/* 
     <Tabs.Screen
-      name="Schedule"
-      component={Home}
+      name="HISTORY"
+      component={HistoryScreen}
       options={{
         tabBarIcon: ({ focused, color }: any) => (
           <TabBarIcon focused={focused} tintColor={color} name="time" />
-        ),
-      }}
-    />
-    <Tabs.Screen
-      name="Tasks"
-      component={Home}
-      options={{
-        tabBarIcon: ({ focused, color }: any) => (
-          <TabBarIcon focused={focused} tintColor={color} name="list" />
-        ),
-      }}
-    /> */}
-
-    <Tabs.Screen
-      name="Profile"
-      component={Profile}
-      options={{
-        tabBarIcon: ({ focused, color }: any) => (
-          <TabBarIcon focused={focused} tintColor={color} name="person" />
         ),
       }}
     />

@@ -5,6 +5,7 @@ import { Label } from "./navBottom/UIComponents";
 import { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 type Props = {
+  variant?: "PRIMARY" | "SUBTLE";
   onPress?: () => void;
   label?: string;
   buttonStyle?: StyleProp<ViewStyle>;
@@ -18,7 +19,26 @@ const PrimaryButton = ({
   buttonStyle,
   textStyle,
   isLoading,
+  variant = "PRIMARY",
 }: Props) => {
+  const getBackground = () => {
+    switch (variant) {
+      case "PRIMARY":
+        return Colors.primary;
+      case "SUBTLE":
+        return Colors.lightPrimary;
+    }
+  };
+
+  const getTextColor = () => {
+    switch (variant) {
+      case "PRIMARY":
+        return Colors.colorWhite;
+      case "SUBTLE":
+        return Colors.primary;
+    }
+  };
+
   return (
     <Button
       isLoading={isLoading}
@@ -28,7 +48,7 @@ const PrimaryButton = ({
           height: 60,
           marginTop: 10,
           borderRadius: 8,
-          backgroundColor: Colors.primary,
+          backgroundColor: getBackground(),
         },
         buttonStyle,
       ]}
@@ -38,7 +58,7 @@ const PrimaryButton = ({
           {
             fontSize: 18,
             fontWeight: "600",
-            color: Colors.colorWhite,
+            color: getTextColor(),
             textAlign: "center",
           },
           textStyle,

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Text, StyleSheet, View, ScrollView } from "react-native";
 import ContainerFrame from "../components/ContainerFrame";
 import HomePageComp from "../components/HomeDisplay";
@@ -6,65 +5,59 @@ import Font from "../constants/Font";
 import { Color, FontSize, Padding, Border } from "../Styles/GlobalStyles";
 import { useGetDetailedScheduledForUserQuery } from "../Redux/API/schedules.api.slice";
 import { ActivityIndicator } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../hooks/redux-hooks";
 import { DateUtils } from "../utils/DateUtils";
 import { useNavigation } from "@react-navigation/native";
+import { Input } from "native-base";
+import AppTextInput from "../components/AppTextInput";
+import PrimaryButton from "../components/PrimaryButton";
 
 const Home = () => {
   const navigation = useNavigation();
   const user = useAppSelector((state) => state.user);
-  const userID = user?._id;
-  const date = new Date().toISOString().split("T")[0];
-  const {
-    data: detailedScheduleList,
-    isLoading,
-    isError,
-    refetch: refetchDetaiedScheduleList,
-  } = useGetDetailedScheduledForUserQuery({ userID, date });
+  const [input, setInput] = useState<string>("");
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      refetchDetaiedScheduleList();
-    });
-    return unsubscribe;
-  }, []);
+  const isLoading = false;
 
-  const getJoinedTaskList = () => {
-    const allTaskLists: any[][] = detailedScheduleList.schedules.map(
-      (schedule: any) =>
-        schedule.taskList.map((task: any) => ({
-          ...task,
-          roomName: schedule.roomName,
-        }))
-    );
-    const joinedTaskList = allTaskLists.flat(1);
-    return joinedTaskList;
+  const handlePredict = () => {};
+
+  const handleClear = () => {
+    setInput("");
   };
-
-  if (isLoading || isError) {
-    return (
-      <View style={styles.home}>
-        <View style={styles.frameParent}>
-          <ContainerFrame />
-          {/* <ActivityIndicator
-            style={styles.contentContainer}
-            color="#0000ff"
-            size="large"
-          /> */}
-        </View>
-        <HomePageComp />
-      </View>
-    );
-  }
 
   return (
     <View style={styles.home}>
-      <View style={styles.frameParent}>
-        <ContainerFrame />
-      </View>
-      <HomePageComp />
+      <Text
+        style={{
+          fontSize: FontSize.size_9xl,
+          fontWeight: "600",
+          color: Colors.primary,
+          fontFamily: Font["poppins-bold"],
+        }}
+      >
+        Unveil The Truth
+      </Text>
+      <AppTextInput
+        multiline
+        editable={isLoading}
+        value={input || ""}
+        onChangeText={setInput}
+        style={{ flex: 1, paddingTop: 20, paddingBottom: 20 }}
+        placeholder="Insert your news article"
+      />
+      <PrimaryButton
+        isLoading={isLoading}
+        label={"Clear"}
+        variant="SUBTLE"
+        onPress={handleClear}
+      />
+      <PrimaryButton
+        isLoading={isLoading}
+        label={"Predict"}
+        onPress={handlePredict}
+      />
     </View>
   );
 };
@@ -78,7 +71,8 @@ const styles = StyleSheet.create({
     fontFamily: Font["poppins-bold"],
   },
   contentContainer: {
-    paddingVertical: 100,
+    width: "100%",
+    height: "100%",
   },
   viewAllBtn: {
     color: "#393f93",
@@ -213,8 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   frameParent: {
-    width: 327,
-    height: 100,
+    flex: 1,
   },
   seProjectGroup: {
     color: "#8f99eb",
@@ -275,10 +268,9 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     marginTop: 20,
     width: "100%",
-    maxHeight: "90%",
-    paddingHorizontal: 0,
+    maxHeight: "88%",
+    paddingHorizontal: 20,
     paddingVertical: 37,
-    alignItems: "center",
     overflow: "hidden",
     flex: 1,
   },
