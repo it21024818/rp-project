@@ -5,6 +5,8 @@ import torch
 import numpy as np
 from captum.attr import LayerIntegratedGradients
 
+device = "cpu"
+
 class CustomBertModel(nn.Module):
     def __init__(self):
         super(CustomBertModel, self).__init__()
@@ -55,13 +57,16 @@ def load_sentiment_model():
     news_model = CustomBertModel();
     tweet_model = CustomBertModel();
     news_model.load_state_dict(torch.load(news_model_path, map_location=torch.device('cpu')))
-    tweet_model.load_state_dict(torch.load(tweet_model_path, map_location=torch.device('cpu')))
+    state_dict = torch.load(tweet_model_path, map_location=torch.device('cpu'))
+    del state_dict["embeddings.weight"]
+    tweet_model.load_state_dict(state_dict)
     classifier_model = pkl.load(open(classifier_model_path, 'rb'))
     sent_model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
-    return news_model, tweet_model, sent_model, classifier_model
+    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+    sent_tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
+    return news_model, tweet_model, sent_model, classifier_model, tokenizer, sent_tokenizer
 
 def get_sentiment_scores(sent_model, sent_tokenizer, text):
-    sent_tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
     sent_model.eval()
     layer = sent_model.distilbert.embeddings
     def forward_fn(inputs):
@@ -97,8 +102,7 @@ def get_sentiment_scores(sent_model, sent_tokenizer, text):
     prediction_confidence = output[prediction].item()
     return attributions_sum, prediction, prediction_confidence
 
-def detect_sentiment(text, news_model, tweet_model, sent_model, classifier_model):
-    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+def detect_sentiment(text, news_model, tweet_model, sent_model, classifier_model, tokenizer, sent_tokenizer):
     with torch.no_grad():
         print("Predicting sentiment")
         sentiment_scores, sentiment_prediction, sentiment_prediction_confidence = get_sentiment_scores(sent_model, sent_tokenizer, text)

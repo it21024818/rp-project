@@ -5,6 +5,15 @@ name = "pypi"
 
 [packages]
 flask = "*"
+captum = "*"
+flask-cors = "*"
+torch = "*"
+transformers = "*"
+pandas = "*"
+nltk = "*"
+numpy = "*"
+scikit-learn = "*"
+zeugma = "*"
 
 [dev-packages]
 
