@@ -1,14 +1,56 @@
 {
   "manifest_version": 3,
-  "name": "The Lighthouse",
-  "version": "1.0.0",
-  "action": { "default_popup": "index.html" },
-  "permissions": [],
-  "host_permissions": ["http://*/*", "https://*/*"],
+  "name": "LightHouse Fake News Detector",
+  "version": "1.1.0",
+  "description": "Unveiling Truth in a Sea of Information: Your Guide to Fake NewsDetection.",
+  "options_ui": {
+    "page": "src/pages/options/index.html"
+  },
+  "background": {
+    "service_worker": "src/pages/background/index.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "src/pages/popup/index.html",
+    "default_icon": "lighthouse.png"
+  },
+  "devtools_page": "src/pages/devtools/index.html",
+  "side_panel": {
+    "default_path": "src/pages/panel/index.html"
+  },
   "icons": {
-    "16": "lighthouse.png",
-    "32": "lighthouse.png",
-    "48": "lighthouse.png",
     "128": "lighthouse.png"
-  }
+  },
+  "permissions": [
+    "activeTab",
+    "sidePanel",
+    "contextMenus",
+    "scripting",
+    "tabs",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "<all_urls>"
+      ],
+      "js": [
+        "src/pages/content/index.js"
+      ],
+      "css": [
+        "contentStyle.css"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "contentStyle.css",
+        "lighthouse.png"
+      ],
+      "matches": []
+    }
+  ]
 }
