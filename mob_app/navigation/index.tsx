@@ -4,15 +4,14 @@ import * as React from "react";
 import Colors from "../constants/Colors";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
-import Welcome from "../screens/WelcomeScreen";
 import Home from "../screens/HomeScreen";
 import BottomTab from "./BottomTab";
-import Settings from "../screens/Settings";
 import { RootStackParamList } from "../types";
 import HistoryScreen from "../screens/HistoryScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import PredictionScreen from "../screens/PredictionScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import RegisterCodeScreen from "../screens/RegisterCodeScreen";
 
 const theme = {
   ...DefaultTheme,
@@ -46,6 +45,7 @@ function RootNavigator() {
       <Stack.Screen name="BottomTab" component={BottomTab} />
       <Stack.Screen name="Prediction" component={PredictionScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="RegisterCode" component={RegisterCodeScreen} />
     </Stack.Navigator>
   );
 }

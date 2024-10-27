@@ -12,6 +12,7 @@ export type RootStackParamList = {
   Welcome: undefined;
   History: undefined;
   Prediction: undefined;
+  RegisterCode: undefined;
   Login: undefined;
   Register: undefined;
   Home: undefined;

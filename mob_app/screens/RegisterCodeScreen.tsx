@@ -1,62 +1,52 @@
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, Text, View } from "react-native";
 import React from "react";
-import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
 import Font from "../constants/Font";
-import { Ionicons } from "@expo/vector-icons";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
 import AppTextInput from "../components/AppTextInput";
-import {
-  useForgotUserPasswordMutation,
-  useRegisterMutation,
-} from "../Redux/api/auth.api.slice";
 import { useState } from "react";
-import { HandleResult } from "../utils/HandleResults";
-import { ScrollView } from "react-native";
-import Toast from "react-native-toast-message";
-import { useNavigate } from "react-router-dom";
 import { useNavigation } from "@react-navigation/native";
 import PrimaryButton from "../components/PrimaryButton";
-import { Color } from "../Styles/GlobalStyles";
 import Screen from "../components/Screen";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";
+import { useAuthorizeUserMutation } from "../Redux/api/auth.api.slice";
 
-const ForgotPasswordScreen = () => {
+const RegisterCodeScreen = () => {
   const { goBack, navigate } = useNavigation();
   const toast = useToast();
-  const [email, setEmail] = useState("");
-  const [forgotPassword, { isLoading: isForgotPasswordLoading }] =
-    useForgotUserPasswordMutation();
+  const [code, setCode] = useState("");
+  const [authorizeUser, { isLoading: isAuthorizeUserLoading }] =
+    useAuthorizeUserMutation();
 
-  const isLoading = isForgotPasswordLoading;
+  const isLoading = isAuthorizeUserLoading;
 
-  const handleForgotPassword = async () => {
+  const handleCompletRegistration = async () => {
     try {
-      await forgotPassword(email).unwrap();
-    } catch (error) {}
-
-    toast.show({
-      placement: "bottom",
-      render: () => (
-        <ToastAlert
-          title="Success!"
-          description="You will receive an email shortly."
-          type="info"
-        />
-      ),
-    });
-    goBack();
+      await authorizeUser(code).unwrap();
+      toast.show({
+        placement: "bottom",
+        render: () => (
+          <ToastAlert
+            title="Successfully Authorized!"
+            description={`Your registration is complete\nYou can now sign in!`}
+            type="info"
+          />
+        ),
+      });
+      navigate("Login");
+    } catch (error) {
+      toast.show({
+        placement: "bottom",
+        render: () => (
+          <ToastAlert
+            title="Failed to Authorize"
+            description={(error as any)?.data.message}
+            type="error"
+          />
+        ),
+      });
+    }
   };
 
   return (
@@ -86,7 +76,7 @@ const ForgotPasswordScreen = () => {
           textAlign: "center",
         }}
       >
-        Forgot your password?
+        Complete your Registration
       </Text>
       <Text
         style={{
@@ -96,30 +86,30 @@ const ForgotPasswordScreen = () => {
           marginTop: 16,
         }}
       >
-        You will receive a communication with further instructionns on resetting
-        your account password. If the email does not arrive withinn 5-10
-        minutes, please check your spam folder.
+        Please copy and paste the code you have received in your registration
+        email here.
       </Text>
       <View style={{ flex: 1 }} />
       <AppTextInput
-        placeholder="Email"
-        onChangeText={setEmail}
+        placeholder="Code"
+        onChangeText={setCode}
         editable={!isLoading}
       />
       <View style={{ flex: 1 }} />
       <PrimaryButton
         variant="TEXT"
-        label="I Remembered my Password"
-        onPress={() => goBack()}
         isLoading={isLoading}
+        label="Back to Registration"
+        onPress={() => goBack()}
       />
       <PrimaryButton
-        label="Send Email"
-        onPress={handleForgotPassword}
+        label="Submit"
+        onPress={handleCompletRegistration}
         isLoading={isLoading}
+        isDisabled={code.trim().length < 1}
       />
     </Screen>
   );
 };
 
-export default ForgotPasswordScreen;
+export default RegisterCodeScreen;

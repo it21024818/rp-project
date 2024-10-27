@@ -12,6 +12,7 @@ type Props = {
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   isLoading?: boolean;
+  isDisabled?: boolean;
   icon?: string;
 };
 
@@ -21,6 +22,7 @@ const PrimaryButton = ({
   buttonStyle,
   textStyle,
   isLoading,
+  isDisabled,
   variant = "PRIMARY",
   icon,
 }: Props) => {
@@ -49,6 +51,7 @@ const PrimaryButton = ({
   return (
     <Button
       isLoading={isLoading}
+      isDisabled={isDisabled}
       onPress={onPress}
       style={[
         {

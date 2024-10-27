@@ -25,20 +25,26 @@ import { useNavigation } from "@react-navigation/native";
 import PrimaryButton from "../components/PrimaryButton";
 import { Color } from "../Styles/GlobalStyles";
 import Screen from "../components/Screen";
+import { useToast } from "native-base";
+import ToastAlert from "../components/ToastAlert";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
 const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
   const navigation = useNavigation();
-  const [sendUserInfo, result] = useRegisterMutation();
+  const toast = useToast();
+  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    region: "",
-    country: "",
     matchPassword: "",
+    password: "",
   });
+
+  const isAnyFieldEmpty = Object.values(data).some(
+    (val) => val.trim().length < 1
+  );
 
   const handleChange = (name: any, text: any) => {
     setData({ ...data, [name]: text });
@@ -46,9 +52,58 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
 
   const handleRegister = async () => {
     try {
-      await sendUserInfo(data).unwrap();
-      navigation.goBack();
+      const errors: string[] = [];
+      if (data.email) {
+        const isValid = String(data.email)
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
+        if (!isValid) {
+          errors.push("Email is in incorrect format");
+        }
+      }
+
+      if (data.matchPassword !== data.password) {
+        errors.push("Passwords do not match");
+      }
+
+      if (errors.length > 0) {
+        toast.show({
+          placement: "bottom",
+          render: () => (
+            <ToastAlert
+              title="Form is incomplete"
+              description={errors.join("\n")}
+              type="error"
+            />
+          ),
+        });
+      } else {
+        await register(data).unwrap();
+        toast.show({
+          placement: "bottom",
+          render: () => (
+            <ToastAlert
+              title="Registration Successful"
+              description={`You will receive an email at\n${data?.email?.toLowerCase()}\nwith further instructions`}
+              type="info"
+            />
+          ),
+        });
+        navigate("Login");
+      }
     } catch (error) {
+      toast.show({
+        placement: "bottom",
+        render: () => (
+          <ToastAlert
+            title="Failed to Register"
+            description={(error as any)?.data.message}
+            type="error"
+          />
+        ),
+      });
       console.error(error);
     }
   };
@@ -104,8 +159,18 @@ const RegisterScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
         onChangeText={(text) => handleChange("matchPassword", text)}
       />
       <View style={{ flex: 1 }} />
-      <HandleResult result={result} />
-      <PrimaryButton label="Register" onPress={handleRegister} />
+      <PrimaryButton
+        variant="TEXT"
+        isLoading={isRegisterLoading}
+        label="I already have a code"
+        onPress={() => navigate("RegisterCode")}
+      />
+      <PrimaryButton
+        isDisabled={isAnyFieldEmpty}
+        isLoading={isRegisterLoading}
+        label="Register"
+        onPress={handleRegister}
+      />
     </Screen>
   );
 };

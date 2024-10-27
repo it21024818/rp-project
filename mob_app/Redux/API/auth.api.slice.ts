@@ -34,14 +34,14 @@ export const authApiSlice = baseApi.injectEndpoints({
         params: { email },
       }),
     }),
-    authorizeUser: builder.mutation<void, { "token-code": string }>({
+    authorizeUser: builder.mutation<void, string>({
       query: (token) => ({
         url: `/auth/authorize`,
         method: "PUT",
         params: { "token-code": token },
       }),
     }),
-    forgotUserPassword: builder.mutation<void, { email: string }>({
+    forgotUserPassword: builder.mutation<void, string>({
       query: (email) => ({
         url: `/auth/password/forgot`,
         method: "PUT",
