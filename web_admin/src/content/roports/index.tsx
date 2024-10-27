@@ -470,116 +470,161 @@ const Reports = () => {
                     />
                   </Tabs>
                   <TabPanel value={value} index={0}>
-                    <Grid
-                      container
-                      spacing={2}
-                      alignItems="center"
-                      sx={{ marginLeft: 4, marginTop: 2, marginBottom: 4 }}
-                    >
-                      <Grid item xs={12} md={4}>
-                        <Button
-                          variant="contained"
-                          onClick={() => setOpen(!open)}
+                    <Card>
+                      <CardHeader title="Genarate Your Exel Report Here" />
+                      <Divider />
+                      <CardContent>
+                        <Grid
+                          container
+                          spacing={2}
+                          alignItems="center"
+                          sx={{ marginLeft: 4, marginTop: 2, marginBottom: 4 }}
                         >
-                          Set Filters
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} md={4} container alignItems="center">
-                        <Grid item xs={4} textAlign="right">
-                          Include Feedback:
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Checkbox
-                            checked={checked}
-                            onChange={handleCheckboxChange}
-                            inputProps={{ 'aria-label': 'controlled' }}
+                          <Grid item xs={12} md={3}>
+                            <Button
+                              variant="contained"
+                              onClick={() => setOpen(!open)}
+                            >
+                              Set Filters
+                            </Button>
+                          </Grid>
+                          <Divider
+                            orientation="vertical"
+                            variant="middle"
+                            flexItem
                           />
-                        </Grid>
-                        <Grid item xs={4} textAlign="center">
-                          <Button
-                            variant="outlined"
-                            startIcon={<DownloadIcon />}
-                            onClick={downloadXLSX}
-                            disabled={isDownloadingExcel}
+                          <Grid
+                            item
+                            xs={12}
+                            md={3}
+                            container
+                            alignItems="center"
                           >
-                            {isDownloadingExcel ? (
-                              <>
-                                <CircularProgress size={16} />
-                                &nbsp;Downloading...
-                              </>
-                            ) : (
-                              'Download'
-                            )}
-                          </Button>
+                            <Grid item xs={4} textAlign="right">
+                              Include Feedback:
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Checkbox
+                                checked={checked}
+                                onChange={handleCheckboxChange}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Divider
+                            orientation="vertical"
+                            variant="middle"
+                            flexItem
+                          />
+                          <Grid item xs={12} md={3} textAlign="center">
+                            <Button
+                              variant="outlined"
+                              startIcon={<DownloadIcon />}
+                              onClick={downloadXLSX}
+                              disabled={isDownloadingExcel}
+                            >
+                              {isDownloadingExcel ? (
+                                <>
+                                  <CircularProgress size={16} />
+                                  &nbsp;Downloading...
+                                </>
+                              ) : (
+                                'Download'
+                              )}
+                            </Button>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    </Grid>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid item xs={12}>
-                        <DateRangePicker
-                          open={open}
-                          toggle={() => setOpen(!open)}
-                          onChange={handleDateChange}
-                          initialDateRange={dateRange}
-                        />
-                      </Grid>
-                    </Grid>
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid item xs={12}>
+                            <DateRangePicker
+                              open={open}
+                              toggle={() => setOpen(!open)}
+                              onChange={handleDateChange}
+                              initialDateRange={dateRange}
+                            />
+                          </Grid>
+                        </Grid>
+                      </CardContent>
+                    </Card>
                   </TabPanel>
                   <TabPanel value={value} index={1}>
-                    <Grid
-                      container
-                      spacing={2}
-                      alignItems="center"
-                      sx={{ marginLeft: 4, marginTop: 2, marginBottom: 4 }}
-                    >
-                      <Grid item xs={12} md={4}>
-                        <Button
-                          variant="contained"
-                          onClick={() => setOpen(!open)}
+                    <Card>
+                      <CardHeader title="Genarate Your CSV Report Here" />
+                      <Divider />
+                      <CardContent>
+                        <Grid
+                          container
+                          spacing={2}
+                          alignItems="center"
+                          sx={{ marginLeft: 4, marginTop: 2, marginBottom: 4 }}
                         >
-                          Set Filters
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12} md={4} container alignItems="center">
-                        <Grid item xs={4} textAlign="right">
-                          Include Feedback:
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Checkbox
-                            checked={checked}
-                            onChange={handleCheckboxChange}
-                            inputProps={{ 'aria-label': 'controlled' }}
+                          <Grid item xs={12} md={3}>
+                            <Button
+                              variant="contained"
+                              onClick={() => setOpen(!open)}
+                            >
+                              Set Filters
+                            </Button>
+                          </Grid>
+                          <Divider
+                            orientation="vertical"
+                            variant="middle"
+                            flexItem
                           />
-                        </Grid>
-                        <Grid item xs={4} textAlign="center">
-                          <Button
-                            variant="outlined"
-                            startIcon={<DownloadIcon />}
-                            onClick={downloadCSV}
-                            disabled={isDownloadingCSV}
+                          <Grid
+                            item
+                            xs={12}
+                            md={3}
+                            container
+                            alignItems="center"
                           >
-                            {isDownloadingCSV ? (
-                              <>
-                                <CircularProgress size={16} />
-                                &nbsp;Downloading...
-                              </>
-                            ) : (
-                              'Download'
-                            )}
-                          </Button>
+                            <Grid item xs={4} textAlign="right">
+                              Include Feedback:
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Checkbox
+                                checked={checked}
+                                onChange={handleCheckboxChange}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                              />
+                            </Grid>
+                          </Grid>
+                          <Divider
+                            orientation="vertical"
+                            variant="middle"
+                            flexItem
+                          />
+                          <Grid item xs={3} textAlign="center">
+                            <Button
+                              variant="outlined"
+                              startIcon={<DownloadIcon />}
+                              onClick={downloadCSV}
+                              disabled={isDownloadingCSV}
+                            >
+                              {isDownloadingCSV ? (
+                                <>
+                                  <CircularProgress size={16} />
+                                  &nbsp;Downloading...
+                                </>
+                              ) : (
+                                'Download'
+                              )}
+                            </Button>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    </Grid>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid item xs={12}>
-                        <DateRangePicker
-                          open={open}
-                          toggle={() => setOpen(!open)}
-                          onChange={handleDateChange}
-                          initialDateRange={dateRange}
-                        />
-                      </Grid>
-                    </Grid>
+
+                        <Grid container spacing={2} alignItems="center">
+                          <Grid item xs={12}>
+                            <DateRangePicker
+                              open={open}
+                              toggle={() => setOpen(!open)}
+                              onChange={handleDateChange}
+                              initialDateRange={dateRange}
+                            />
+                          </Grid>
+                        </Grid>
+                      </CardContent>
+                    </Card>
                   </TabPanel>
                 </Box>
               </CardContent>

@@ -327,7 +327,11 @@ export default function SignInSide() {
             />
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2" sx={{ color: "#1976d2" }}>
+                <Link
+                  href="/forgot-password"
+                  variant="body2"
+                  sx={{ color: "#1976d2" }}
+                >
                   Forgot password?
                 </Link>
               </Grid>

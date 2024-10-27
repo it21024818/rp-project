@@ -55,6 +55,24 @@ export const authApiSlice = createApi({
       }),
     }),
 
+    forgotPassword: builder.mutation({
+      query: (email) => ({
+        url: `/v1/auth/password/forgot`,
+        method: "PUT",
+        params: { email },
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
+    resetPassword: builder.mutation({
+      query: ({ password, tokenCode }) => ({
+        url: `/v1/auth/password/reset`,
+        method: "PUT",
+        body: { password, tokenCode: tokenCode },
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+
     authorizeUser: builder.mutation({
       query: (token) => ({
         url: `/v1/auth/authorize?token-code=${token}`,
@@ -99,4 +117,6 @@ export const {
   useForgotUserPasswordMutation,
   useResendRegistrationMailMutation,
   useResetUserPasswordMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authApiSlice;

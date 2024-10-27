@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom"; // Ensure useLoca
 import LandingPage from "./pages/landingPage/LandingPage";
 import LoginPage from "./pages/Loging/loginPage";
 import SingUpPage from "./pages/SingUp/singUpPage";
+import ForgotPasswordPage from "./pages/FogotPassword/FogotPasswordPage";
 import GoogleRedirectHandler from "./pages/Loging/GoogleRedirectHandler";
 
 import * as React from "react";
@@ -23,7 +24,9 @@ function App() {
   const location = useLocation(); // Get the current location
 
   // Adjust conditions to ensure AppBar and Footer are only hidden on /login and /signup
-  const isAuthPage = ["/login", "/signup"].includes(location.pathname);
+  const isAuthPage = ["/login", "/signup", "/forgot-password"].includes(
+    location.pathname
+  );
 
   return (
     <ThemeProvider theme={LPtheme}>
@@ -40,6 +43,7 @@ function App() {
         />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SingUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       </Routes>
       {/* Show Footer only if not on login or signup pages */}
       {!isAuthPage && <Footer />}
