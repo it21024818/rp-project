@@ -25,7 +25,7 @@ CORS(app)
 sarcasm_model = load_sarcasm_model()
 quality_model = load_quality_model()
 bias_model = load_bias_model()
-# news_model, tweet_model, sent_model, classifier_model = load_sentiment_model()
+news_model, tweet_model, sent_model, classifier_model = load_sentiment_model()
 
 # Function to calculate the weighted prediction
 def weighted_prediction(expert_predictions):
@@ -42,12 +42,12 @@ def weighted_prediction(expert_predictions):
 
 def combine_expert_outputs(text):
     sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence = detect_sarcasm(text, sarcasm_model)
-    # sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = detect_sentiment(text, news_model, tweet_model, sent_model, classifier_model)
+    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = detect_sentiment(text, news_model, tweet_model, sent_model, classifier_model)
     quality_pred, quality_confidence, quality_news_pred, quality_news_confidence = detect_quality(text, quality_model)
     bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = predict_bias_and_fake_news(text, bias_model)
 
     # sarcasm_pred, sarcasm_confidence, sarcasm_type_pred, sarcasm_type_confidence, sarcasm_news_pred, sarcasm_news_confidence = 1, 0.76, 1, 0.76, 1, 0.76
-    sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.0, 0, 0.0, 0, 0.0
+    # sentiment_news_pred, sentiment_news_confidence, sentiment_type_pred, sentiment_type_confidence, sentiment_pred, sentiment_confidence = 0, 0.0, 0, 0.0, 0, 0.0
     # quality_pred, quality_confidence, quality_news_pred, quality_news_confidence = 1, 0.78, 1, 0.78
     # bias_pred, bias_confidence, bias_news_pred, bias_news_confidence = 1, 0.8, 1, 0.8
 
