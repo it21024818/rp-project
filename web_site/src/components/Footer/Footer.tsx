@@ -10,7 +10,7 @@ import instagramIcon from '../../assets/instagram.svg'
 export function Footer() {
   return (
     <Container className="footer">
-      <a href="https://detect-lighthouse.me" className="logo">
+      <a href="https://detect-lighthouse.me" className="logo" target="_blank" rel="noreferrer">
         <span>www.detect-lighthouse.me</span>
       </a>
       {/* <div>
