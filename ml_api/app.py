@@ -4,7 +4,7 @@ from flask_cors import CORS
 from experts.sarcasm_expert import load_sarcasm_model, detect_sarcasm
 from experts.quality_expert import load_quality_model, detect_quality
 from experts.bias_expert import load_bias_model, predict_bias_and_fake_news
-# from experts.sentiment_expert import load_sentiment_model, detect_sentiment
+from experts.sentiment_expert import load_sentiment_model, detect_sentiment
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
