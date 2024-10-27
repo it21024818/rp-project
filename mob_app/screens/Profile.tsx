@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import Popover from "react-native-popover-view";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useGetAllroomsQuery } from "../Redux/API/rooms.api.slice";
+import { useGetAllroomsQuery } from "../Redux/api/rooms.api.slice";
 import RoutePaths from "../utils/RoutePaths";
 import { removeItem } from "../utils/Genarals";
 import { logoutCurrentUser } from "../Redux/slices/userSlice";

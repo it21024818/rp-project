@@ -1,22 +1,23 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
+type UserReduxState = {
+  tokens?: Partial<{ accessToken: string; refreshToken: string }>;
+  user?: Partial<{
+    _id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  }>;
+};
+
 export const userSlice = createSlice({
   name: "user",
-
-  initialState: {} as any,
-
+  initialState: {} as UserReduxState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<UserReduxState>) => {
       state = action.payload;
-
       return state;
     },
-
-    // setRoomID: (state, action) => {
-    //   state.roomId = action.payload;
-    //   return state;
-    // },
-
     logoutCurrentUser: (state) => {
       state = {};
       return state;

@@ -1,6 +1,6 @@
 import { Button, Input, Modal, Stack, Text, useToast } from "native-base";
 import React, { useState } from "react";
-import { useAssignUserToRoomMutation } from "../Redux/API/users.api.slice";
+import { useAssignUserToRoomMutation } from "../Redux/api/users.api.slice";
 import Colors from "../constants/Colors";
 import ToastAlert from "./ToastAlert";
 

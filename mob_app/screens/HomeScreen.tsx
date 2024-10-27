@@ -1,36 +1,67 @@
-import {
-  Text,
-  StyleSheet,
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import ContainerFrame from "../components/ContainerFrame";
-import HomePageComp from "../components/HomeDisplay";
+import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
 import Font from "../constants/Font";
-import { Color, FontSize, Padding, Border } from "../Styles/GlobalStyles";
-import { useGetDetailedScheduledForUserQuery } from "../Redux/API/schedules.api.slice";
-import { ActivityIndicator } from "react-native";
-import { useEffect, useState } from "react";
+import { Color, FontSize } from "../Styles/GlobalStyles";
+import { useState } from "react";
 import Colors from "../constants/Colors";
-import { useAppSelector } from "../hooks/redux-hooks";
-import { DateUtils } from "../utils/DateUtils";
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
 import { useNavigation } from "@react-navigation/native";
-import { Input } from "native-base";
 import AppTextInput from "../components/AppTextInput";
 import PrimaryButton from "../components/PrimaryButton";
 import Screen from "../components/Screen";
 import { Ionicons as Icon } from "@expo/vector-icons";
+import { useCreatePredictionMutation } from "../Redux/api/predictions.api.slice";
+import { useToast } from "native-base";
+import ToastAlert from "../components/ToastAlert";
+import { setUser } from "../Redux/slices/userSlice";
 
 const Home = () => {
   const { navigate } = useNavigation();
-  const user = useAppSelector((state) => state.user);
-  const [input, setInput] = useState<string>("");
+  const dispatch = useAppDispatch();
+  const toast = useToast();
+  const [createPrediction, { isLoading: isCreatePredictionLoading }] =
+    useCreatePredictionMutation();
+  const [input, setInput] = useState<string>(
+    "Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text "
+  );
 
-  const isLoading = false;
+  const isLoading = isCreatePredictionLoading;
 
-  const handlePredict = () => {
-    navigate("Prediction");
+  const handlePredict = async () => {
+    try {
+      if (input.trim().split(" ").length < 10) {
+        toast.show({
+          placement: "bottom",
+          render: () => (
+            <ToastAlert
+              title="Failed to predict"
+              description="Text needs to be longer than 10 words"
+              type="error"
+            />
+          ),
+        });
+        return;
+      }
+      const prediction = await createPrediction(input.trim()).unwrap();
+      if (prediction.error) {
+        throw "Unknown error occurred";
+      }
+      navigate("Prediction", { prediction } as any);
+    } catch (error) {
+      console.error(error);
+      toast.show({
+        placement: "bottom",
+        render: () => (
+          <ToastAlert
+            title="Failed to predict"
+            description={
+              (error as any)?.data?.message ??
+              "An unknown error occurred. Please try again later."
+            }
+            type="error"
+          />
+        ),
+      });
+    }
   };
 
   const handleClear = () => {
@@ -58,13 +89,18 @@ const Home = () => {
           Predict
         </Text>
         <View style={{ flex: 1 }} />
-        <TouchableOpacity onPress={() => navigate("Login")}>
+        <TouchableOpacity
+          onPress={() => {
+            dispatch(setUser({}));
+            navigate("Login");
+          }}
+        >
           <Icon name={"log-out-outline"} color={Colors.primary} size={30} />
         </TouchableOpacity>
       </View>
       <AppTextInput
         multiline
-        editable={isLoading}
+        editable={!isLoading}
         value={input || ""}
         onChangeText={setInput}
         style={{ flex: 1, paddingTop: 20, paddingBottom: 20 }}

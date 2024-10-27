@@ -16,28 +16,51 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import AppTextInput from "../components/AppTextInput";
-import { useLoginMutation } from "../Redux/API/auth.api.slice";
+import { useLoginMutation } from "../Redux/api/auth.api.slice";
 import { useState } from "react";
 import { HandleResult } from "../utils/HandleResults";
 import Toast from "react-native-toast-message";
 import PrimaryButton from "../components/PrimaryButton";
 import Screen from "../components/Screen";
+import { useAppDispatch } from "../hooks/redux-hooks";
+import { setUser } from "../Redux/slices/userSlice";
+import { useToast } from "native-base";
+import ToastAlert from "../components/ToastAlert";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
-  const [sendUserInfo, result] = useLoginMutation();
+  const dispatch = useAppDispatch();
+  const toast = useToast();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const [data, setData] = useState({
-    email: "Disirathihan@gmail.com",
-    password: "12345678",
+    email: "it21058578@my.sliit.lk",
+    password: "password",
   });
+
+  const isLoading = isLoginLoading;
 
   const handleChange = (name: any, text: any) => {
     setData({ ...data, [name]: text });
   };
 
   const handleLogin = async () => {
-    sendUserInfo(data);
+    try {
+      const loginResult = await login(data).unwrap();
+      dispatch(setUser(loginResult));
+      navigate("BottomTab");
+    } catch (error) {
+      toast.show({
+        placement: "bottom",
+        render: () => (
+          <ToastAlert
+            title="Failed to Login"
+            description={(error as any)?.data.message}
+            type="error"
+          />
+        ),
+      });
+    }
   };
 
   return (
@@ -74,11 +97,13 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
       </View>
       <View style={{ flex: 1 }} />
       <AppTextInput
+        editable={!isLoading}
         placeholder="Email"
         value={data.email}
         onChangeText={(text) => handleChange("email", text)}
       />
       <AppTextInput
+        editable={!isLoading}
         placeholder="Password"
         value={data.password}
         secureTextEntry
@@ -86,17 +111,22 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
       />
       <View style={{ flex: 1 }} />
       <PrimaryButton
+        isLoading={isLoading}
         label="Forgot your password?"
         onPress={() => navigate("ForgotPassword")}
         variant="TEXT"
       />
-      <PrimaryButton label="Sign In" onPress={handleLogin} />
       <PrimaryButton
+        isLoading={isLoading}
+        label="Sign In"
+        onPress={handleLogin}
+      />
+      <PrimaryButton
+        isLoading={isLoading}
         label="Create new account"
         onPress={() => navigate("Register")}
         variant="SUBTLE"
       />
-      <HandleResult result={result} />
     </Screen>
   );
 };

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import RoomScheduleBox from "./schedule/roomScheduleBox";
 import Colors from "../constants/Colors";
 import Font from "../constants/Font";
-import { useGetDetailedScheduledForUserQuery } from "../Redux/API/schedules.api.slice";
+import { useGetDetailedScheduledForUserQuery } from "../Redux/api/schedules.api.slice";
 import { ActivityIndicator } from "react-native";
 import { useState } from "react";
 import { useEffect } from "react";

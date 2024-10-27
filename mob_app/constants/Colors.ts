@@ -23,7 +23,7 @@ const colorWhite = "#fff";
 const colorGhostwhite = "#f9fafd";
 const colorLavender = "#e8e9f3";
 const colorLightslategray = "#8a8bb3";
-const colorGray_100 = "rgba(255, 255, 255, 0.5)";
+const colorGray_100 = "rgba(255, 255, 255, 1)";
 
 const purple = "#4B3BFF";
 const lightPurple = "#cfccff";

@@ -1,42 +1,53 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BASE_URL } from "../../utils/Genarals";
+import { PredictionDto } from "../../types/types";
+import { baseApi } from "./base.api.slice";
 
-// Function to get token from AsyncStorage
-const getToken = async () => {
-  try {
-    const token = await AsyncStorage.getItem("accessToken");
-    return token;
-  } catch (error) {
-    console.error("Error retrieving token from AsyncStorage:", error);
-    return null;
-  }
-};
-
-export const predictionApiSlice = createApi({
-  reducerPath: "api/prediction",
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-    prepareHeaders: async (headers) => {
-      const token = await getToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  tagTypes: ["Prediction"],
-
+const predictionApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    prediction: builder.mutation({
-      query: (formData) => ({
-        url: `/v1/predictions`,
+    createPrediction: builder.mutation<PredictionDto, string>({
+      query: (text) => ({
+        url: `/predictions`,
         method: "POST",
-        body: formData,
+        body: {
+          text,
+          url: "http://detect-lighthouse.mobile",
+        },
       }),
-      invalidatesTags: ["Prediction"],
+    }),
+    getPrediction: builder.mutation<PredictionDto, string>({
+      query: (id) => ({
+        url: `/predictions/` + id,
+        method: "GET",
+      }),
+    }),
+    getPredictions: builder.mutation<
+      { content: PredictionDto[]; metadata: any },
+      {
+        pageNum: number;
+        pageSize: number;
+        userId: string;
+      }
+    >({
+      query: ({ pageNum, pageSize, userId }) => ({
+        url: `/predictions/search`,
+        method: "POST",
+        body: {
+          pageNum,
+          pageSize,
+          sort: {
+            field: "createdAt",
+            direction: "desc",
+          },
+          filters: {
+            createdBy: {
+              operator: "EQUALS",
+              value: userId,
+            },
+          },
+        },
+      }),
     }),
   }),
 });
 
-export const { usePredictionMutation } = predictionApiSlice;
+export const { useCreatePredictionMutation, useGetPredictionsMutation } =
+  predictionApiSlice;

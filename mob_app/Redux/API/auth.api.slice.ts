@@ -1,30 +1,32 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "../../utils/Genarals";
+import { baseApi } from "./base.api.slice";
 
-export const authApiSlice = createApi({
-  reducerPath: "api/auth",
-  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
-  tagTypes: ["Auth"],
-
+export const authApiSlice = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (category) => ({
+    login: builder.mutation<
+      {
+        tokens: { accessToken: string; refreshToken: string };
+        user: {
+          _id: string;
+          email: string;
+          firstName: string;
+          lastName: string;
+        };
+      },
+      { email: string; password: string }
+    >({
+      query: (data) => ({
         url: `/auth/login`,
         method: "POST",
-        body: category,
+        body: { ...data, audience: "MOBILE_APP" },
       }),
-      invalidatesTags: ["Auth"],
     }),
-
     register: builder.mutation({
       query: (userDto) => ({
         url: "/auth/register",
         method: "POST",
         body: userDto,
       }),
-      invalidatesTags: ["Auth"],
     }),
-
     resendRegistrationMail: builder.mutation<void, { email: string }>({
       query: (email) => ({
         url: `/auth/register/resend`,
@@ -32,7 +34,6 @@ export const authApiSlice = createApi({
         params: { email },
       }),
     }),
-
     authorizeUser: builder.mutation<void, { "token-code": string }>({
       query: (token) => ({
         url: `/auth/authorize`,
@@ -40,7 +41,6 @@ export const authApiSlice = createApi({
         params: { "token-code": token },
       }),
     }),
-
     forgotUserPassword: builder.mutation<void, { email: string }>({
       query: (email) => ({
         url: `/auth/password/forgot`,
@@ -48,7 +48,6 @@ export const authApiSlice = createApi({
         params: { email },
       }),
     }),
-
     resetUserPassword: builder.mutation({
       query: ({ password, tokenCode }) => ({
         url: `/auth/password/reset`,
@@ -56,7 +55,6 @@ export const authApiSlice = createApi({
         body: { password, "token-code": tokenCode },
       }),
     }),
-
     changeUserPassword: builder.mutation({
       query: ({ email, password, oldPassword }) => ({
         url: `/auth/password/change`,

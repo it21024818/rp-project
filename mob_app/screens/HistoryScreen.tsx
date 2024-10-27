@@ -5,36 +5,67 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import ContainerFrame from "../components/ContainerFrame";
-import HomePageComp from "../components/HomeDisplay";
 import Font from "../constants/Font";
-import { Color, FontSize, Padding, Border } from "../Styles/GlobalStyles";
-import { useGetDetailedScheduledForUserQuery } from "../Redux/API/schedules.api.slice";
+import { Color, FontSize } from "../Styles/GlobalStyles";
 import { ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 import Colors from "../constants/Colors";
-import { useAppSelector } from "../hooks/redux-hooks";
-import { DateUtils } from "../utils/DateUtils";
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
 import { useNavigation } from "@react-navigation/native";
-import { Button, Card, Input } from "native-base";
-import AppTextInput from "../components/AppTextInput";
-import PrimaryButton from "../components/PrimaryButton";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Screen from "../components/Screen";
+import { useGetPredictionsMutation } from "../Redux/api/predictions.api.slice";
+import { PredictionDto } from "../types/types";
+import moment from "moment";
+import { setUser } from "../Redux/slices/userSlice";
 
 const HistoryScreen = () => {
   const { navigate } = useNavigation();
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
+  const [getPredictions, { isLoading: isGetPredictionsLoading }] =
+    useGetPredictionsMutation();
+  const [data, setData] = useState<PredictionDto[]>([]);
+  const [pageNum, setPageNum] = useState<number>(1);
 
-  const isLoading = true;
+  const isLoading = isGetPredictionsLoading;
 
-  const handlePredictionPress = (id?: string) => {
-    navigate("Prediction");
+  const getPredictionPage = async (pageNum: number) => {
+    const predictionPage = await getPredictions({
+      pageNum: pageNum,
+      pageSize: 20,
+      userId: user.user?._id ?? "",
+    }).unwrap();
+    setData((prev) => [...prev, ...predictionPage.content]);
+  };
+
+  useEffect(() => {
+    getPredictionPage(1);
+  }, [user.user?._id]);
+
+  const handlePredictionPress = (prediction: PredictionDto) => {
+    navigate("Prediction", { prediction } as any);
   };
 
   return (
     <Screen contentStyle={{ height: "92%" }}>
-      <ScrollView stickyHeaderIndices={[0]}>
+      <ScrollView
+        stickyHeaderIndices={[0]}
+        contentContainerStyle={{ gap: 8 }}
+        scrollEventThrottle={10000}
+        onScroll={({ nativeEvent }) => {
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          const paddingToBottom = 256;
+          if (
+            !isLoading &&
+            layoutMeasurement.height + contentOffset.y >=
+              contentSize.height - paddingToBottom
+          ) {
+            getPredictionPage(pageNum + 1);
+            setPageNum((prev) => prev + 1);
+          }
+        }}
+      >
         <View
           style={{
             backgroundColor: Colors.colorWhite,
@@ -60,96 +91,107 @@ const HistoryScreen = () => {
               History
             </Text>
             <View style={{ flex: 1 }} />
-            <TouchableOpacity onPress={() => navigate("Login")}>
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setUser({}));
+                navigate("Login");
+              }}
+            >
               <Icon name={"log-out-outline"} color={Colors.primary} size={30} />
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity onPress={() => handlePredictionPress()}>
-          <View
-            style={[
-              {
-                height: 106,
-                borderRadius: 8,
-                backgroundColor: Colors.lightPrimary,
-                padding: 16,
-                justifyContent: "center",
-              },
-            ]}
+        {data.length < 1 && isLoading && <ActivityIndicator />}
+        {data.map((item, idx) => (
+          <TouchableOpacity
+            key={idx}
+            onPress={() => handlePredictionPress(item)}
           >
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                height: "100%",
-                width: "100%",
-              }}
+              style={[
+                {
+                  height: 106,
+                  borderRadius: 8,
+                  backgroundColor: Colors.lightPrimary,
+                  padding: 16,
+                  justifyContent: "center",
+                },
+              ]}
             >
               <View
                 style={{
-                  backgroundColor: Colors.primary,
-                  borderRadius: 8,
-                  marginRight: 8,
-                  width: "20%",
-                  height: "100%",
+                  flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
+                  height: "100%",
+                  width: "100%",
                 }}
               >
-                <Icon name="arrow-forward-circle" size={24} color={"white"} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text
-                  numberOfLines={1}
-                  style={[
-                    {
-                      fontSize: FontSize.size_base,
-                      fontWeight: "600",
-                      flex: 1,
-                      marginBottom: 4,
-                    },
-                  ]}
-                >
-                  Blah Blah Blah Blah Blah Blah Blah Blah
-                </Text>
-                <Text
-                  style={[
-                    {
-                      fontSize: FontSize.size_sm,
-                      flex: 1,
-                      marginBottom: 4,
-                    },
-                  ]}
-                >
-                  Mar 1, 2023
-                </Text>
                 <View
                   style={{
-                    flex: 1,
-                    backgroundColor: Colors.midPrimary,
-                    borderRadius: 4,
-                    padding: 4,
-                    width: 60,
-                    justifyContent: "center",
+                    backgroundColor: Colors.primary,
+                    borderRadius: 8,
+                    marginRight: 8,
+                    width: "20%",
+                    height: "100%",
                     alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
+                  <Icon name="arrow-forward-circle" size={24} color={"white"} />
+                </View>
+                <View style={{ flex: 1 }}>
                   <Text
+                    numberOfLines={1}
                     style={[
                       {
                         fontSize: FontSize.size_base,
                         fontWeight: "600",
-                        color: Colors.primary,
+                        flex: 1,
+                        marginBottom: 4,
                       },
                     ]}
                   >
-                    True
+                    {item.text}
                   </Text>
+                  <Text
+                    style={[
+                      {
+                        fontSize: FontSize.size_sm,
+                        flex: 1,
+                        marginBottom: 4,
+                      },
+                    ]}
+                  >
+                    {moment(item.createdAt ?? "").format("MMM Do YY")}
+                  </Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      backgroundColor: Colors.midPrimary,
+                      borderRadius: 4,
+                      padding: 4,
+                      width: 60,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={[
+                        {
+                          fontSize: FontSize.size_base,
+                          fontWeight: "600",
+                          color: Colors.primary,
+                        },
+                      ]}
+                    >
+                      {item.result?.finalFakeResult ? "True" : "Fake"}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </Screen>
   );

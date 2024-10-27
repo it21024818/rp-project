@@ -18,7 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
 import ToastAlert from "../components/ToastAlert";
-import { useDeleteUserMutation } from "../Redux/API/users.api.slice";
+import { useDeleteUserMutation } from "../Redux/api/users.api.slice";
 import { removeItem } from "../utils/Genarals";
 import RoutePaths from "../utils/RoutePaths";
 import { logoutCurrentUser } from "../Redux/slices/userSlice";

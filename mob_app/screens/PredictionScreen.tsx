@@ -4,26 +4,20 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  Image,
   ImageBackground,
 } from "react-native";
-import ContainerFrame from "../components/ContainerFrame";
-import HomePageComp from "../components/HomeDisplay";
+import * as Linking from "expo-linking";
 import Font from "../constants/Font";
-import { Color, FontSize, Padding, Border } from "../Styles/GlobalStyles";
-import { useGetDetailedScheduledForUserQuery } from "../Redux/API/schedules.api.slice";
-import { ActivityIndicator } from "react-native";
-import { useEffect, useState } from "react";
+import { Color, FontSize } from "../Styles/GlobalStyles";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../hooks/redux-hooks";
-import { DateUtils } from "../utils/DateUtils";
 import { useNavigation } from "@react-navigation/native";
-import { Button, Card, Input } from "native-base";
-import AppTextInput from "../components/AppTextInput";
-import PrimaryButton from "../components/PrimaryButton";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Screen from "../components/Screen";
+import { PredictionDto } from "../types/types";
+import { useToast } from "native-base";
+import ToastAlert from "../components/ToastAlert";
 
 type BlockProps = {
   icon: string;
@@ -34,6 +28,11 @@ type BlockProps = {
   flavour: string;
   intro?: string;
   outro?: string;
+};
+
+type DisabledBlockProps = {
+  icon: string;
+  title: string;
 };
 
 type NewsBlockProps = {
@@ -68,6 +67,7 @@ const NewsBlock = ({
           source={{
             uri: imageUri,
           }}
+          resizeMode="cover"
         >
           <View
             style={{
@@ -188,11 +188,38 @@ const Block = ({
   );
 };
 
-const PredictionScreen = () => {
-  const { goBack } = useNavigation();
-  const user = useAppSelector((state) => state.user);
+const DisabledBlock = ({ title, icon }: DisabledBlockProps) => {
+  return (
+    <View
+      style={{
+        borderRadius: 8,
+        backgroundColor: Colors.gray,
+        padding: 16,
+        justifyContent: "center",
+        gap: 6,
+      }}
+    >
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <Icon name={icon as any} color={Colors.gray} size={24} />
+        <Text
+          style={{
+            color: Colors.darkText,
+            fontSize: FontSize.size_base,
+            fontWeight: "600",
+            fontFamily: Font["poppins-bold"],
+          }}
+        >
+          {title}
+        </Text>
+      </View>
+    </View>
+  );
+};
 
-  const isLoading = true;
+const PredictionScreen = ({ route }: any) => {
+  const { prediction } = (route.params ?? {}) as { prediction?: PredictionDto };
+  const { goBack } = useNavigation();
+  const toast = useToast();
 
   return (
     <Screen>
@@ -231,11 +258,19 @@ const PredictionScreen = () => {
             </Text>
           </View>
         </View>
+        <Text
+          style={{
+            fontSize: FontSize.size_base,
+            marginBottom: 16,
+          }}
+        >
+          {prediction?.text}
+        </Text>
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="?"
-          result="False"
+          result={prediction?.result?.finalFakeResult ? "True" : "False"}
           flavour="Result is based on the combination of all results"
           title="Final Result"
         />
@@ -251,20 +286,24 @@ const PredictionScreen = () => {
         >
           Model Results
         </Text>
+        {prediction?.result?.sarcasmPresentResult?.prediction ? (
+          <Block
+            backgroundColor={Colors.lightPrimary}
+            titleColor={Colors.primary}
+            icon="?"
+            result={prediction?.result?.sarcasmTypeResult?.prediction ?? ""}
+            flavour="Result is based on analysis of sarcasm presence in the content"
+            title="Sarcasm"
+            intro="This text has sarcasm of type"
+          />
+        ) : (
+          <DisabledBlock icon="" title="Sarcasm was not detected" />
+        )}
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="?"
-          result="Generic"
-          flavour="Result is based on analysis of sarcasm presence in the content"
-          title="Sarcasm"
-          intro="This text has sarcasm of type"
-        />
-        <Block
-          backgroundColor={Colors.lightPrimary}
-          titleColor={Colors.primary}
-          icon="?"
-          result="Positive"
+          result={prediction?.result?.sentimentTypeResult.prediction ?? ""}
           flavour="Result is based on the sentiment presence in the content"
           title="Sentiment"
           intro="This text has"
@@ -274,7 +313,7 @@ const PredictionScreen = () => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="?"
-          result="Tweet"
+          result={prediction?.result?.sentimentTextTypeResult.prediction ?? ""}
           flavour="This result indicates the type of text detected"
           title="Type"
           intro="This text looks like a"
@@ -283,7 +322,9 @@ const PredictionScreen = () => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="?"
-          result="Bad"
+          result={
+            prediction?.result?.textQualityResult.prediction ? "Bad" : "Good"
+          }
           flavour="This result is based on the analysis of text quality in the text"
           title="Text Quality"
           intro="This text seems to exhibit"
@@ -293,10 +334,11 @@ const PredictionScreen = () => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="?"
-          result="Right-Leaning"
+          result={prediction?.result?.biasResult.prediction ?? ""}
           flavour="This result is based on the presence of political bias in the content with regards to the US political system"
           title="Political Bias"
           intro="This text seems to be"
+          outro="Leaning"
         />
         <Text
           style={{
@@ -310,27 +352,36 @@ const PredictionScreen = () => {
         >
           Related Search Results
         </Text>
-        <NewsBlock
-          title="Title: The Thing (1982) - IMD"
-          description="The Thing: Directed by John Carpenter. With Kurt Russell, Wilford Brimley, T.K. Carter, David Clennon. A research team in Antarctica is hunted by a"
-        />
+
+        {prediction?.searchResults?.map((item, idx) => (
+          <NewsBlock
+            key={idx}
+            title={item.title}
+            description={item.description}
+            imageUri={item.thumbnail?.[0]?.src}
+            onPress={() => {
+              Linking.canOpenURL(item.link)
+                .then(() => Linking.openURL(item.link))
+                .catch(() =>
+                  toast.show({
+                    placement: "bottom",
+                    render: () => (
+                      <ToastAlert
+                        title="Could not open link"
+                        description={
+                          "Lighthouse could not open this link. The app most likely lacks permissions"
+                        }
+                        type="error"
+                      />
+                    ),
+                  })
+                );
+            }}
+          />
+        ))}
       </ScrollView>
     </Screen>
   );
 };
-
-const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: Color.white,
-    marginTop: 20,
-    width: "100%",
-    maxHeight: "88%",
-
-    paddingVertical: 37,
-    overflow: "hidden",
-    flex: 1,
-    gap: 8,
-  },
-});
 
 export default PredictionScreen;
