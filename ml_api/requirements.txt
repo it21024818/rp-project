@@ -6,3 +6,5 @@ pandas
 nltk
 numpy
 captum
+scikit-learn
+zeugma
