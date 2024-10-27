@@ -1,4 +1,10 @@
-import { Text, StyleSheet, View, ScrollView } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import ContainerFrame from "../components/ContainerFrame";
 import HomePageComp from "../components/HomeDisplay";
 import Font from "../constants/Font";
@@ -14,6 +20,7 @@ import { Input } from "native-base";
 import AppTextInput from "../components/AppTextInput";
 import PrimaryButton from "../components/PrimaryButton";
 import Screen from "../components/Screen";
+import { Ionicons as Icon } from "@expo/vector-icons";
 
 const Home = () => {
   const { navigate } = useNavigation();
@@ -32,16 +39,29 @@ const Home = () => {
 
   return (
     <Screen contentStyle={{ height: "92%" }}>
-      <Text
+      <View
         style={{
-          fontSize: FontSize.size_9xl,
-          fontWeight: "600",
-          color: Colors.primary,
-          fontFamily: Font["poppins-bold"],
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        Unveil The Truth
-      </Text>
+        <Text
+          style={{
+            fontSize: FontSize.size_9xl,
+            fontWeight: "600",
+            color: Colors.primary,
+            fontFamily: Font["poppins-bold"],
+            flex: 1,
+          }}
+        >
+          Predict
+        </Text>
+        <View style={{ flex: 1 }} />
+        <TouchableOpacity onPress={() => navigate("Login")}>
+          <Icon name={"log-out-outline"} color={Colors.primary} size={30} />
+        </TouchableOpacity>
+      </View>
       <AppTextInput
         multiline
         editable={isLoading}

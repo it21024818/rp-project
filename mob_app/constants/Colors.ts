@@ -25,16 +25,20 @@ const colorLavender = "#e8e9f3";
 const colorLightslategray = "#8a8bb3";
 const colorGray_100 = "rgba(255, 255, 255, 0.5)";
 
+const purple = "#4B3BFF";
+const lightPurple = "#cfccff";
+const midPurple = "#A39FFF";
+
 export default {
   darkText: dark,
   text: black,
   background: white,
-  primary: blue,
+  primary: purple,
   onPrimary: white,
   active: blue,
   borderWithOpacity: "#1f41bb",
-  lightPrimary: lightBlue,
-  midPrimary: midBlue,
+  lightPrimary: lightPurple,
+  midPrimary: midPurple,
   gray: gray,
   darkblue: colorDarkslateblue,
   purpleLight: purpleLight,

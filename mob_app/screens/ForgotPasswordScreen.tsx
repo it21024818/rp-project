@@ -1,4 +1,5 @@
 import {
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -49,7 +50,13 @@ const ForgotPasswordScreen = () => {
 
   return (
     <Screen>
-      <View style={{ flex: 1 }} />
+      <View style={{ justifyContent: "center", alignItems: "center" }}>
+        <Image
+          style={{ width: 256, height: 256 }}
+          resizeMode="contain"
+          source={require("../assets/images/logo.png")}
+        />
+      </View>
       <Text
         style={{
           fontSize: 48,
@@ -78,10 +85,9 @@ const ForgotPasswordScreen = () => {
           marginTop: 16,
         }}
       >
-        Please enter your email below. You will receive a communication if the
-        given email is valid with further instructionns on resetting your
-        accounnt password. If the email does not arrive withinn 5-10 minutes,
-        please check your spam folder.
+        You will receive a communication with further instructionns on resetting
+        your account password. If the email does not arrive withinn 5-10
+        minutes, please check your spam folder.
       </Text>
       <View style={{ flex: 1 }} />
       <AppTextInput placeholder="Email" onChangeText={setEmail} />

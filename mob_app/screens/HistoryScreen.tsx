@@ -38,19 +38,32 @@ const HistoryScreen = () => {
         <View
           style={{
             backgroundColor: Colors.colorWhite,
+            paddingBottom: 10,
           }}
         >
-          <Text
+          <View
             style={{
-              fontSize: FontSize.size_9xl,
-              fontWeight: "600",
-              color: Colors.primary,
-              fontFamily: Font["poppins-bold"],
-              marginBottom: 10,
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            History
-          </Text>
+            <Text
+              style={{
+                fontSize: FontSize.size_9xl,
+                fontWeight: "600",
+                color: Colors.primary,
+                fontFamily: Font["poppins-bold"],
+              }}
+            >
+              History
+            </Text>
+            <View style={{ flex: 1 }} />
+            <TouchableOpacity onPress={() => navigate("Login")}>
+              <Icon name={"log-out-outline"} color={Colors.primary} size={30} />
+            </TouchableOpacity>
+          </View>
         </View>
         <TouchableOpacity onPress={() => handlePredictionPress()}>
           <View

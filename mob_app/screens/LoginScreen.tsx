@@ -1,4 +1,5 @@
 import {
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -41,12 +42,16 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
 
   return (
     <Screen>
-      <View style={{ flex: 1 }} />
       <View
         style={{
           alignItems: "center",
         }}
       >
+        <Image
+          style={{ width: 256, height: 256 }}
+          resizeMode="contain"
+          source={require("../assets/images/logo.png")}
+        />
         <Text
           style={{
             fontSize: 48,

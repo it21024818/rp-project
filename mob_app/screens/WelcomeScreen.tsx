@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  Image,
   ImageBackground,
   SafeAreaView,
   StyleSheet,
@@ -32,7 +33,13 @@ const WelcomeScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
           paddingHorizontal: 20,
         }}
       >
-        <View style={{ flex: 1 }} />
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Image
+            style={{ width: 256, height: 256 }}
+            resizeMode="contain"
+            source={require("../assets/images/logo.png")}
+          />
+        </View>
         <Text
           style={{
             fontSize: 48,

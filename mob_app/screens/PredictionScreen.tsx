@@ -200,7 +200,6 @@ const PredictionScreen = () => {
         stickyHeaderIndices={[0]}
         contentContainerStyle={{
           gap: 8,
-          paddingHorizontal: 20,
         }}
       >
         <View
