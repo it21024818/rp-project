@@ -144,7 +144,9 @@ export default function Footer() {
           </Typography>
           <Link
             color="text.secondary"
-            href="https://docs.detect-lighthouse.me/"
+            onClick={() =>
+              window.open("https://docs.detect-lighthouse.me/", "_blank")
+            }
           >
             About us
           </Link>

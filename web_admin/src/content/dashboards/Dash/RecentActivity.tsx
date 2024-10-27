@@ -43,7 +43,7 @@ function RecentActivity({ analytics }) {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Total Users
+                Total Predictions
               </Typography>
               <Typography variant="h3">{analytics?.sum?.mobile}</Typography>
             </Box>
@@ -75,7 +75,7 @@ function RecentActivity({ analytics }) {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Total Users
+                Total Predictions
               </Typography>
               <Typography variant="h3">{analytics?.sum?.web}</Typography>
             </Box>
@@ -107,7 +107,7 @@ function RecentActivity({ analytics }) {
                 variant="caption"
                 sx={{ fontSize: `${theme.typography.pxToRem(16)}` }}
               >
-                Total Users
+                Total Predictions
               </Typography>
               <Typography variant="h3">{analytics?.sum?.extension}</Typography>
             </Box>
