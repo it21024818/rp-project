@@ -8,6 +8,7 @@ declare global {
 }
 
 export type RootStackParamList = {
+  ForgotPassword: undefined;
   Welcome: undefined;
   History: undefined;
   Prediction: undefined;

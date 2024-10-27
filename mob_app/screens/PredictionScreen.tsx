@@ -23,6 +23,7 @@ import AppTextInput from "../components/AppTextInput";
 import PrimaryButton from "../components/PrimaryButton";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import Screen from "../components/Screen";
 
 type BlockProps = {
   icon: string;
@@ -188,15 +189,13 @@ const Block = ({
 };
 
 const PredictionScreen = () => {
-  const navigation = useNavigation();
+  const { goBack } = useNavigation();
   const user = useAppSelector((state) => state.user);
 
   const isLoading = true;
 
-  const handlePredictionPress = (id?: string) => {};
-
   return (
-    <View style={styles.screen}>
+    <Screen>
       <ScrollView
         stickyHeaderIndices={[0]}
         contentContainerStyle={{
@@ -218,7 +217,7 @@ const PredictionScreen = () => {
               gap: 8,
             }}
           >
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => goBack()}>
               <Icon name={"arrow-back"} color={Colors.primary} size={30} />
             </TouchableOpacity>
             <Text
@@ -317,7 +316,7 @@ const PredictionScreen = () => {
           description="The Thing: Directed by John Carpenter. With Kurt Russell, Wilford Brimley, T.K. Carter, David Clennon. A research team in Antarctica is hunted by a"
         />
       </ScrollView>
-    </View>
+    </Screen>
   );
 };
 

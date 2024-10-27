@@ -2,15 +2,17 @@ import React from "react";
 import Colors from "../constants/Colors";
 import { Button, Text } from "native-base";
 import { Label } from "./navBottom/UIComponents";
-import { StyleProp, TextStyle, ViewStyle } from "react-native";
+import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import { Ionicons as Icon } from "@expo/vector-icons";
 
 type Props = {
-  variant?: "PRIMARY" | "SUBTLE";
+  variant?: "PRIMARY" | "SUBTLE" | "TEXT";
   onPress?: () => void;
   label?: string;
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   isLoading?: boolean;
+  icon?: string;
 };
 
 const PrimaryButton = ({
@@ -20,6 +22,7 @@ const PrimaryButton = ({
   textStyle,
   isLoading,
   variant = "PRIMARY",
+  icon,
 }: Props) => {
   const getBackground = () => {
     switch (variant) {
@@ -27,6 +30,8 @@ const PrimaryButton = ({
         return Colors.primary;
       case "SUBTLE":
         return Colors.lightPrimary;
+      case "TEXT":
+        return undefined;
     }
   };
 
@@ -35,6 +40,8 @@ const PrimaryButton = ({
       case "PRIMARY":
         return Colors.colorWhite;
       case "SUBTLE":
+        return Colors.primary;
+      case "TEXT":
         return Colors.primary;
     }
   };
@@ -53,19 +60,29 @@ const PrimaryButton = ({
         buttonStyle,
       ]}
     >
-      <Text
-        style={[
-          {
-            fontSize: 18,
-            fontWeight: "600",
-            color: getTextColor(),
-            textAlign: "center",
-          },
-          textStyle,
-        ]}
+      <View
+        style={{
+          gap: 4,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        {label}
-      </Text>
+        {icon && <Icon name={icon as any} color={getTextColor()} size={32} />}
+        <Text
+          style={[
+            {
+              fontSize: 18,
+              fontWeight: "600",
+              color: getTextColor(),
+              textAlign: "center",
+            },
+            textStyle,
+          ]}
+        >
+          {label}
+        </Text>
+      </View>
     </Button>
   );
 };

@@ -12,6 +12,7 @@ import { RootStackParamList } from "../types";
 import HistoryScreen from "../screens/HistoryScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import PredictionScreen from "../screens/PredictionScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 
 const theme = {
   ...DefaultTheme,
@@ -43,8 +44,8 @@ function RootNavigator() {
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="BottomTab" component={BottomTab} />
-      <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="Prediction" component={PredictionScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>
   );
 }

@@ -19,6 +19,8 @@ import { useLoginMutation } from "../Redux/API/auth.api.slice";
 import { useState } from "react";
 import { HandleResult } from "../utils/HandleResults";
 import Toast from "react-native-toast-message";
+import PrimaryButton from "../components/PrimaryButton";
+import Screen from "../components/Screen";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -38,185 +40,59 @@ const LoginScreen: React.FC<Props> = ({ navigation: { navigate } }) => {
   };
 
   return (
-    <SafeAreaView>
+    <Screen>
+      <View style={{ flex: 1 }} />
       <View
         style={{
-          padding: Spacing * 2,
+          alignItems: "center",
         }}
       >
-        <View
+        <Text
           style={{
-            alignItems: "center",
+            fontSize: 48,
+            color: Colors.primary,
+            fontFamily: Font["poppins-bold"],
           }}
         >
-          <Text
-            style={{
-              fontSize: FontSize.xLarge,
-              color: Colors.primary,
-              fontFamily: Font["poppins-bold"],
-              marginVertical: Spacing * 3,
-            }}
-          >
-            Login here
-          </Text>
-          <Text
-            style={{
-              fontFamily: Font["poppins-semiBold"],
-              fontSize: FontSize.large,
-              maxWidth: "60%",
-              textAlign: "center",
-            }}
-          >
-            Welcome back you've been missed!
-          </Text>
-        </View>
-        <View
+          LIGHTHOUSE
+        </Text>
+        <Text
           style={{
-            marginVertical: Spacing * 3,
+            fontFamily: Font["poppins-semiBold"],
+            fontSize: FontSize.large,
+            maxWidth: "60%",
+            textAlign: "center",
           }}
         >
-          <AppTextInput
-            placeholder="Email"
-            value={data.email}
-            onChangeText={(text) => handleChange("email", text)}
-          />
-
-          <AppTextInput
-            placeholder="Password"
-            value={data.password}
-            secureTextEntry
-            onChangeText={(text) => handleChange("password", text)}
-          />
-        </View>
-
-        <View>
-          <Text
-            style={{
-              fontFamily: Font["poppins-semiBold"],
-              fontSize: FontSize.small,
-              color: Colors.primary,
-              alignSelf: "flex-end",
-            }}
-          >
-            Forgot your password ?
-          </Text>
-        </View>
-        <HandleResult result={result} />
-        <TouchableOpacity
-          style={{
-            padding: Spacing * 2,
-            backgroundColor: Colors.primary,
-            marginVertical: Spacing * 3,
-            borderRadius: Spacing,
-            shadowColor: Colors.primary,
-            shadowOffset: {
-              width: 0,
-              height: Spacing,
-            },
-            shadowOpacity: 0.3,
-            shadowRadius: Spacing,
-          }}
-          onPress={handleLogin}
-        >
-          <Text
-            style={{
-              fontFamily: Font["poppins-bold"],
-              color: Colors.onPrimary,
-              textAlign: "center",
-              fontSize: FontSize.large,
-            }}
-          >
-            Sign in
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigate("Register")}
-          style={{
-            padding: Spacing,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: Font["poppins-semiBold"],
-              color: Colors.text,
-              textAlign: "center",
-              fontSize: FontSize.small,
-            }}
-          >
-            Create new account
-          </Text>
-        </TouchableOpacity>
-
-        <View
-          style={{
-            marginVertical: Spacing * 3,
-          }}
-        >
-          <Text
-            style={{
-              fontFamily: Font["poppins-semiBold"],
-              color: Colors.primary,
-              textAlign: "center",
-              fontSize: FontSize.small,
-            }}
-          >
-            Or continue with
-          </Text>
-
-          <View
-            style={{
-              marginTop: Spacing,
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                padding: Spacing,
-                backgroundColor: Colors.gray,
-                borderRadius: Spacing / 2,
-                marginHorizontal: Spacing,
-              }}
-            >
-              <Ionicons
-                name="logo-google"
-                color={Colors.text}
-                size={Spacing * 2}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                padding: Spacing,
-                backgroundColor: Colors.gray,
-                borderRadius: Spacing / 2,
-                marginHorizontal: Spacing,
-              }}
-            >
-              <Ionicons
-                name="logo-apple"
-                color={Colors.text}
-                size={Spacing * 2}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                padding: Spacing,
-                backgroundColor: Colors.gray,
-                borderRadius: Spacing / 2,
-                marginHorizontal: Spacing,
-              }}
-            >
-              <Ionicons
-                name="logo-facebook"
-                color={Colors.text}
-                size={Spacing * 2}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <Toast />
+          Welcome back!
+        </Text>
       </View>
-    </SafeAreaView>
+      <View style={{ flex: 1 }} />
+      <AppTextInput
+        placeholder="Email"
+        value={data.email}
+        onChangeText={(text) => handleChange("email", text)}
+      />
+      <AppTextInput
+        placeholder="Password"
+        value={data.password}
+        secureTextEntry
+        onChangeText={(text) => handleChange("password", text)}
+      />
+      <View style={{ flex: 1 }} />
+      <PrimaryButton
+        label="Forgot your password?"
+        onPress={() => navigate("ForgotPassword")}
+        variant="TEXT"
+      />
+      <PrimaryButton label="Sign In" onPress={handleLogin} />
+      <PrimaryButton
+        label="Create new account"
+        onPress={() => navigate("Register")}
+        variant="SUBTLE"
+      />
+      <HandleResult result={result} />
+    </Screen>
   );
 };
 
