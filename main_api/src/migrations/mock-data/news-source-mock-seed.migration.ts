@@ -16,7 +16,7 @@ export class NewsSourceMockDataMigration implements OnModuleInit {
       const domain = faker.internet.domainName();
       const name = faker.internet.domainWord();
       const newsSource: NewsSource = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: '66cb70c59f6a062212cdf616',
         domain,
         name,

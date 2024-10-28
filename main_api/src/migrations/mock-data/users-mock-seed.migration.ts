@@ -19,8 +19,9 @@ export class UsersMockSeedMigration implements OnModuleInit {
     for (let i = 0; i < 1000; i++) {
       const firstName = faker.person.firstName();
       const lastName = faker.person.lastName();
+      const createdAt = faker.date.past({ years: 1 });
       const user: User = {
-        createdAt: new Date(),
+        createdAt: createdAt,
         createdBy: 'MIGRATION',
         email: faker.internet.email({ firstName, lastName }),
         firstName,

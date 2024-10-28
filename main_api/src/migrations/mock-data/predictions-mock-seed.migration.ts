@@ -82,7 +82,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     // Generate FAILED predictions
     for (let i = 0; i < 500; i++) {
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         status: PredictionStatus.FAILED,
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
@@ -96,7 +96,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     // Generate PREDICTING_FAKE_NEWS predictions
     for (let i = 0; i < 500; i++) {
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
         newsSourceId: faker.helpers.arrayElement(newsSourceIds),
@@ -108,7 +108,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     // Generate STARTED predictions
     for (let i = 0; i < 500; i++) {
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
         newsSourceId: faker.helpers.arrayElement(newsSourceIds),
@@ -120,7 +120,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     // Generate EXTRACTING_KEYWORDS predictions
     for (let i = 0; i < 500; i++) {
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
         newsSourceId: faker.helpers.arrayElement(newsSourceIds),
@@ -133,7 +133,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     // Generate SEARCHING_RESULTS predictions
     for (let i = 0; i < 500; i++) {
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
         keywords: faker.lorem.words(8).split(' '),
@@ -147,7 +147,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     // Generate completed predictions
     for (let i = 0; i < 10000; i++) {
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
         keywords: faker.lorem.words(8).split(' '),
@@ -174,7 +174,7 @@ export class PredictionsMockDataMigration implements OnModuleInit {
     for (let i = 0; i < 2000; i++) {
       const selected = faker.helpers.arrayElement(completed);
       const prediction: Prediction = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         text: faker.lorem.paragraph({ min: 2, max: 30 }),
         keywords: selected.keywords,
