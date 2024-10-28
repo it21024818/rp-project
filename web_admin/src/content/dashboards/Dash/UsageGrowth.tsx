@@ -213,7 +213,7 @@ function UsageGrowth({ analytics }) {
                   <ExtentionIcon />
                 </AvatarWrapper>
                 <Typography variant="h5" noWrap>
-                  Extention Usage <br />
+                  Extension Usage <br />
                   Progress
                 </Typography>
               </Box>

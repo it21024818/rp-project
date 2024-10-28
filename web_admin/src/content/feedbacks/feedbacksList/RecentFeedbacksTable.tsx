@@ -1,6 +1,5 @@
 import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
@@ -47,8 +46,19 @@ export interface Feedback {
   };
 }
 
+export interface Metadata {
+  pageNum: number;
+  pageSize: number;
+  totalDocuments: number;
+}
+
 interface RecentFeedbackTableProps {
   feedbacks: Feedback[];
+  metadata: Metadata;
+  page: number;
+  limit: number;
+  onPageChange: (newPage: number) => void;
+  onLimitChange: (newLimit: number) => void;
 }
 
 interface Filters {
@@ -80,46 +90,30 @@ const getFeedbackLabel = (feedback: FeedbackReaction): JSX.Element => {
 const applyFilters = (feedbacks: Feedback[], filters: Filters): Feedback[] => {
   return feedbacks.filter((feedback) => {
     let matches = true;
-
     if (filters.feedback && feedback.reaction !== filters.feedback) {
       matches = false;
     }
-
     return matches;
   });
 };
 
-// Apply pagination to feedbacks
-const applyPagination = (
-  feedbacks: Feedback[],
-  page: number,
-  limit: number
-): Feedback[] => {
-  return feedbacks.slice(page * limit, page * limit + limit);
-};
-
-const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
+const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({
+  feedbacks,
+  metadata,
+  page,
+  limit,
+  onPageChange,
+  onLimitChange
+}) => {
   const [selectedFeedbacks, setSelectedFeedbacks] = useState<string[]>([]);
   const selectedBulkActions = selectedFeedbacks.length > 0;
-  const [page, setPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
-  const [filters, setFilters] = useState<Filters>({
-    feedback: null
-  });
+  const [filters, setFilters] = useState<Filters>({ feedback: null });
+  const theme = useTheme();
 
   const feedbackOptions = [
-    {
-      id: 'all',
-      name: 'All'
-    },
-    {
-      id: 'GOOD',
-      name: 'GOOD'
-    },
-    {
-      id: 'BAD',
-      name: 'BAD'
-    }
+    { id: 'all', name: 'All' },
+    { id: 'GOOD', name: 'GOOD' },
+    { id: 'BAD', name: 'BAD' }
   ];
 
   const handleFeedbackChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -156,20 +150,10 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
     }
   };
 
-  const handlePageChange = (event: any, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setLimit(parseInt(event.target.value));
-  };
-
   const filteredFeedbacks = applyFilters(feedbacks, filters);
-  const paginatedFeedbacks = applyPagination(filteredFeedbacks, page, limit);
   const selectedSomeFeedbacks =
     selectedFeedbacks.length > 0 && selectedFeedbacks.length < feedbacks.length;
   const selectedAllFeedbacks = selectedFeedbacks.length === feedbacks.length;
-  const theme = useTheme();
 
   return (
     <Card>
@@ -224,113 +208,106 @@ const RecentFeedbackTable: FC<RecentFeedbackTableProps> = ({ feedbacks }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedFeedbacks.map((feedback) => {
-              const isFeedbackSelected = selectedFeedbacks.includes(
-                feedback._id
-              );
-              return (
-                <TableRow
-                  hover
-                  key={feedback._id}
-                  selected={isFeedbackSelected}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      checked={isFeedbackSelected}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneFeedback(event, feedback._id)
-                      }
-                      value={isFeedbackSelected}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {feedback.predictionId}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color={feedback.details.isFake ? 'error' : 'success'}
-                      gutterBottom
-                      noWrap
-                    >
-                      {feedback.details.isFake ? 'Fake' : 'Not Fake'}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    {getFeedbackLabel(feedback.reaction)}
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                      maxWidth={300}
-                    >
-                      {feedback.details.message}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {format(new Date(feedback.createdAt), 'MMMM dd yyyy')}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="Edit Feedback" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            background: theme.colors.primary.lighter
-                          },
-                          color: theme.palette.primary.main
-                        }}
-                        color="inherit"
-                        component={Link}
-                        to={`/admin/predictions/details/${feedback.predictionId}`}
-                        size="small"
+            {filteredFeedbacks
+              .slice(page * limit, page * limit + limit)
+              .map((feedback) => {
+                const isFeedbackSelected = selectedFeedbacks.includes(
+                  feedback._id
+                );
+                return (
+                  <TableRow
+                    hover
+                    key={feedback._id}
+                    selected={isFeedbackSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isFeedbackSelected}
+                        onChange={(event) =>
+                          handleSelectOneFeedback(event, feedback._id)
+                        }
+                        value={isFeedbackSelected}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        noWrap
                       >
-                        <EditTwoToneIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                        {feedback.predictionId}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color={feedback.details.isFake ? 'error' : 'success'}
+                        noWrap
+                      >
+                        {feedback.details.isFake ? 'Fake' : 'Not Fake'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      {getFeedbackLabel(feedback.reaction)}
+                    </TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        color="text.primary"
+                        noWrap
+                        maxWidth={300}
+                      >
+                        {feedback.details.message}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {format(new Date(feedback.createdAt), 'MMMM dd yyyy')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Tooltip title="Edit Feedback" arrow>
+                        <IconButton
+                          sx={{
+                            '&:hover': {
+                              background: theme.palette.primary.light
+                            },
+                            color: theme.palette.primary.main
+                          }}
+                          color="inherit"
+                          component={Link}
+                          to={`/admin/predictions/details/${feedback.predictionId}`}
+                          size="small"
+                        >
+                          <EditTwoToneIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
       <Box p={2}>
         <TablePagination
           component="div"
-          count={filteredFeedbacks.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
+          count={metadata.totalDocuments}
           page={page}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(event) =>
+            onLimitChange(parseInt(event.target.value, 10))
+          }
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
     </Card>
   );
-};
-
-RecentFeedbackTable.propTypes = {
-  feedbacks: PropTypes.array.isRequired
-};
-
-RecentFeedbackTable.defaultProps = {
-  feedbacks: []
 };
 
 export default RecentFeedbackTable;

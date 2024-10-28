@@ -1,6 +1,5 @@
 import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
@@ -21,7 +20,8 @@ import {
   MenuItem,
   Typography,
   useTheme,
-  CardHeader
+  CardHeader,
+  SelectChangeEvent
 } from '@mui/material';
 import Label from 'src/components/Label';
 import BulkActions from './BulkActions';
@@ -61,8 +61,26 @@ export interface Prediction {
   updatedBy: string;
 }
 
+export interface Metadata {
+  pageNum: number;
+  pageSize: number;
+  totalDocuments: number;
+  sort: {
+    field: string;
+    direction: 'asc' | 'desc';
+  };
+  isFirst: boolean;
+  isLast: boolean;
+  totalPages: number;
+}
+
 interface PredictionsTableProps {
   predictions: Prediction[];
+  metadata: Metadata;
+  page: number;
+  limit: number;
+  onPageChange: (newPage: number) => void;
+  onLimitChange: (newLimit: number) => void;
 }
 
 interface Filters {
@@ -71,18 +89,11 @@ interface Filters {
 
 const getStatusLabel = (status: string): JSX.Element => {
   const map = {
-    PENDING: {
-      text: 'Pending',
-      color: 'warning'
-    },
-    COMPLETED: {
-      text: 'Completed',
-      color: 'success'
-    }
+    PENDING: { text: 'Pending', color: 'warning' },
+    COMPLETED: { text: 'Completed', color: 'success' }
   };
 
   const { text, color } = map[status] || { text: 'Unknown', color: 'default' };
-
   return <Label color={color}>{text}</Label>;
 };
 
@@ -91,32 +102,24 @@ const applyFilters = (
   filters: Filters
 ): Prediction[] => {
   return predictions.filter((prediction) => {
-    let matches = true;
-
     if (filters.status && prediction.status !== filters.status) {
-      matches = false;
+      return false;
     }
-
-    return matches;
+    return true;
   });
 };
 
-const applyPagination = (
-  predictions: Prediction[],
-  page: number,
-  limit: number
-): Prediction[] => {
-  return predictions.slice(page * limit, page * limit + limit);
-};
-
-const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
+const PredictionsTable: FC<PredictionsTableProps> = ({
+  predictions,
+  metadata,
+  page,
+  limit,
+  onPageChange,
+  onLimitChange
+}) => {
   const [selectedPredictions, setSelectedPredictions] = useState<string[]>([]);
   const selectedBulkActions = selectedPredictions.length > 0;
-  const [page, setPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
-  const [filters, setFilters] = useState<Filters>({
-    status: null
-  });
+  const [filters, setFilters] = useState<Filters>({ status: null });
 
   const statusOptions = [
     { id: 'all', name: 'All' },
@@ -124,17 +127,9 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
     { id: 'PENDING', name: 'PENDING' }
   ];
 
-  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    let value = null;
-
-    if (e.target.value !== 'all') {
-      value = e.target.value;
-    }
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      status: value
-    }));
+  const handleStatusChange = (event: SelectChangeEvent<string>): void => {
+    const value = event.target.value !== 'all' ? event.target.value : null;
+    setFilters((prevFilters) => ({ ...prevFilters, status: value }));
   };
 
   const handleSelectAllPredictions = (
@@ -160,25 +155,7 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
     }
   };
 
-  const handlePageChange = (event: any, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setLimit(parseInt(event.target.value));
-  };
-
   const filteredPredictions = applyFilters(predictions, filters);
-  const paginatedPredictions = applyPagination(
-    filteredPredictions,
-    page,
-    limit
-  );
-  const selectedSomePredictions =
-    selectedPredictions.length > 0 &&
-    selectedPredictions.length < predictions.length;
-  const selectedAllPredictions =
-    selectedPredictions.length === predictions.length;
   const theme = useTheme();
 
   return (
@@ -220,8 +197,11 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
               <TableCell padding="checkbox">
                 <Checkbox
                   color="primary"
-                  checked={selectedAllPredictions}
-                  indeterminate={selectedSomePredictions}
+                  checked={selectedPredictions.length === predictions.length}
+                  indeterminate={
+                    selectedPredictions.length > 0 &&
+                    selectedPredictions.length < predictions.length
+                  }
                   onChange={handleSelectAllPredictions}
                 />
               </TableCell>
@@ -235,7 +215,7 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedPredictions.map((prediction) => {
+            {filteredPredictions.map((prediction) => {
               const isPredictionSelected = selectedPredictions.includes(
                 prediction._id
               );
@@ -249,7 +229,7 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
                     <Checkbox
                       color="primary"
                       checked={isPredictionSelected}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                      onChange={(event) =>
                         handleSelectOnePrediction(event, prediction._id)
                       }
                     />
@@ -318,20 +298,18 @@ const PredictionsTable: FC<PredictionsTableProps> = ({ predictions }) => {
       <Box p={2}>
         <TablePagination
           component="div"
-          count={filteredPredictions.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
+          count={metadata?.totalDocuments ?? 0}
           page={page}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(event) =>
+            onLimitChange(parseInt(event.target.value, 10))
+          }
           rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
     </Card>
   );
-};
-
-PredictionsTable.propTypes = {
-  predictions: PropTypes.array.isRequired
 };
 
 export default PredictionsTable;

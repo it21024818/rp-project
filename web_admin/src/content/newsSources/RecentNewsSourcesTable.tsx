@@ -1,12 +1,9 @@
 import { FC, ChangeEvent, useState } from 'react';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
   Box,
-  FormControl,
-  InputLabel,
   Card,
   Checkbox,
   IconButton,
@@ -17,17 +14,13 @@ import {
   TablePagination,
   TableRow,
   TableContainer,
-  Select,
-  MenuItem,
   Typography,
   useTheme,
   CardHeader
 } from '@mui/material';
-
-import Label from 'src/components/Label';
 import EditTwoToneIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import BulkActions from './BulkActions';
 import { Link } from 'react-router-dom';
+import BulkActions from './BulkActions';
 
 export interface NewsSource {
   _id: string;
@@ -38,28 +31,32 @@ export interface NewsSource {
   __v: number;
 }
 
-interface RecentSourcesTableProps {
-  newsSources: NewsSource[];
+export interface Metadata {
+  pageNum: number;
+  pageSize: number;
+  totalDocuments: number;
 }
 
-const applyFilters = (newsSources: NewsSource[]): NewsSource[] => {
-  // Adjust filtering logic as needed
-  return newsSources;
-};
+interface RecentSourcesTableProps {
+  newsSources: NewsSource[];
+  metadata: Metadata;
+  page: number;
+  limit: number;
+  onPageChange: (newPage: number) => void;
+  onLimitChange: (newLimit: number) => void;
+}
 
-const applyPagination = (
-  newsSources: NewsSource[],
-  page: number,
-  limit: number
-): NewsSource[] => {
-  return newsSources.slice(page * limit, page * limit + limit);
-};
-
-const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
+const RecentSourcesTable: FC<RecentSourcesTableProps> = ({
+  newsSources,
+  metadata,
+  page,
+  limit,
+  onPageChange,
+  onLimitChange
+}) => {
   const [selectedNewsSources, setSelectedNewsSources] = useState<string[]>([]);
   const selectedBulkActions = selectedNewsSources.length > 0;
-  const [page, setPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
+  const theme = useTheme();
 
   const handleSelectAllNewsSources = (
     event: ChangeEvent<HTMLInputElement>
@@ -84,26 +81,11 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
     }
   };
 
-  const handlePageChange = (event: any, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setLimit(parseInt(event.target.value));
-  };
-
-  const filteredNewsSources = applyFilters(newsSources);
-  const paginatedNewsSources = applyPagination(
-    filteredNewsSources,
-    page,
-    limit
-  );
   const selectedSomeNewsSources =
     selectedNewsSources.length > 0 &&
     selectedNewsSources.length < newsSources.length;
   const selectedAllNewsSources =
     selectedNewsSources.length === newsSources.length;
-  const theme = useTheme();
 
   return (
     <Card>
@@ -133,7 +115,7 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedNewsSources.map((newsSource) => {
+            {newsSources.map((newsSource) => {
               const isNewsSourceSelected = selectedNewsSources.includes(
                 newsSource._id
               );
@@ -147,7 +129,7 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
                     <Checkbox
                       color="primary"
                       checked={isNewsSourceSelected}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                      onChange={(event) =>
                         handleSelectOneNewsSource(event, newsSource._id)
                       }
                       value={isNewsSourceSelected}
@@ -185,7 +167,7 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
                       <IconButton
                         sx={{
                           '&:hover': {
-                            background: theme.colors.primary.lighter
+                            background: theme.palette.primary.light
                           },
                           color: theme.palette.primary.main
                         }}
@@ -207,24 +189,18 @@ const RecentSourcesTable: FC<RecentSourcesTableProps> = ({ newsSources }) => {
       <Box p={2}>
         <TablePagination
           component="div"
-          count={filteredNewsSources.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
+          count={metadata.totalDocuments}
           page={page}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(event) =>
+            onLimitChange(parseInt(event.target.value, 10))
+          }
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
     </Card>
   );
-};
-
-RecentSourcesTable.propTypes = {
-  newsSources: PropTypes.array.isRequired
-};
-
-RecentSourcesTable.defaultProps = {
-  newsSources: []
 };
 
 export default RecentSourcesTable;

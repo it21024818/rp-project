@@ -10,7 +10,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import Screen from "../components/Screen";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";
-import { useAuthorizeUserMutation } from "../Redux/api/auth.api.slice";
+import { useAuthorizeUserMutation } from "../Redux/API/auth.api.slice";
 
 const RegisterCodeScreen = () => {
   const { goBack, navigate } = useNavigation();

@@ -29,7 +29,7 @@ export class FeedbackMockDataMigration implements OnModuleInit {
     // User feedback
     predictions.forEach(prediction => {
       const feedback: Feedback = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: prediction.createdBy,
         details: {
           bias: faker.datatype.boolean() ? faker.helpers.arrayElement(Object.values(PoliticalLeaning)) : undefined,
@@ -50,7 +50,7 @@ export class FeedbackMockDataMigration implements OnModuleInit {
     const userIds = users.map(i => i.id);
     take(shuffle(predictions), 500).forEach(prediction => {
       const feedback: Feedback = {
-        createdAt: new Date(),
+        createdAt: faker.date.past({ years: 1 }),
         createdBy: faker.helpers.arrayElement(userIds),
         details: {
           bias: faker.helpers.arrayElement(Object.values(PoliticalLeaning)),

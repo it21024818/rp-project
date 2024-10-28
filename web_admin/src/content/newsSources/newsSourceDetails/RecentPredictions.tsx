@@ -1,39 +1,61 @@
 import { Card, CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PredictionsTable from 'src/content/predictions/predictionsList/RecentPredictionsTable';
-import { subDays } from 'date-fns';
 import { useGetPredictionsMutation } from 'src/store/apiquery/predictionsApiSlice';
 
+export interface Metadata {
+  pageNum: number;
+  pageSize: number;
+  totalDocuments: number;
+  sort: {
+    field: string;
+    direction: 'asc' | 'desc';
+  };
+  isFirst: boolean;
+  isLast: boolean;
+  totalPages: number;
+}
 function RecentPredictions({ source }) {
   const [predictions, setPredictions] = useState([]);
-  const [metadata, setMetadata] = useState(null);
+  const [metadata, setMetadata] = useState<Metadata | null>({
+    pageNum: 1,
+    pageSize: 5,
+    totalDocuments: 0,
+    sort: { field: 'createdAt', direction: 'desc' },
+    isFirst: true,
+    isLast: false,
+    totalPages: 1
+  });
+  const [pageNum, setPageNum] = useState(1);
 
   const [fetchPredictions, { isLoading, error }] = useGetPredictionsMutation();
 
-  useEffect(() => {
-    const fetchRecentPredictions = async () => {
-      const formData = {
-        sort: {
-          field: 'createdAt',
-          direction: 'desc'
-        },
-        filter: {
-          status: { operator: 'NOT_EQUAL', value: 'FAILED' },
-          newsSourceId: { operator: 'EQUALS', value: source }
-        }
-      };
-
-      try {
-        const response = await fetchPredictions(formData).unwrap();
-        setPredictions(response.content);
-        setMetadata(response.metadata);
-      } catch (err) {
-        console.error('Error fetching predictions:', err);
+  const fetchRecentPredictions = async (page: number) => {
+    const formData = {
+      pageNum: page,
+      pageSize: metadata.pageSize,
+      sort: {
+        field: 'createdAt',
+        direction: 'desc'
+      },
+      filter: {
+        status: { operator: 'NOT_EQUAL', value: 'FAILED' },
+        newsSourceId: { operator: 'EQUALS', value: source }
       }
     };
 
-    fetchRecentPredictions();
-  }, [fetchPredictions, source]);
+    try {
+      const response = await fetchPredictions(formData).unwrap();
+      setPredictions(response.content);
+      setMetadata(response.metadata);
+    } catch (err) {
+      console.error('Error fetching predictions:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentPredictions(pageNum);
+  }, [fetchPredictions, pageNum, source]);
 
   if (isLoading) {
     return <CircularProgress />;
@@ -43,9 +65,22 @@ function RecentPredictions({ source }) {
     return <p>Error loading predictions...</p>;
   }
 
+  const handlePageChange = (newPage: number) => {
+    setPageNum(newPage + 1);
+  };
+
   return (
     <Card>
-      <PredictionsTable predictions={predictions} />
+      <PredictionsTable
+        predictions={predictions}
+        metadata={metadata}
+        page={pageNum - 1}
+        limit={metadata.pageSize}
+        onPageChange={handlePageChange}
+        onLimitChange={(newLimit) =>
+          setMetadata({ ...metadata, pageSize: newLimit })
+        }
+      />
     </Card>
   );
 }

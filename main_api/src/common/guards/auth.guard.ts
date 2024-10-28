@@ -31,16 +31,16 @@ export class AuthGuard implements CanActivate {
       const id = await this.jwtTokenService.verifyAccessToken(token);
 
       // Get token family
-      const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
-      if (isUndefined(tokenFamily)) {
-        throw new ForbiddenException('Invalid access token');
-      }
+      // const tokenFamily = await this.cacheManager.get<TokenFamily>(id);
+      // if (isUndefined(tokenFamily)) {
+      //   throw new ForbiddenException('Invalid access token');
+      // }
 
       // Check whether token is latest
-      if (tokenFamily.activeAccessToken !== token) {
-        await this.cacheManager.del(id);
-        throw new ForbiddenException('Old access token used');
-      }
+      // if (tokenFamily.activeAccessToken !== token) {
+      //   await this.cacheManager.del(id);
+      //   throw new ForbiddenException('Old access token used');
+      // }
 
       // Attach user data to request context
       const user = await this.usersService.getUser(id);

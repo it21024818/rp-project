@@ -14,6 +14,7 @@ export type RootStackParamList = {
   Prediction: undefined;
   RegisterCode: undefined;
   Login: undefined;
+  Feedback: undefined;
   Register: undefined;
   Home: undefined;
   children: undefined;

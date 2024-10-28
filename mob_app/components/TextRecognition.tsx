@@ -7,10 +7,9 @@ import {
 } from "react-native-image-picker";
 import axios from "axios";
 
-const API_KEY = "YOUR_GOOGLE_VISION_API_KEY"; // Replace with your actual API key
-
 const TextRecognition: React.FC = () => {
   const [recognizedText, setRecognizedText] = useState<string>("");
+  const API_KEY = process.env.EXPO_PUBLIC_API_KEY; // Replace with your actual API key
 
   const pickImage = async () => {
     launchImageLibrary(

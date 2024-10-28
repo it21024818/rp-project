@@ -5,8 +5,8 @@ import { Grid, Container } from '@mui/material';
 
 import ProfileCover from './ProfileCover';
 import { useGetUserQuery } from 'src/store/apiquery/usersApiSlice';
-import { CircularProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
+import ProfileSkeleton from 'src/components/Skeleton/ProfileSkeleton';
 
 export type UserRole = 'USER' | 'ADMIN';
 export type SubscriptionStatus = 'ACTIVE' | 'ENDED' | 'PAUSED';
@@ -57,7 +57,7 @@ function ManagementUserProfile() {
   if (isLoading) {
     return (
       <Container sx={{ mt: 3 }} maxWidth="lg">
-        <CircularProgress />
+        <ProfileSkeleton />
       </Container>
     );
   }

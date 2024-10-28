@@ -8,16 +8,18 @@ import {
 import Font from "../constants/Font";
 import { Color, FontSize } from "../Styles/GlobalStyles";
 import { ActivityIndicator } from "react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Colors from "../constants/Colors";
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Screen from "../components/Screen";
-import { useGetPredictionsMutation } from "../Redux/api/predictions.api.slice";
+import { useGetPredictionsMutation } from "../Redux/API/predictions.api.slice";
 import { PredictionDto } from "../types/types";
 import moment from "moment";
 import { setUser } from "../Redux/slices/userSlice";
+import ScreenHeader from "../components/ScreenHeader";
+import { Skeleton } from "native-base";
 
 const HistoryScreen = () => {
   const { navigate } = useNavigation();
@@ -39,9 +41,12 @@ const HistoryScreen = () => {
     setData((prev) => [...prev, ...predictionPage.content]);
   };
 
-  useEffect(() => {
-    getPredictionPage(1);
-  }, [user.user?._id]);
+  useFocusEffect(
+    useCallback(() => {
+      setData([]);
+      getPredictionPage(1);
+    }, [user.user?._id])
+  );
 
   const handlePredictionPress = (prediction: PredictionDto) => {
     navigate("Prediction", { prediction } as any);
@@ -66,42 +71,7 @@ const HistoryScreen = () => {
           }
         }}
       >
-        <View
-          style={{
-            backgroundColor: Colors.colorWhite,
-            paddingBottom: 10,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: FontSize.size_9xl,
-                fontWeight: "600",
-                color: Colors.primary,
-                fontFamily: Font["poppins-bold"],
-              }}
-            >
-              History
-            </Text>
-            <View style={{ flex: 1 }} />
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(setUser({}));
-                navigate("Login");
-              }}
-            >
-              <Icon name={"log-out-outline"} color={Colors.primary} size={30} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {data.length < 1 && isLoading && <ActivityIndicator />}
+        <ScreenHeader title="History" hasLogoutAction />
         {data.map((item, idx) => (
           <TouchableOpacity
             key={idx}
@@ -192,6 +162,16 @@ const HistoryScreen = () => {
             </View>
           </TouchableOpacity>
         ))}
+        {(data.length < 1 || isLoading) && (
+          <Skeleton
+            style={{
+              height: 106,
+              borderRadius: 8,
+              backgroundColor: Colors.lightPrimary,
+              justifyContent: "center",
+            }}
+          />
+        )}
       </ScrollView>
     </Screen>
   );
