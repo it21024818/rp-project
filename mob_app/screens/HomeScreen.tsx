@@ -17,9 +17,8 @@ import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import ScreenHeader from "../components/ScreenHeader";
 import { TextInput } from "react-native";
 
-const GOOGLE_CLOUD_VISION_API_KEY = "";
-
 const Home = () => {
+  const GOOGLE_CLOUD_VISION_API_KEY = process.env.EXPO_PUBLIC_API_KEY;
   const { navigate } = useNavigation();
   const dispatch = useAppDispatch();
   const toast = useToast();
