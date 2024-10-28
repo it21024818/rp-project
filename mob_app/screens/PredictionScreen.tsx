@@ -46,6 +46,10 @@ type NewsBlockProps = {
   onPress?: () => void;
 };
 
+function capitalizeWords(str: string) {
+  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 const NewsBlock = ({
   title,
   description,
@@ -288,24 +292,24 @@ const PredictionScreen = ({ route }: any) => {
         >
           Model Results
         </Text>
-        {prediction?.result?.sarcasmPresentResult?.prediction ? (
-          <Block
-            backgroundColor={Colors.lightPrimary}
-            titleColor={Colors.primary}
-            icon="crisis-alert"
-            result={prediction?.result?.sarcasmTypeResult?.prediction ?? ""}
-            flavour="Result is based on analysis of sarcasm presence in the content"
-            title="Sarcasm"
-            intro="This text has sarcasm of type"
-          />
-        ) : (
-          <DisabledBlock icon="crisis-alert" title="Sarcasm was not detected" />
-        )}
+        <Block
+          backgroundColor={Colors.lightPrimary}
+          titleColor={Colors.primary}
+          icon="crisis-alert"
+          result={capitalizeWords(
+            prediction?.result?.sarcasmTypeResult?.prediction ?? "Generic"
+          )}
+          flavour="Result is based on analysis of sarcasm presence in the content"
+          title="Sarcasm"
+          intro="This text has sarcasm of type"
+        />
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="history-edu"
-          result={prediction?.result?.sentimentTypeResult.prediction ?? ""}
+          result={capitalizeWords(
+            prediction?.result?.sentimentTypeResult.prediction ?? ""
+          )}
           flavour="Result is based on the sentiment presence in the content"
           title="Sentiment"
           intro="This text has"
@@ -315,7 +319,9 @@ const PredictionScreen = ({ route }: any) => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="history-edu"
-          result={prediction?.result?.sentimentTextTypeResult.prediction ?? ""}
+          result={capitalizeWords(
+            prediction?.result?.sentimentTextTypeResult.prediction ?? ""
+          )}
           flavour="This result indicates the type of text detected"
           title="Type"
           intro="This text looks like a"
@@ -324,9 +330,9 @@ const PredictionScreen = ({ route }: any) => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="fact-check"
-          result={
+          result={capitalizeWords(
             prediction?.result?.textQualityResult.prediction ? "Bad" : "Good"
-          }
+          )}
           flavour="This result is based on the analysis of text quality in the text"
           title="Text Quality"
           intro="This text seems to exhibit"
@@ -336,7 +342,9 @@ const PredictionScreen = ({ route }: any) => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="handshake"
-          result={prediction?.result?.biasResult.prediction ?? ""}
+          result={capitalizeWords(
+            prediction?.result?.biasResult.prediction ?? ""
+          )}
           flavour="This result is based on the presence of political bias in the content with regards to the US political system"
           title="Political Bias"
           intro="This text seems to be"
