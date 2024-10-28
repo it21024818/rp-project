@@ -80,6 +80,7 @@ export type SearchResultDto = {
 };
 
 export type PredictionDto = {
+  _id: string;
   text: string;
   result?: PredictionResult;
   searchResults?: SearchResultDto[];
@@ -94,3 +95,17 @@ export type PredictionDto = {
   updatedAt?: string;
   archived?: boolean;
 };
+
+export interface FeedbackDetails {
+  message: string;
+  textQuality: boolean;
+  sentiment: "POSITIVE" | "NEGATIVE" | "NEUTRAL";
+  sarcasm: "GEN" | "RHETORICAL_QUESTION" | "HYPERBOLE";
+  bias: "LEFT" | "RIGHT" | "CENTER";
+  isFake: boolean;
+}
+
+export interface FeedbackDto {
+  reaction: "GOOD" | "BAD";
+  details: FeedbackDetails;
+}

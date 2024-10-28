@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type UserReduxState = {
+  [x: string]: any;
   tokens?: Partial<{ accessToken: string; refreshToken: string }>;
   user?: Partial<{
     _id: string;

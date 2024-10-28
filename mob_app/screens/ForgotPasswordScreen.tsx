@@ -19,7 +19,7 @@ import AppTextInput from "../components/AppTextInput";
 import {
   useForgotUserPasswordMutation,
   useRegisterMutation,
-} from "../Redux/api/auth.api.slice";
+} from "../Redux/API/auth.api.slice";
 import { useState } from "react";
 import { HandleResult } from "../utils/HandleResults";
 import { ScrollView } from "react-native";

@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Screen from "../components/Screen";
-import { useGetPredictionsMutation } from "../Redux/api/predictions.api.slice";
+import { useGetPredictionsMutation } from "../Redux/API/predictions.api.slice";
 import { PredictionDto } from "../types/types";
 import moment from "moment";
 import { setUser } from "../Redux/slices/userSlice";
