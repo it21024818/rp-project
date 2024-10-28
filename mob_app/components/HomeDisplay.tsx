@@ -32,7 +32,7 @@ const HomePageComp = () => {
   };
 
   // Define the generateSummaryReport function
-  const generateSummaryReport = (result) => {
+  const generateSummaryReport = (result: any) => {
     if (!result || !result.data || !result.data.result) {
       return "No data available";
     }

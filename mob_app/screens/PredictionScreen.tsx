@@ -18,6 +18,7 @@ import Screen from "../components/Screen";
 import { PredictionDto } from "../types/types";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";
+import Reviews from "./FeedbackScreen";
 
 type BlockProps = {
   icon: string;
@@ -379,6 +380,8 @@ const PredictionScreen = ({ route }: any) => {
             }}
           />
         ))}
+        {/* Pass the sourcePredictionId if available */}
+        {prediction?._id && <Reviews id={prediction._id} />}
       </ScrollView>
     </Screen>
   );

@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import AppTextInput from "../components/AppTextInput";
-import { useLoginMutation } from "../Redux/api/auth.api.slice";
+import { useLoginMutation } from "../Redux/API/auth.api.slice";
 import { useState } from "react";
 import { HandleResult } from "../utils/HandleResults";
 import Toast from "react-native-toast-message";
