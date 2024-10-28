@@ -29,7 +29,7 @@
     "react-native": "0.74.5",
     "react-native-image-picker": "^7.1.2",
     "react-native-paper": "^5.12.5",
-    "react-native-screens": "~3.22.0",
+    "react-native-screens": "~3.35.0",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1"
   },
