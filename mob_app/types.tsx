@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import dayjs, { Dayjs } from "dayjs";
 
 declare global {
   namespace ReactNavigation {

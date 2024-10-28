@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 import AppTextInput from "../components/AppTextInput";
 import PrimaryButton from "../components/PrimaryButton";
 import Screen from "../components/Screen";
-import { Ionicons as Icon } from "@expo/vector-icons";
 import { useCreatePredictionMutation } from "../Redux/API/predictions.api.slice";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";

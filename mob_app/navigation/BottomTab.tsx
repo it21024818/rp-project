@@ -2,10 +2,8 @@ import React from "react";
 import BerlinTabBarNavigator from "../components/navBottom/Tabs";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Home from "../screens/HomeScreen";
-import Profile from "../screens/Profile";
 import HistoryScreen from "../screens/HistoryScreen";
 import Colors from "../constants/Colors";
-import { FontSize } from "../Styles/GlobalStyles";
 
 const Tabs = BerlinTabBarNavigator();
 

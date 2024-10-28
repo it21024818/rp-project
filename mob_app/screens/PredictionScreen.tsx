@@ -1,6 +1,5 @@
 import {
   Text,
-  StyleSheet,
   View,
   ScrollView,
   TouchableOpacity,
@@ -8,25 +7,20 @@ import {
 } from "react-native";
 import * as Linking from "expo-linking";
 import Font from "../constants/Font";
-import { Color, FontSize } from "../Styles/GlobalStyles";
+import { FontSize } from "../Styles/GlobalStyles";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../hooks/redux-hooks";
-import {
-  useFocusEffect,
-  useIsFocused,
-  useNavigation,
-} from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Screen from "../components/Screen";
 import { PredictionDto } from "../types/types";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";
-import Reviews from "./FeedbackScreen";
 import PrimaryButton from "../components/PrimaryButton";
 import ScreenHeader from "../components/ScreenHeader";
 import { useLazyGetFeedbackByPredictionIdQuery } from "../Redux/API/feedbacks.api.slice";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type BlockProps = {

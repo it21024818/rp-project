@@ -20,10 +20,10 @@ import {
 import { useCreateFeedbackMutation } from "../Redux/API/feedbacks.api.slice";
 import { Checkbox } from "react-native-paper";
 import Dropdown from "../components/DropDown";
-import Icon from "react-native-vector-icons/Ionicons";
 import Colors from "../constants/Colors";
 import PrimaryButton from "../components/PrimaryButton";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons as Icon } from "@expo/vector-icons";
 
 const FeedbackScreenV2 = ({ route }: any) => {
   const { predictionId } = (route.params ?? {}) as { predictionId?: string };

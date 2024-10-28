@@ -9,11 +9,11 @@ import {
   ScrollView,
 } from "react-native";
 import { Checkbox, Snackbar } from "react-native-paper";
-import Icon from "react-native-vector-icons/Ionicons";
 import Colors from "../constants/Colors";
 import { useCreateFeedbackMutation } from "../Redux/API/feedbacks.api.slice";
 import { FeedbackDto, FeedbackDetails } from "../types/types";
 import Dropdown from "../components/DropDown";
+import { Ionicons as Icon } from "@expo/vector-icons";
 
 // Enums for options
 const SentimentOptions = [
