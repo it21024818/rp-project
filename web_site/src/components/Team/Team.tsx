@@ -8,7 +8,7 @@ import harinda from '../../assets/harinda.jpg'
 import samitha from '../../assets/samitha.png'
 import archchana from '../../assets/archchana.png'
 import pubudu from '../../assets/pubudu.jpg'
-import externalLink from "../../assets/external-link.svg"
+import poojani from "../../assets/poojani.jpg"
 import ScrollAnimation from "react-animate-on-scroll";
 import linkedin from '../../assets/linkedin.svg';
 import emailIcon from "../../assets/email-icon.svg";
@@ -152,7 +152,7 @@ export function Team() {
         </ScrollAnimation>
       </div>
       <h2 style={{ marginTop: "5rem" }}>Supervising Team</h2>
-      <div className="projects">
+      <div className="teams">
         <ScrollAnimation animateIn="flipInX">
           <div className="project">
             <img src={harinda} style={{ width: "100%", borderRadius: "1.2rem", marginBottom: "1rem" }} alt="Dinuka" />
@@ -228,6 +228,32 @@ export function Team() {
               <p>Computer Science and Electronic Engineering</p>
             </div>
             <footer> <ul className="tech-list"> <li>External Supervisor</li> </ul> </footer>
+          </div>
+        </ScrollAnimation>
+
+        <ScrollAnimation animateIn="flipInX">
+          <div className="project">
+            <img src={poojani} style={{ width: "100%", borderRadius: "1.2rem", marginBottom: "1rem" }} alt="Dinuka" />
+            <header>
+              <div className="social-media" >
+                <a
+                  href="https://www.linkedin.com/in/malmaleesha-gunathilake-55b023236/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img src={linkedin} alt="Linkedin" />
+                </a>
+                <a href="mailto:poojani.g@sliit.lk"><img src={emailIcon} alt="Email"/></a> 
+              </div>
+            </header>
+            <div className="body">
+              <h3>Poojani Gunathilake</h3>
+              <h4>Assistant Lecturer</h4>
+              <p>Sri Lanka Institute of Information Technology</p>
+              <h4>Department</h4>
+              <p>Software Engineering</p>
+            </div>
+            <footer> <ul className="tech-list"> <li>Co-Supervisor</li> </ul> </footer>
           </div>
         </ScrollAnimation>
 
