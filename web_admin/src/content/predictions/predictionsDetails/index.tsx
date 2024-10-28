@@ -7,6 +7,7 @@ import { Prediction } from './predictionsDetails';
 import { useParams } from 'react-router';
 import { useGetPredictionQuery } from 'src/store/apiquery/predictionsApiSlice';
 import PredictionsDetails from './predictionsDetails';
+import PredictionDetailsSkeleton from 'src/components/Skeleton/PredictionDetailsSkeleton';
 
 function PredictionInside() {
   const { id } = useParams(); // Get the dynamic id from the route
@@ -31,7 +32,7 @@ function PredictionInside() {
           <Grid item xs={12}>
             {/* Handle loading, error, and display */}
             {isLoading ? (
-              <CircularProgress />
+              <PredictionDetailsSkeleton />
             ) : error ? (
               <Typography variant="h6" color="error">
                 Error loading prediction.

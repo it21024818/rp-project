@@ -4,13 +4,14 @@ import PageHeaderCommon from '../../common/PageHeaderCommon';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import Footer from 'src/components/Footer';
 import { useParams } from 'react-router';
-import { useGetUserQuery } from 'src/store/apiquery/usersApiSlice'; // Assuming you have this API slice
+import { useGetUserQuery } from 'src/store/apiquery/usersApiSlice';
 import UsersDetails from './usersDetails';
 import RecentPredictions from './RecentPredictions';
 import RecentFeedbacks from './RecentFeedbacks';
 
 export type UserRole = 'USER' | 'ADMIN';
 export type SubscriptionStatus = 'ACTIVE' | 'ENDED' | 'PAUSED';
+import PredictionDetailsSkeleton from 'src/components/Skeleton/PredictionDetailsSkeleton';
 
 export interface Subscription {
   endingTs: string;
@@ -58,7 +59,7 @@ function UserInside() {
           <Grid item xs={12}>
             {/* Handle loading, error, and display */}
             {isLoading ? (
-              <CircularProgress />
+              <PredictionDetailsSkeleton />
             ) : error ? (
               <Typography variant="h6" color="error">
                 Error loading user details.

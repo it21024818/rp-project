@@ -14,6 +14,8 @@ import QualityGraph from '../newsSourceAnalytics/qualityAnalytics/LineGraph';
 import SarcasmGraph from '../newsSourceAnalytics/sarcasmAnalytics/LineGraph';
 import BiasGraph from '../newsSourceAnalytics/biasAnalytics/LineGraph';
 
+import PredictionDetailsSkeleton from 'src/components/Skeleton/PredictionDetailsSkeleton';
+
 export interface News {
   _id: string;
   createdAt: string;
@@ -46,7 +48,7 @@ function NewsSourceInside() {
           <Grid item xs={12}>
             {/* Handle loading, error, and display */}
             {isLoading ? (
-              <CircularProgress />
+              <PredictionDetailsSkeleton />
             ) : error ? (
               <Typography variant="h6" color="error">
                 Error loading news source details.

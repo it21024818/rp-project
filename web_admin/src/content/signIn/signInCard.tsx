@@ -95,6 +95,12 @@ export default function SignInSide() {
     try {
       const response = await sendUserInfo(data).unwrap();
       if (response.tokens && response.user) {
+        if (!response.user.roles.includes('ADMIN')) {
+          setAlertMessage('Access denied: Admin role required.');
+          setAlertSeverity('error');
+          return;
+        }
+
         localStorage.setItem('accessToken', response.tokens.accessToken);
         localStorage.setItem('refreshToken', response.tokens.refreshToken);
         localStorage.setItem('user', JSON.stringify(response.user));

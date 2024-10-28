@@ -1,5 +1,4 @@
 import { FC, ChangeEvent, useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Tooltip,
   Divider,
@@ -18,7 +17,6 @@ import {
   useTheme,
   CardHeader
 } from '@mui/material';
-
 import EditTwoToneIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import BulkActions from './BulkActions';
 import { Link } from 'react-router-dom';
@@ -36,36 +34,40 @@ export interface Subscription {
 
 export interface User {
   _id: string;
-  createdBy: string;
-  createdAt: string;
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
   roles: UserRole[];
   isAuthorized: boolean;
   subscription: Subscription;
-  stripeCustomerId: string;
-  __v: number;
+}
+
+export interface Metadata {
+  pageNum: number;
+  pageSize: number;
+  totalDocuments: number;
 }
 
 interface RecentUsersTableProps {
   users: User[];
+  metadata: Metadata;
+  page: number;
+  limit: number;
+  onPageChange: (newPage: number) => void;
+  onLimitChange: (newLimit: number) => void;
 }
 
-const applyPagination = (
-  users: User[],
-  page: number,
-  limit: number
-): User[] => {
-  return users.slice(page * limit, page * limit + limit);
-};
-
-const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
+const RecentUsersTable: FC<RecentUsersTableProps> = ({
+  users,
+  metadata,
+  page,
+  limit,
+  onPageChange,
+  onLimitChange
+}) => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const selectedBulkActions = selectedUsers.length > 0;
-  const [page, setPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
+  const theme = useTheme();
 
   const handleSelectAllUsers = (event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedUsers(event.target.checked ? users.map((user) => user._id) : []);
@@ -84,19 +86,9 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
     }
   };
 
-  const handlePageChange = (event: any, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setLimit(parseInt(event.target.value));
-  };
-
-  const paginatedUsers = applyPagination(users, page, limit);
   const selectedSomeUsers =
     selectedUsers.length > 0 && selectedUsers.length < users.length;
   const selectedAllUsers = selectedUsers.length === users.length;
-  const theme = useTheme();
 
   return (
     <Card>
@@ -126,7 +118,7 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedUsers.map((user) => {
+            {users.map((user) => {
               const isUserSelected = selectedUsers.includes(user._id);
               return (
                 <TableRow hover key={user._id} selected={isUserSelected}>
@@ -134,9 +126,7 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
                     <Checkbox
                       color="primary"
                       checked={isUserSelected}
-                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        handleSelectOneUser(event, user._id)
-                      }
+                      onChange={(event) => handleSelectOneUser(event, user._id)}
                       value={isUserSelected}
                     />
                   </TableCell>
@@ -178,7 +168,7 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
                       <IconButton
                         sx={{
                           '&:hover': {
-                            background: theme.colors.primary.lighter
+                            background: theme.palette.primary.light
                           },
                           color: theme.palette.primary.main
                         }}
@@ -200,24 +190,18 @@ const RecentUsersTable: FC<RecentUsersTableProps> = ({ users }) => {
       <Box p={2}>
         <TablePagination
           component="div"
-          count={users.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
+          count={metadata.totalDocuments}
           page={page}
+          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onRowsPerPageChange={(event) =>
+            onLimitChange(parseInt(event.target.value, 10))
+          }
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
     </Card>
   );
-};
-
-RecentUsersTable.propTypes = {
-  users: PropTypes.array.isRequired
-};
-
-RecentUsersTable.defaultProps = {
-  users: []
 };
 
 export default RecentUsersTable;

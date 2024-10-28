@@ -98,7 +98,7 @@ function RecentActivity({ analytics }) {
           <ExtentionIcon />
         </AvatarPrimary>
         <Box pl={2} flex={1}>
-          <Typography variant="h3">Extention</Typography>
+          <Typography variant="h3">Extension</Typography>
 
           <Box pt={2} display="flex">
             <Box pr={6}>
