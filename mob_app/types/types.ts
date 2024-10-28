@@ -109,3 +109,26 @@ export interface FeedbackDto {
   reaction: "GOOD" | "BAD";
   details: FeedbackDetails;
 }
+
+export const SentimentOptions = [
+  { label: "Negative", value: "NEGATIVE" },
+  { label: "Positive", value: "POSITIVE" },
+  { label: "Neutral", value: "NEUTRAL" },
+];
+
+export const SarcasmOptions = [
+  { label: "Generic", value: "GENERIC" },
+  { label: "Rhetorical Question", value: "RHETORICAL_QUESTION" },
+  { label: "Hyperbole", value: "HYPERBOLE" },
+];
+
+export const BiasOptions = [
+  { label: "Left", value: "LEFT" },
+  { label: "Center", value: "CENTER" },
+  { label: "Right", value: "RIGHT" },
+];
+
+export const ReactionEnum = {
+  GOOD: "GOOD" as const,
+  BAD: "BAD" as const,
+};

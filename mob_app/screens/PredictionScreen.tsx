@@ -11,7 +11,11 @@ import Font from "../constants/Font";
 import { Color, FontSize } from "../Styles/GlobalStyles";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../hooks/redux-hooks";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Screen from "../components/Screen";
@@ -19,6 +23,11 @@ import { PredictionDto } from "../types/types";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";
 import Reviews from "./FeedbackScreen";
+import PrimaryButton from "../components/PrimaryButton";
+import ScreenHeader from "../components/ScreenHeader";
+import { useLazyGetFeedbackByPredictionIdQuery } from "../Redux/API/feedbacks.api.slice";
+import { useCallback, useEffect } from "react";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type BlockProps = {
   icon: string;
@@ -151,7 +160,7 @@ const Block = ({
       }}
     >
       <View style={{ flexDirection: "row", gap: 10 }}>
-        <Icon name={icon as any} color={titleColor} size={24} />
+        <MaterialIcons name={icon as any} color={titleColor} size={24} />
         <Text
           style={{
             color: titleColor,
@@ -201,7 +210,12 @@ const DisabledBlock = ({ title, icon }: DisabledBlockProps) => {
       }}
     >
       <View style={{ flexDirection: "row", gap: 10 }}>
-        <Icon name={icon as any} color={Colors.gray} size={24} />
+        <MaterialIcons
+          name={icon as any}
+          color={Colors.darkText}
+          size={24}
+          style={{ width: 24, height: 24 }}
+        />
         <Text
           style={{
             color: Colors.darkText,
@@ -218,9 +232,28 @@ const DisabledBlock = ({ title, icon }: DisabledBlockProps) => {
 };
 
 const PredictionScreen = ({ route }: any) => {
+  const { user } = useAppSelector((state) => state.user);
   const { prediction } = (route.params ?? {}) as { prediction?: PredictionDto };
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const toast = useToast();
+  const [
+    getFeedback,
+    {
+      isLoading: isGetFeedbackLoading,
+      isFetching: isGetFeedbackFetching,
+      data,
+    },
+  ] = useLazyGetFeedbackByPredictionIdQuery();
+
+  const isFeedbackPresent = (data ?? []).some(
+    (item: any) => item.createdBy === user?._id
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      getFeedback({ predictionId: prediction?._id ?? "" });
+    }, [prediction])
+  );
 
   return (
     <Screen>
@@ -230,51 +263,25 @@ const PredictionScreen = ({ route }: any) => {
           gap: 8,
         }}
       >
-        <View
-          style={{
-            backgroundColor: Colors.colorWhite,
-            paddingBottom: 10,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <TouchableOpacity onPress={() => goBack()}>
-              <Icon name={"arrow-back"} color={Colors.primary} size={30} />
-            </TouchableOpacity>
-            <Text
-              style={{
-                fontSize: FontSize.size_9xl,
-                fontWeight: "600",
-                color: Colors.primary,
-                fontFamily: Font["poppins-bold"],
-              }}
-            >
-              Prediction
-            </Text>
-          </View>
-        </View>
+        <ScreenHeader title="Prediction" hasBackAction />
         <Text
           style={{
             fontSize: FontSize.size_base,
             marginBottom: 16,
+            textAlign: "justify",
           }}
         >
-          {prediction?.text}
+          {prediction?.text?.trim()}
         </Text>
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
-          icon="?"
+          icon="plagiarism"
           result={prediction?.result?.finalFakeResult ? "True" : "False"}
           flavour="Result is based on the combination of all results"
           title="Final Result"
         />
+
         <Text
           style={{
             fontSize: FontSize.size_5xl,
@@ -291,19 +298,19 @@ const PredictionScreen = ({ route }: any) => {
           <Block
             backgroundColor={Colors.lightPrimary}
             titleColor={Colors.primary}
-            icon="?"
+            icon="crisis-alert"
             result={prediction?.result?.sarcasmTypeResult?.prediction ?? ""}
             flavour="Result is based on analysis of sarcasm presence in the content"
             title="Sarcasm"
             intro="This text has sarcasm of type"
           />
         ) : (
-          <DisabledBlock icon="" title="Sarcasm was not detected" />
+          <DisabledBlock icon="crisis-alert" title="Sarcasm was not detected" />
         )}
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
-          icon="?"
+          icon="history-edu"
           result={prediction?.result?.sentimentTypeResult.prediction ?? ""}
           flavour="Result is based on the sentiment presence in the content"
           title="Sentiment"
@@ -313,7 +320,7 @@ const PredictionScreen = ({ route }: any) => {
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
-          icon="?"
+          icon="history-edu"
           result={prediction?.result?.sentimentTextTypeResult.prediction ?? ""}
           flavour="This result indicates the type of text detected"
           title="Type"
@@ -322,7 +329,7 @@ const PredictionScreen = ({ route }: any) => {
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
-          icon="?"
+          icon="fact-check"
           result={
             prediction?.result?.textQualityResult.prediction ? "Bad" : "Good"
           }
@@ -334,7 +341,7 @@ const PredictionScreen = ({ route }: any) => {
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
-          icon="?"
+          icon="handshake"
           result={prediction?.result?.biasResult.prediction ?? ""}
           flavour="This result is based on the presence of political bias in the content with regards to the US political system"
           title="Political Bias"
@@ -353,7 +360,9 @@ const PredictionScreen = ({ route }: any) => {
         >
           Related Search Results
         </Text>
-
+        {(prediction?.searchResults?.length || 0) < 1 && (
+          <DisabledBlock icon="search" title="No search results found" />
+        )}
         {prediction?.searchResults?.map((item, idx) => (
           <NewsBlock
             key={idx}
@@ -380,8 +389,40 @@ const PredictionScreen = ({ route }: any) => {
             }}
           />
         ))}
-        {/* Pass the sourcePredictionId if available */}
-        {prediction?._id && <Reviews id={prediction._id} />}
+        <Text
+          style={{
+            fontSize: FontSize.size_5xl,
+            fontWeight: "600",
+            color: Colors.primary,
+            fontFamily: Font["poppins-bold"],
+            marginBottom: 10,
+            marginTop: 10,
+          }}
+        >
+          Leave a review
+        </Text>
+        <Text
+          style={{
+            fontSize: FontSize.size_base,
+            marginBottom: 16,
+            textAlign: "justify",
+          }}
+        >
+          If you want to help us make our fake news predictions better, leave a
+          review with what your input on the content!
+        </Text>
+        <PrimaryButton
+          label={
+            isFeedbackPresent
+              ? "You've already a left a review"
+              : "Leave a review"
+          }
+          isDisabled={isFeedbackPresent}
+          isLoading={isGetFeedbackLoading || isGetFeedbackFetching}
+          onPress={() =>
+            navigate("Feedback", { predictionId: prediction?._id } as any)
+          }
+        />
       </ScrollView>
     </Screen>
   );

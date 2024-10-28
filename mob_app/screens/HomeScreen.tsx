@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
 import Font from "../constants/Font";
 import { FontSize } from "../Styles/GlobalStyles";
@@ -15,6 +15,8 @@ import ToastAlert from "../components/ToastAlert";
 import { setUser } from "../Redux/slices/userSlice";
 import * as ImagePicker from "expo-image-picker";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import ScreenHeader from "../components/ScreenHeader";
+import { TextInput } from "react-native";
 
 const GOOGLE_CLOUD_VISION_API_KEY = "";
 
@@ -25,7 +27,9 @@ const Home = () => {
   const [createPrediction, { isLoading: isCreatePredictionLoading }] =
     useCreatePredictionMutation();
   const [input, setInput] = useState<string>("");
+  const [isInputFocused, setInputFocused] = useState<boolean>(false);
   const [isScanning, setIsScanning] = useState(false);
+  const inputRef = useRef<TextInput>(null);
 
   const isLoading = isCreatePredictionLoading || isScanning;
 
@@ -140,21 +144,17 @@ const Home = () => {
 
   return (
     <Screen contentStyle={{ height: "92%" }}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Predict</Text>
-        <TouchableOpacity
-          onPress={() => {
-            dispatch(setUser({}));
-            navigate("Login");
-          }}
-        >
-          <Icon name={"log-out-outline"} color={Colors.primary} size={30} />
-        </TouchableOpacity>
-      </View>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <ScreenHeader title="Predict" hasLogoutAction />
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
         <AppTextInput
           multiline
-          editable={!isLoading}
+          blurOnSubmit
+          ref={inputRef}
+          isLoading={isLoading || isScanning}
           value={input || ""}
           onChangeText={setInput}
           style={styles.textInput}

@@ -13,8 +13,17 @@ const feedbackApiSlice = baseApi.injectEndpoints({
         body: feedback,
       }),
     }),
+    getFeedbackByPredictionId: builder.query<void, { predictionId: string }>({
+      query: ({ predictionId }) => ({
+        url: `/predictions/${predictionId}/feedback`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateFeedbackMutation } = feedbackApiSlice;
+export const {
+  useCreateFeedbackMutation,
+  useLazyGetFeedbackByPredictionIdQuery,
+} = feedbackApiSlice;
 export default feedbackApiSlice;

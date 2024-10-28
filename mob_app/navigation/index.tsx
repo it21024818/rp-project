@@ -12,6 +12,7 @@ import WelcomeScreen from "../screens/WelcomeScreen";
 import PredictionScreen from "../screens/PredictionScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import RegisterCodeScreen from "../screens/RegisterCodeScreen";
+import FeedbackScreenV2 from "../screens/FeedbackScreenV2";
 
 const theme = {
   ...DefaultTheme,
@@ -46,6 +47,7 @@ function RootNavigator() {
       <Stack.Screen name="Prediction" component={PredictionScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       <Stack.Screen name="RegisterCode" component={RegisterCodeScreen} />
+      <Stack.Screen name="Feedback" component={FeedbackScreenV2} />
     </Stack.Navigator>
   );
 }
