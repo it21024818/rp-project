@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.5d3def16.css",
-    "main.js": "/static/js/main.1caef405.js",
+    "main.js": "/static/js/main.00da8fd9.js",
     "static/media/tharindu.png": "/static/media/tharindu.dc773bd7d2a1eeb34d7f.png",
     "static/media/sansika.png": "/static/media/sansika.4ec3fe104d57c88faf86.png",
     "static/media/archchana.png": "/static/media/archchana.f9624dd006b152906c73.png",
@@ -15,6 +15,7 @@
     "static/media/lighthouse.png": "/static/media/lighthouse.4cdc9493f0e5c874750b.png",
     "static/media/tensorflow.png": "/static/media/tensorflow.bb0181bbaa1477d7936f.png",
     "static/media/harinda.jpg": "/static/media/harinda.495761c553220183933d.jpg",
+    "static/media/poojani.jpg": "/static/media/poojani.7737cf1b3ada6fbd6705.jpg",
     "static/media/sentiment.png": "/static/media/sentiment.0027ad466b2b5dea060c.png",
     "static/media/fakeNewsIcon.png": "/static/media/fakeNewsIcon.2a8449c8914d1e76930e.png",
     "static/media/quality.png": "/static/media/quality.583c83cae7bd8393b6ad.png",
@@ -42,10 +43,10 @@
     "static/media/linkedin.svg": "/static/media/linkedin.4f00d78f67f451cf01173f7418aa186f.svg",
     "static/media/js-icon.svg": "/static/media/js-icon.ffcf56dc5498f7bbbec802191c740e5f.svg",
     "main.5d3def16.css.map": "/static/css/main.5d3def16.css.map",
-    "main.1caef405.js.map": "/static/js/main.1caef405.js.map"
+    "main.00da8fd9.js.map": "/static/js/main.00da8fd9.js.map"
   },
   "entrypoints": [
     "static/css/main.5d3def16.css",
-    "static/js/main.1caef405.js"
+    "static/js/main.00da8fd9.js"
   ]
 }
