@@ -10,7 +10,7 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["flask", "run", "--host=0.0.0.0", "--debug"]
 # # Stage 1: Build
 # FROM python:3.10-slim AS build
 # WORKDIR /app
