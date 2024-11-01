@@ -1,9 +1,5 @@
 import {
-  SafeAreaView,
-  StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import React from "react";
@@ -11,19 +7,13 @@ import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
 import Font from "../constants/Font";
-import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import AppTextInput from "../components/AppTextInput";
 import { useRegisterMutation } from "../Redux/API/auth.api.slice";
 import { useState } from "react";
-import { HandleResult } from "../utils/HandleResults";
-import { ScrollView } from "react-native";
-import Toast from "react-native-toast-message";
-import { useNavigate } from "react-router-dom";
 import { useNavigation } from "@react-navigation/native";
 import PrimaryButton from "../components/PrimaryButton";
-import { Color } from "../Styles/GlobalStyles";
 import Screen from "../components/Screen";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";

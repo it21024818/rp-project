@@ -535,7 +535,7 @@ export default function Hero() {
                             {result?.data?.result?.sarcasmPresentResult
                               ?.prediction == "true"
                               ? "Sarcasm Present"
-                              : "No Sarcasm"}
+                              : "Low Sarcasm"}
                           </Typography>
 
                           {/* Add additional styling for results */}

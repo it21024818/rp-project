@@ -1,6 +1,5 @@
 import {
   Text,
-  StyleSheet,
   View,
   ScrollView,
   TouchableOpacity,
@@ -8,25 +7,20 @@ import {
 } from "react-native";
 import * as Linking from "expo-linking";
 import Font from "../constants/Font";
-import { Color, FontSize } from "../Styles/GlobalStyles";
+import { FontSize } from "../Styles/GlobalStyles";
 import Colors from "../constants/Colors";
 import { useAppSelector } from "../hooks/redux-hooks";
-import {
-  useFocusEffect,
-  useIsFocused,
-  useNavigation,
-} from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Screen from "../components/Screen";
 import { PredictionDto } from "../types/types";
 import { useToast } from "native-base";
 import ToastAlert from "../components/ToastAlert";
-import Reviews from "./FeedbackScreen";
 import PrimaryButton from "../components/PrimaryButton";
 import ScreenHeader from "../components/ScreenHeader";
 import { useLazyGetFeedbackByPredictionIdQuery } from "../Redux/API/feedbacks.api.slice";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type BlockProps = {
@@ -51,6 +45,10 @@ type NewsBlockProps = {
   title?: string;
   onPress?: () => void;
 };
+
+function capitalizeWords(str: string) {
+  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 const NewsBlock = ({
   title,
@@ -294,24 +292,24 @@ const PredictionScreen = ({ route }: any) => {
         >
           Model Results
         </Text>
-        {prediction?.result?.sarcasmPresentResult?.prediction ? (
-          <Block
-            backgroundColor={Colors.lightPrimary}
-            titleColor={Colors.primary}
-            icon="crisis-alert"
-            result={prediction?.result?.sarcasmTypeResult?.prediction ?? ""}
-            flavour="Result is based on analysis of sarcasm presence in the content"
-            title="Sarcasm"
-            intro="This text has sarcasm of type"
-          />
-        ) : (
-          <DisabledBlock icon="crisis-alert" title="Sarcasm was not detected" />
-        )}
+        <Block
+          backgroundColor={Colors.lightPrimary}
+          titleColor={Colors.primary}
+          icon="crisis-alert"
+          result={capitalizeWords(
+            prediction?.result?.sarcasmTypeResult?.prediction ?? "Generic"
+          )}
+          flavour="Result is based on analysis of sarcasm presence in the content"
+          title="Sarcasm"
+          intro="This text has sarcasm of type"
+        />
         <Block
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="history-edu"
-          result={prediction?.result?.sentimentTypeResult.prediction ?? ""}
+          result={capitalizeWords(
+            prediction?.result?.sentimentTypeResult.prediction ?? ""
+          )}
           flavour="Result is based on the sentiment presence in the content"
           title="Sentiment"
           intro="This text has"
@@ -321,7 +319,9 @@ const PredictionScreen = ({ route }: any) => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="history-edu"
-          result={prediction?.result?.sentimentTextTypeResult.prediction ?? ""}
+          result={capitalizeWords(
+            prediction?.result?.sentimentTextTypeResult.prediction ?? ""
+          )}
           flavour="This result indicates the type of text detected"
           title="Type"
           intro="This text looks like a"
@@ -330,9 +330,9 @@ const PredictionScreen = ({ route }: any) => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="fact-check"
-          result={
+          result={capitalizeWords(
             prediction?.result?.textQualityResult.prediction ? "Bad" : "Good"
-          }
+          )}
           flavour="This result is based on the analysis of text quality in the text"
           title="Text Quality"
           intro="This text seems to exhibit"
@@ -342,7 +342,9 @@ const PredictionScreen = ({ route }: any) => {
           backgroundColor={Colors.lightPrimary}
           titleColor={Colors.primary}
           icon="handshake"
-          result={prediction?.result?.biasResult.prediction ?? ""}
+          result={capitalizeWords(
+            prediction?.result?.biasResult.prediction ?? ""
+          )}
           flavour="This result is based on the presence of political bias in the content with regards to the US political system"
           title="Political Bias"
           intro="This text seems to be"

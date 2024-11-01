@@ -1,25 +1,13 @@
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import Spacing from "../constants/Spacing";
 import FontSize from "../constants/FontSize";
 import Colors from "../constants/Colors";
 import Font from "../constants/Font";
-import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import AppTextInput from "../components/AppTextInput";
 import { useLoginMutation } from "../Redux/API/auth.api.slice";
 import { useState } from "react";
-import { HandleResult } from "../utils/HandleResults";
-import Toast from "react-native-toast-message";
 import PrimaryButton from "../components/PrimaryButton";
 import Screen from "../components/Screen";
 import { useAppDispatch } from "../hooks/redux-hooks";

@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.it21058578.Lighthouse"
     },
     "android": {
       "adaptiveIcon": {
