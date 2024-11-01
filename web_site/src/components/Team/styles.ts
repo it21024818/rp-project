@@ -159,10 +159,16 @@ export const Container = styled.section`
     .projects{
       grid-template-columns: 1fr 1fr;
     }
+    .teams{
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   @media (max-width: 740px){
     .projects{
+      grid-template-columns: 1fr;
+    }
+    .teams{
       grid-template-columns: 1fr;
     }
   }
